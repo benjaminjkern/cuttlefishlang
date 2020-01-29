@@ -1,5 +1,5 @@
 # Cuttlefish Programming Language
 
-![cuttlefish][cuttlefish.png]
+![cuttlefish](cuttlefish.png "Cuttlefish!")
 
-![logo][logo.png]
+![logo](logo.png "Look at how cool this language is!")

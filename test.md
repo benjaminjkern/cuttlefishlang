@@ -43,32 +43,33 @@ print twice(squared, 4)                             # 256
 plusSixThenSquare = squared * plusSix               # compose operator
 print plusSixThenSquare 10                          # 256
 print plusSix * squared 5                           # 31
-timesPlusSixAndSquare := plusSix $ * squared $s
+timesOfPlusSixAndSquare := plusSix $ * squared $s
 
-print timesPlusSixAndSquare 7                       # 62
+print timesOfPlusSixAndSquare 7                       # 62
 ```
 
 Can use `$` which is just the argument tuple
 
 # Stuff we need to figure out
 
-a = [1,3,4,6]
+Quick Sort (In one line)
 
-a(fn: $ + 5)
-map a fn: $ + 5
+```hs
+quickSort := [] -> []; List [x]:xs -> quickSort xs[fn: $ < x] ++ [x] ++ quickSort xs[fn: $ >= x]
 
-a[fn: $ < 4]
-filter a fn: \$ + 5
+print quickSort [2,4,5,3,6,1]
+```
 
-quickSort = fn [a] => [a]:
-[] -> [][x]:xs -> quickSort xs[fn: $ < 5] ++ [x] ++ quickSort xs[fn: $ >= 5]
+> [1,2,3,4,5,6]
 
-main = prc:
-if quickSort [5,3,4,1,2,6] === [1..6]:
-print 'yeet'
-else:
-error 'fail'
+Primes less than 100 (Ine one line)
 
-filterPrime := [p]:xs -> p ++ filterPrime xs[fn: $ % p != 0]
-primes = filterPrime [2..]
-main = print primes[fn: $ < 100]
+```hs
+primeFilter := List [p]:xs -> p ++ primeFilter xs[fn: $ % p != 0]
+
+primes = primeFilter [2..]
+
+print primes[fn: $ < 100]
+```
+
+> [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97]

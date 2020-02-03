@@ -43,7 +43,7 @@ print twice(squared, 4)                             # 256
 plusSixThenSquare = squared * plusSix               # compose operator
 print plusSixThenSquare 10                          # 256
 print plusSix * squared 5                           # 31
-timesOfPlusSixAndSquare := plusSix $ * squared $s
+timesOfPlusSixAndSquare := plusSix $ * squared $
 
 print timesOfPlusSixAndSquare 7                       # 62
 ```
@@ -52,17 +52,19 @@ Can use `$` which is just the argument tuple
 
 # Stuff we need to figure out
 
-Quick Sort (In one line)
+Quick Sort
 
 ```hs
-quickSort := [] -> []; List [x]:xs -> quickSort xs[fn: $ < x] ++ [x] ++ quickSort xs[fn: $ >= x]
+quickSort :=
+    [] -> [];
+    List [x]:xs -> quickSort xs[fn: $ < x] ++ [x] ++ quickSort xs[fn: $ >= x]
 
 print quickSort [2,4,5,3,6,1]
 ```
 
 > [1,2,3,4,5,6]
 
-Primes less than 100 (Ine one line)
+Primes less than 100
 
 ```hs
 primeFilter := List [p]:xs -> p ++ primeFilter xs[fn: $ % p != 0]

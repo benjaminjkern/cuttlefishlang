@@ -1,4 +1,4 @@
-# Cuttlefish Programming Language
+# Cuttlefish, a programming language for the rest of us
 
 ![cuttlefish](cuttlefish.png "Cuttlefish!")
 

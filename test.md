@@ -101,3 +101,22 @@ print s() # 'Hello' or 'World'
 print s() # 'Hello' or 'World' or '3 Potato'
 print s() # 'Hello' or 'World' or '3 Potato' or '4 Potato'
 ```
+
+```hs
+twoSum := List nums, Number target ->
+    hashTable = Dict()
+    for nums: n ->
+        complement = target - n
+        if hashTable has complement:
+            put (hashTable[complement], complement)
+        hashTable[n] = complement
+    put None
+```
+
+```hs
+factorial :=
+    0 -> 1
+    x -> x * factorial(x - 1)
+
+evenOrOdd := $ % 2 == 0
+```

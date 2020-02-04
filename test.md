@@ -50,13 +50,11 @@ print timesOfPlusSixAndSquare 7                       # 62
 
 Can use `$` which is just the argument tuple
 
-# Stuff we need to figure out
-
 Quick Sort
 
 ```hs
 quickSort :=
-    [] -> [];
+    [] -> []
     List [x]:xs -> quickSort xs[fn: $ < x] ++ [x] ++ quickSort xs[fn: $ >= x]
 
 print quickSort [2,4,5,3,6,1]
@@ -75,3 +73,31 @@ print primes[fn: $ < 100]
 ```
 
 > [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97]
+
+# Servers
+
+Non-Deterministic
+
+```py
+proc = prc: x ->
+    x = x+1
+    put x
+    self x
+
+
+my_server = srv:
+    () ->
+        self ++ proc(0)
+        self ++ proc(0)
+        self ++ proc(0)
+    1 -> put "Hello"
+    2 -> put "World"
+    x -> put `{x} Potato`
+
+s = my_server()
+
+print s() # 'Hello'
+print s() # 'Hello' or 'World'
+print s() # 'Hello' or 'World' or '3 Potato'
+print s() # 'Hello' or 'World' or '3 Potato' or '4 Potato'
+```

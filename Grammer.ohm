@@ -1,0 +1,11 @@
+Cuttlefish {
+	Collection = (Molecule |  "*")+
+    Molecule = "[" (atom ",")*  atom"]" --list
+    | "(" (atom ",")+ atom?")" --tuple
+    | atom | "(" atom ")" -- singleton
+    atom = numlit | id | nospaceops | "()"
+    nospaceops = "~" | "+"
+    reserved = "*" | "[" | "]" | "(" | ")"
+    id = (~space ~nospaceops ~reserved any)+
+	numlit = digit+   
+}

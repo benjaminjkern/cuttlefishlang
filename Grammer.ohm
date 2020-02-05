@@ -1,22 +1,45 @@
 Cuttlefish {
-    Specification = (Binding<FunctionGroup> | Binding<ProcessGroup> | Binding<Server>)
-    FunctionGroup = "fn" ":" TypeDec? SubRoutine+
-    ProcessGroup = "prc : " TypeDec? "\n" SubRoutine+
-    Server = "srv: " TypeDec? "\n" SubRoutine+
-    Binding<x> = id "=" x
-    SubRoutine = (Pattern "->" (~"\n" ~";" Token)+ (";"|"\n")) 
-    List = Sequence<"[","]">
-    String rawSequence<"\"","\"">
-    | rawSequence<"\'","\'"> 
+    CurrentlyDefined = Comment | Macro | PatternMatch | Expression | Atom
     Comment = 
     | rawSequence<"#/","/#">
-    | "#" (~"\n" any)+ --line_comment
-    atom ="(" atom ")" | numlit | id | nospaceops | "()"
-    Tuple = "(" (atom ",")+ atom? ")"        
-    Sequence<open,close> = open atom ("," atom)*  close
-    rawSequence<open,close> = open (~open ~close any)*  close
-    nospaceops = "~" | "+"
-	reserved = "*" | ":"
-	numlit = digit+
+    | rawSequence<("#" ~"!" ),("\n"| end)>
+    Macro = rawSequence<"#!",("\n"| end)>
+   	
+    PatternMatch = Pattern "=" Expression
+ 	
+    Expression = Atom+
+    
+    Tuple = "(" (Atom "," )+  (  "" ")"  |  ( Atom  ")"  ) )
+    List = Sequence<"[","]">
+    String = rawSequence<"\"","\"">
+    | rawSequence<"\'","\'"> 
+    
+    Atom =
+    | List
+    | String
+    | Comment
+    | Tuple
+    | numlit 
+    | id 
+    | nospaceops 
+    | "()"
+    | "(" Atom ")" --singleton
+	
+    nospaceops = dynamicnospaceops | "~" | "+" 
+    reserved = "*" | ":"
+    numlit = digit+
     id = (~space ~nospaceops ~reserved any)+
+    Pattern = Atom
+    Type = id | List | Tuple | DynamicSequence
+
+    dynamicnospaceops = "FOR COMPILE TIME USE"
+    DynamicRawSequence = "FOR COMPILE TIME USE"
+    DynamicSequence = "FOR COMPILE TIME USE"
+   
+    Binding<x,y> = x "=" y
+    Sequence<open,close> = open Atom ("," Atom)*  close
+    rawSequence<open,close> = open (~open ~close any)*  close
+
+    
+
 }

@@ -1,19 +1,17 @@
 Cuttlefish {
-    Binding = id "=" Token
-    Function = "fn" ":" Pattern "->" (~"\n" ~";" Token)+ (";"|"\n")
-    Pattern = Token
-    Token = 
-    | Sequence<"[","]"> --list
-    | rawSequence<"\"","\""> --string
-    | rawSequence<"\'","\'"> --singlequotestring
-    | Tuple --tuple
-    | ":" -- functionDec
-    | atom --singleton
-    | "(" atom ")" -- paren
+    Specification = (Binding<FunctionGroup> | Binding<ProcessGroup> | Binding<Server>)
+    FunctionGroup = "fn" ":" TypeDec? SubRoutine+
+    ProcessGroup = "prc : " TypeDec? "\n" SubRoutine+
+    Server = "srv: " TypeDec? "\n" SubRoutine+
+    Binding<x> = id "=" x
+    SubRoutine = (Pattern "->" (~"\n" ~";" Token)+ (";"|"\n")) 
+    List = Sequence<"[","]">
+    String rawSequence<"\"","\"">
+    | rawSequence<"\'","\'"> 
     Comment = 
     | rawSequence<"#/","/#">
     | "#" (~"\n" any)+ --line_comment
-    atom = numlit | id | nospaceops | "()"
+    atom ="(" atom ")" | numlit | id | nospaceops | "()"
     Tuple = "(" (atom ",")+ atom? ")"        
     Sequence<open,close> = open atom ("," atom)*  close
     rawSequence<open,close> = open (~open ~close any)*  close

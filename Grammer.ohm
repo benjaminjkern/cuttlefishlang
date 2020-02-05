@@ -1,13 +1,36 @@
 Cuttlefish {
-    CurrentlyDefined = Comment | Macro | PatternMatch | Expression | Atom
+    CurrentlyDefined = Comment | Macro | SubRoutineGroup | StandaloneFunction | Expression | Atom
+    
+    Specification = NonemptyListOf<SubRoutineGroup,space>
+    
     Comment = 
     | rawSequence<"#/","/#">
     | rawSequence<("#" ~"!" ),("\n"| end)>
     Macro = rawSequence<"#!",("\n"| end)>
    	
-    PatternMatch = Pattern "=" Expression
- 	
-    Expression = Atom+
+    SubRoutineGroup = FunctionGroup | ProcessGroup | Server
+    
+    FunctionGroup = "fn" ":" "\n" NonemptyListOf<SubRoutine,"\n"+>
+    StandaloneFunction = "fn" ":" SubRoutine ("\n"| end | ";")
+    ProcessGroup = "prc" ":"  "\n" NonemptyListOf<SubRoutine,"\n"+>
+    Server = "srv" ":"  "\n" NonemptyListOf<SubRoutine,"\n"+>
+    
+    Expression = 
+    | PatternMatch 
+    | ValueExpression
+    | ReturnExpression
+    | ProcessLinkExpression
+    
+    PatternMatch = Pattern "=" ValueExpression
+ 	ReturnExpression = "put" ValueExpression
+    ProcessLinkExpression = "self" "++" ValueExpression
+    
+    ValueExpression =
+    | NonemptyListOf<ValueExpression,"*">
+    |  (~("\n" | end | "*") Atom)+
+    | SubRoutine
+    
+    SubRoutine = Pattern "->" NonemptyListOf<Expression,"\n">
     
     Tuple = "(" (Atom "," )+  (  "" ")"  |  ( Atom  ")"  ) )
     List = Sequence<"[","]">
@@ -43,3 +66,4 @@ Cuttlefish {
     
 
 }
+

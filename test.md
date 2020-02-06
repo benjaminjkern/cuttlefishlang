@@ -94,6 +94,9 @@ my_server = srv:
     2 -> put "World"
     x -> put `{x} Potato`
 
+
+base 16 '1bc01259'
+
 s = my_server()
 
 print s() # 'Hello'
@@ -108,15 +111,73 @@ twoSum := List nums, Number target ->
     for nums: n ->
         complement = target - n
         if hashTable has complement:
-            put (hashTable[complement], complement)
+            return (hashTable[complement], complement)
         hashTable[n] = complement
-    put None
+    return None
+```
+
+Factorial, done in the lame way and the cool way
+
+```hs
+factorial := x ->
+    n = x
+    p = 1
+    while n > 1:
+        p *= n
+        n -= 1
+    put p
+
+factorial := 0 -> 1; x -> x * factorial x - 1
 ```
 
 ```hs
-factorial :=
-    0 -> 1
-    x -> x * factorial(x - 1)
+gcd :=
+    x, 0 -> x
+    x, y -> gcd(y, x % y)
+```
 
-evenOrOdd := $ % 2 == 0
+Operators
+
+```hs
+#! NOSPACEOPS = [!, \nambla]
+
+! = postfix op: factorial
+```
+
+```py
+f = fn: x -> fn: y -> x + y
+
+g = fn: z -> 8 * z
+
+(3 * g)(8)
+
+(g + 3)(3)
+
+
+f 3 g 3
+
+# left: f(3)(g)(3) -> (function that returns 3 + the input)(g)(3) -> (g + 3)(3)
+
+# right: f(3(g(3))) -> f(3(24)) -> f(72) -> a function that returns 72 + the input
+
+
+f * 3 g 3
+
+# left: f(3(g)(3)) -> f( (3 * g)(3) )
+
+# right: f(3(g(3))) -> f(3(24)) -> f(72) -> a function that returns 72 + the input
+
+
+f 3 * g 3
+
+# left: f(3)(g(3)) -> (function that returns 3 + the input)(24) -> 27
+
+# right: " "
+
+
+f 3 g * 3
+
+# left: f(3)(g)(3) -> (function that returns 3 + the input)(g)(3) -> (g + 3)(3)
+
+# right: f(3(g))(3) -> f(3 * g)(3)
 ```

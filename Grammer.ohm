@@ -8,29 +8,38 @@ Cuttlefish {
     | rawSequence<("#" ~"!" ),("\n"| end)>
     Macro = rawSequence<"#!",("\n"| end)>
    	
-    SubRoutineGroup = FunctionGroup | ProcessGroup | Server
+    SubRoutineGroup = Function | ProcessGroup | Server
     
-    FunctionGroup = "fn" ":" "\n" NonemptyListOf<SubRoutine,"\n"+>
-    StandaloneFunction = "fn" ":" SubRoutine ("\n"| end | ";")
-    ProcessGroup = "prc" ":"  "\n" NonemptyListOf<SubRoutine,"\n"+>
-    Server = "srv" ":"  "\n" NonemptyListOf<SubRoutine,"\n"+>
+    Function = FunctionGroup | StandaloneFunction
+    FunctionGroup = "fn" ":" SubRoutine+ --fullform
+    | ":=" SubRoutine+ --shorthand
+    StandaloneFunction = 
+    | "fn" ":" SubRoutine ("\n"| end | ";") --fullform
+    | ":=" SubRoutine ("\n"| end | ";") -- shorthand
+    ProcessGroup = "prc" ":" SubRoutine
+    Server = "srv" ":"  SubRoutine+
     
     Expression = 
     | PatternMatch 
-    | ValueExpression
     | ReturnExpression
     | ProcessLinkExpression
+       | ValueExpression
+
     
-    PatternMatch = Pattern "=" ValueExpression
+    PatternMatch = 
+    | Binding<id,SubRoutineGroup> --subroutineGroup
+    | Pattern "=" ValueExpression --valueBind
+    | Pattern &":=" Function --functionBind
+    | Pattern ":=" ValueExpression --dollarFunction
  	ReturnExpression = "put" ValueExpression
     ProcessLinkExpression = "self" "++" ValueExpression
     
     ValueExpression =
     | NonemptyListOf<ValueExpression,"*">
-    |  (~("\n" | end | "*") Atom)+
-    | SubRoutine
+    | StandaloneFunction
+    |  ( ~#("\n" | end | "*") Atom)+
     
-    SubRoutine = Pattern "->" NonemptyListOf<Expression,"\n">
+    SubRoutine = Pattern "->" (~SubRoutine Expression)+
     
     Tuple = "(" (Atom "," )+  (  "" ")"  |  ( Atom  ")"  ) )
     List = Sequence<"[","]">
@@ -46,13 +55,13 @@ Cuttlefish {
     | id 
     | nospaceops 
     | "()"
-    | "(" Atom ")" --singleton
+    | "(" Atom+ ")" --singleton
 	
     nospaceops = dynamicnospaceops | "~" | "+" 
-    reserved = "*" | ":"
+    reserved = "*" | "(" | ")" | ","
     numlit = digit+
     id = (~space ~nospaceops ~reserved any)+
-    Pattern = Atom
+    Pattern = ListOf<Atom,",">
     Type = id | List | Tuple | DynamicSequence
 
     dynamicnospaceops = "FOR COMPILE TIME USE"

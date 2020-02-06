@@ -1,0 +1,78 @@
+Cuttlefish {
+    CurrentlyDefined = Comment | Macro | SubRoutineGroup | StandaloneFunction | Expression | Atom
+    
+    Specification = NonemptyListOf<SubRoutineGroup,space>
+    
+    Comment = 
+    | rawSequence<"#/","/#">
+    | rawSequence<("#" ~"!" ),("\n"| end)>
+    Macro = rawSequence<"#!",("\n"| end)>
+   	
+    SubRoutineGroup = Function | ProcessGroup | Server
+    
+    Function = FunctionGroup | StandaloneFunction
+    FunctionGroup = "fn" ":" SubRoutine+ --fullform
+    | ":=" SubRoutine+ --shorthand
+    StandaloneFunction = 
+    | "fn" ":" SubRoutine ("\n"| end | ";") --fullform
+    | ":=" SubRoutine ("\n"| end | ";") -- shorthand
+    ProcessGroup = "prc" ":" SubRoutine
+    Server = "srv" ":"  SubRoutine+
+    
+    Expression = 
+    | PatternMatch 
+    | ReturnExpression
+    | ProcessLinkExpression
+       | ValueExpression
+
+    
+    PatternMatch = 
+    | Binding<id,SubRoutineGroup> --subroutineGroup
+    | Pattern "=" ValueExpression --valueBind
+    | Pattern &":=" Function --functionBind
+    | Pattern ":=" ValueExpression --dollarFunction
+ 	ReturnExpression = "put" ValueExpression
+    ProcessLinkExpression = "self" "++" ValueExpression
+    
+    ValueExpression =
+    | NonemptyListOf<ValueExpression,"*">
+    | StandaloneFunction
+    |  ( ~#("\n" | end | "*") Atom)+
+    
+    SubRoutine = Pattern "->" (~SubRoutine Expression)+
+    
+    Tuple = "(" (Atom "," )+  (  "" ")"  |  ( Atom  ")"  ) )
+    List = Sequence<"[","]">
+    String = rawSequence<"\"","\"">
+    | rawSequence<"\'","\'"> 
+    
+    Atom =
+    | List
+    | String
+    | Comment
+    | Tuple
+    | numlit 
+    | id 
+    | nospaceops 
+    | "()"
+    | "(" Atom+ ")" --singleton
+	
+    nospaceops = dynamicnospaceops | "~" | "+" 
+    reserved = "*" | "(" | ")" | ","
+    numlit = digit+
+    id = (~space ~nospaceops ~reserved any)+
+    Pattern = ListOf<Atom,",">
+    Type = id | List | Tuple | DynamicSequence
+
+    dynamicnospaceops = "FOR COMPILE TIME USE"
+    DynamicRawSequence = "FOR COMPILE TIME USE"
+    DynamicSequence = "FOR COMPILE TIME USE"
+   
+    Binding<x,y> = x "=" y
+    Sequence<open,close> = open Atom ("," Atom)*  close
+    rawSequence<open,close> = open (~open ~close any)*  close
+
+    
+
+}
+

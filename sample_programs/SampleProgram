@@ -1,0 +1,22 @@
+#!Generics = [A,B,C]
+fold = fn:
+   (A,B) => B f , [A] l => B -> #/Some code that does folding/#
+
+factorial = fn: Integer => Integer
+    0 -> 1
+    (Integer > 0) x -> x * factorial (x-1)
+
+str2pos = fn: String => Integer
+    x => (Integer > 0) -> foldr : (10 * $[0] + $[1]) x
+
+main = prc:
+    String x -> print : factorial * str2num : x
+
++ = op:
+    (Number > 0) x, (Number > 0) y => (Number > 0) : |
+    Number x, Number y => Number : #/ Some code that adds /#
+
+
+Maybe A = type: 
+    
+    

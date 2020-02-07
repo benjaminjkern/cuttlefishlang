@@ -55,7 +55,7 @@ Quick Sort
 ```hs
 quickSort :=
     [] -> []
-    List [x]:xs -> quickSort xs[fn: $ < x] ++ [x] ++ quickSort xs[fn: $ >= x]
+    [Num] x:xs -> quickSort xs[fn: $ < x] ++ [x] ++ quickSort xs[fn: $ >= x]
 
 print quickSort [2,4,5,3,6,1]
 ```
@@ -65,7 +65,7 @@ print quickSort [2,4,5,3,6,1]
 Primes less than 100
 
 ```hs
-primeFilter := List [p]:xs -> p ++ primeFilter xs[fn: $ % p != 0]
+primeFilter := [Int] p:xs -> p ++ primeFilter xs[fn: $ % p != 0]
 
 primes = primeFilter [2..]
 

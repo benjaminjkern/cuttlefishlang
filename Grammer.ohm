@@ -1,22 +1,18 @@
 Cuttlefish {
-    CurrentlyDefined = Comment | Macro | SubRoutineGroup | StandaloneFunction | Expression | Atom
+    CurrentlyDefined = Comment | Macro | SubRoutineGroup | Expression | Atom
     
     Specification = NonemptyListOf<SubRoutineGroup,space>
     
     Comment = 
     | rawSequence<"#/","/#">
-    | rawSequence<("#" ~"!" ),("\n"| end)>
+    | rawSequence<("#" ~"!"),("\n"| end)>
     Macro = rawSequence<"#!",("\n"| end)>
    	
     SubRoutineGroup = Function | ProcessGroup | Server
     
-    Function = FunctionGroup | StandaloneFunction
-    FunctionGroup = "fn" ":" SubRoutine+ --fullform
-    | ":=" SubRoutine+ --shorthand
-    StandaloneFunction = 
-    | "fn" ":" SubRoutine ("\n"| end | ";") --fullform
-    | ":=" SubRoutine ("\n"| end | ";") -- shorthand
-    ProcessGroup = "prc" ":" SubRoutine
+    Function = "fn" ":" SubRoutine+ --fullform
+    | "fn" ":" ValueExpression --dollarFunction
+    ProcessGroup = "prc" ":" SubRoutine+
     Server = "srv" ":"  SubRoutine+
     
     Expression = 
@@ -29,15 +25,14 @@ Cuttlefish {
     PatternMatch = 
     | Binding<id,SubRoutineGroup> --subroutineGroup
     | Pattern "=" ValueExpression --valueBind
-    | Pattern &":=" Function --functionBind
+    | Pattern ":=" Function --functionBind
     | Pattern ":=" ValueExpression --dollarFunction
- 	ReturnExpression = "put" ValueExpression
+ 	 ReturnExpression = "put" ValueExpression
     ProcessLinkExpression = "self" "++" ValueExpression
     
     ValueExpression =
     | NonemptyListOf<ValueExpression,"*">
-    | StandaloneFunction
-    |  ( ~#("\n" | end | "*") Atom)+
+    |  ( ~("\n" | end | "*") Atom)+
     
     SubRoutine = Pattern "->" (~SubRoutine Expression)+
     
@@ -57,12 +52,19 @@ Cuttlefish {
     | "()"
     | "(" Atom+ ")" --singleton
 	
-    nospaceops = dynamicnospaceops | "~" | "+" 
-    reserved = "*" | "(" | ")" | ","
+    nospaceops = dynamicnospaceops | "~" |  "++" | "+"
+    reserved = "*" | "(" | ")" | "," | "[" | "]" | "->" | ":"
     numlit = digit+
     id = (~space ~nospaceops ~reserved any)+
-    Pattern = ListOf<Atom,",">
-    Type = id | List | Tuple | DynamicSequence
+    Pattern = NonemptyListOf<PatternElement,",">
+    PatternTuple = "(" ListOf<PatternElement,","> ")"
+    PatternElement = PatternTuple --patternTuple
+    | ListType ListPattern --patternList
+    | Type Atom --type
+    | Atom
+    Type = ListType | id
+    ListType = "[" Type "]"
+    ListPattern = Atom ":" id
 
     dynamicnospaceops = "FOR COMPILE TIME USE"
     DynamicRawSequence = "FOR COMPILE TIME USE"
@@ -71,8 +73,6 @@ Cuttlefish {
     Binding<x,y> = x "=" y
     Sequence<open,close> = open Atom ("," Atom)*  close
     rawSequence<open,close> = open (~open ~close any)*  close
-
     
-
+    
 }
-

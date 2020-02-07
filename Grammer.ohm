@@ -1,5 +1,5 @@
 Cuttlefish {
-    CurrentlyDefined = Macro | SubRoutineGroup+ | Expression+ | Atom
+    CurrentlyDefined = Macro | Expression+ | Atom
     
     Specification = NonemptyListOf<SubRoutineGroup,space>
     
@@ -40,7 +40,8 @@ Cuttlefish {
     String = rawSequence<"\"","\"">
     | rawSequence<"\'","\'"> 
     
-    Atom = Select
+    Atom = SubRoutineGroup
+    | Select
     | List
     | String
     | Comment

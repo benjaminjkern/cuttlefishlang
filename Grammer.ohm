@@ -1,9 +1,9 @@
 Cuttlefish {
-    Script = (Macro "\n")* NonemptyListOf<Line, &#"\n">
+    Script = (Macro &#"\n")* NonemptyListOf<Line, &#"\n">
     
     Line = Statement Comment --full
-    | Statement
     | Comment
+    | Statement
     
     Statement = 
     | PatternMatchStatement
@@ -16,32 +16,35 @@ Cuttlefish {
     | rawSequence<("#" ~"!"),(&#"\n"| end)>
     Macro = rawSequence<"#!",(&#"\n"| end)>
     
-    Function = "fn" ":" SubRoutine+ --fullform
+    Function = "fn" ":" SubRoutineGroup --fullform
     | "fn" ":" Expression --dollarFunction
-    Process = "prc" ":" SubRoutine+
-    Server = "srv" ":"  SubRoutine+
-
+    Process = "prc" ":" SubRoutineGroup
+    Server = "srv" ":"  SubRoutineGroup
+    
     PatternMatchStatement =
     | Pattern "=" Expression --valueBind
-    | Pattern ":=" SubRoutine+ --functionBind
-    | Pattern ":=" Expression --dollarFunction
+    | Pattern ":=" SubRoutineGroup --functionBind
  	ReturnStatement = "put"? Expression
     PrintStatement = "print" Expression
     ProcessLinkStatement = "self" "++" Expression
     
     Expression = (~(#"\n") ValueExpression)+
     | ValueExpression #nospaceops Expression --nospaceop
-    ValueExpression = SubRoutineGroup
+    ValueExpression = Routine
     | Select
     | Atom
    	
-    SubRoutineGroup = Function | Process | Server
-    SubRoutine = Pattern "->" (~SubRoutine Statement)+
+    Routine = Function | Process | Server
+    SubRoutineGroup = (~SubRoutine Line)+ ";"? --smallForm
+    | SubRoutine+
+    SubRoutine = Pattern "->" (~SubRoutine Line)+ ";"?
     
     Tuple = "(" (Atom "," )+  (  "" ")"  |  ( Atom  ")"  ) )
-    List = Sequence<"[","]">
+    List = "[" Atom ".." Atom? "]" --intlist
+    | Sequence<"[","]">
     String = rawSequence<"\"","\"">
-    | rawSequence<"\'","\'"> 
+    | rawSequence<"\'","\'">
+    | rawSequence<"`","`">
     
     Atom = List
     | String
@@ -50,19 +53,19 @@ Cuttlefish {
     | id 
     | nospaceops 
     | "()"
-    | "(" Atom+ ")" --singleton
+    | "(" Expression+ ")" --singleton
     
     Select = (List | Tuple | String | DynamicSequence | id) "[" (Function | numlit) "]"
 	
-    nospaceops = dynamicnospaceops | "~" |  "++" | ">=" | "<=" | "!=" | "==" | "==="
-    reserved = "*" | "(" | ")" | "," | "[" | "]" | "->" | "=>" | ":" | ":=" | "fn" | "put" | "print" | "="
+    nospaceops = dynamicnospaceops | "~" |  "++" | ">=" | "<=" | "!=" | "==" | "===" | "*"
+    reserved = "(" | ")" | "," | "[" | "]" | "->" | "=>" | ":" | ":=" | "fn" | "put" | "print" | "=" | ".." | "#" | ";"
     numlit = digit+
     id = (~space ~nospaceops ~reserved any)+
     Pattern = NonemptyListOf<PatternElement,",">
     PatternTuple = "(" ListOf<PatternElement,","> ")"
     PatternElement = PatternTuple --patternTuple
-    | ListType? ListPattern --patternList
-    | Type Atom --type
+    | ListType? ~#"\n" ListPattern --patternList
+    | Type ~#"\n" Atom --type
     | Atom
     Type = Type "=>" Type --function
     | ListType

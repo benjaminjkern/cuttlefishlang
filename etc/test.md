@@ -119,13 +119,6 @@ twoSum := List nums, Number target ->
 Factorial, done in the lame way and the cool way
 
 ```hs
-factorial := x ->
-    n = x
-    p = 1
-    while n > 1:
-        p *= n
-        n -= 1
-    put p
 
 factorial := 0 -> 1; x -> x * factorial x - 1
 ```

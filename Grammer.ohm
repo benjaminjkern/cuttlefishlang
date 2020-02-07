@@ -1,0 +1,80 @@
+Cuttlefish {
+    Script = (Macro "\n")* NonemptyListOf<Line, &#"\n">
+    
+    Line = Statement Comment --full
+    | Statement
+    | Comment
+    
+    Statement = 
+    | PatternMatchStatement
+    | ReturnStatement
+    | PrintStatement
+    | ProcessLinkStatement
+    
+    Comment = 
+    | rawSequence<"#/","/#">
+    | rawSequence<("#" ~"!"),(&#"\n"| end)>
+    Macro = rawSequence<"#!",(&#"\n"| end)>
+    
+    Function = "fn" ":" SubRoutine+ --fullform
+    | "fn" ":" Expression --dollarFunction
+    Process = "prc" ":" SubRoutine+
+    Server = "srv" ":"  SubRoutine+
+
+    PatternMatchStatement =
+    | Pattern "=" Expression --valueBind
+    | Pattern ":=" SubRoutine+ --functionBind
+    | Pattern ":=" Expression --dollarFunction
+ 	ReturnStatement = "put"? Expression
+    PrintStatement = "print" Expression
+    ProcessLinkStatement = "self" "++" Expression
+    
+    Expression = (~(#"\n") ValueExpression)+
+    | ValueExpression #nospaceops Expression --nospaceop
+    ValueExpression = SubRoutineGroup
+    | Select
+    | Atom
+   	
+    SubRoutineGroup = Function | Process | Server
+    SubRoutine = Pattern "->" (~SubRoutine Statement)+
+    
+    Tuple = "(" (Atom "," )+  (  "" ")"  |  ( Atom  ")"  ) )
+    List = Sequence<"[","]">
+    String = rawSequence<"\"","\"">
+    | rawSequence<"\'","\'"> 
+    
+    Atom = List
+    | String
+    | Tuple
+    | numlit 
+    | id 
+    | nospaceops 
+    | "()"
+    | "(" Atom+ ")" --singleton
+    
+    Select = (List | Tuple | String | DynamicSequence | id) "[" (Function | numlit) "]"
+	
+    nospaceops = dynamicnospaceops | "~" |  "++" | ">=" | "<=" | "!=" | "==" | "==="
+    reserved = "*" | "(" | ")" | "," | "[" | "]" | "->" | "=>" | ":" | ":=" | "fn" | "put" | "print" | "="
+    numlit = digit+
+    id = (~space ~nospaceops ~reserved any)+
+    Pattern = NonemptyListOf<PatternElement,",">
+    PatternTuple = "(" ListOf<PatternElement,","> ")"
+    PatternElement = PatternTuple --patternTuple
+    | ListType? ListPattern --patternList
+    | Type Atom --type
+    | Atom
+    Type = Type "=>" Type --function
+    | ListType
+    | id
+    ListType = "[" Type "]"
+    ListPattern = Atom ":" id
+
+    dynamicnospaceops = "FOR COMPILE TIME USE"
+    DynamicRawSequence = "FOR COMPILE TIME USE"
+    DynamicSequence = "FOR COMPILE TIME USE"
+   
+    Binding<x,y> = x "=" y
+    Sequence<open,close> = open ListOf<Atom,","> close
+    rawSequence<open,close> = open (~open ~close any)*  close
+}

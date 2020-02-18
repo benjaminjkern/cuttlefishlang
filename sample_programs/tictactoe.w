@@ -4,42 +4,44 @@ Text-based TicTacToe written in Cuttlefish
 By Ben Kern
 ###
 
+Piece = type: empty | X | O
+
+other = fn:
+    X -> O
+    O -> X
+    _ -> empty
+
+toString ++ fn:
+    Piece X -> 'X'
+    Piece O -> 'O'
+    Piece -> 'empty'
+
 main = prc:
-    Piece = type: empty | X | O
-        .other :=
-            X -> Piece O
-            O -> Piece X
-            Piece empty
-        .toString :=
-            X -> 'X'
-            O -> 'O'
-            'empty'
-        
     board = [Piece empty] ** (3,3)
     turn = Piece X
     turns_taken = 0
 
-    while turns_taken < 9:
+    while turns_taken < 9 prc:
         print `{turn}: Please enter position (1-9)`
 
-        placement = prc:
+        placement = fn:
             if board[$ - 1] is undefined:
                 print `{placement} is not a valid position!`
-                return placement input()
+                put placement input()
             if board[$ - 1] not empty:
                 print `Position {placement} is taken!`
-                return placement input()
+                put placement input()
             return $
 
         board[placement input()] = turn
-        if win(board, turn):
+        if win board turn:
             print `{turn} Wins!`
             break
 
-        turn = turn.other()
+        turn = other turn
         turns_taken += 1
         print board
 
     print 'Tie Game'
 
-win(board, turn) := board.find([turn]**3, -1) not null
+win := board, turn -> find board [turn]**3, -1 not null

@@ -1,0 +1,29 @@
+{
+    "name": "cuttlefishlang",
+    "version": "1.0.0",
+    "description": "Cuttlefish Programming Language",
+    "main": "index.js",
+    "scripts": {
+        "test": "jest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/benjaminjkern/cuttlefishlang.git"
+    },
+    "keywords": [
+        "cuttlefish",
+        "programming",
+        "language"
+    ],
+    "author": "Ben Kern and James Crocker",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/benjaminjkern/cuttlefishlang/issues"
+    },
+    "homepage": "https://github.com/benjaminjkern/cuttlefishlang#readme",
+    "dependencies": {
+        "fs": "0.0.1-security",
+        "jest": "^25.1.0",
+        "ohm-js": "^0.14.0"
+    }
+}

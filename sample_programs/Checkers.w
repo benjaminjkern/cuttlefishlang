@@ -38,7 +38,7 @@ parsemove = fn:
     String string -> parsemove regex_match `\d+`
     [String] matches -> parsemove (len matches, matches)
     (4,[xi:[yi:[xo:[yo]]]]) -> put map str2int (xi, yi, xo, yo)
-    x -> Missing    
+    x -> Missing
 
 validplay = fn:
     (board, player, 0, ((xi, yi), (xo, yo))) -> 
@@ -50,7 +50,8 @@ validplay = fn:
                 xo < 8,                
                 any (
                     yo == yi + dir and (xo == xi + 1 or xo == xi - 1),
-                    yo == yi + dir * 2 and (xo == xi + 2 or xo == xi - 2) and board[(yo + yi) / 2][(xo + xi) / 2] == not player
+                    yo == yi + dir * 2 and (xo == xi + 2 or xo == xi - 2)
+                        and board[(yo + yi) / 2][(xo + xi) / 2] == not player
                 )
             )
     (board, player, 1, move) ->

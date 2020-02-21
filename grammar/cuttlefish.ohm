@@ -17,14 +17,15 @@ Cuttlefish {
    Pattern = NonemptyListOf<PatternElement,",">
    PatternElement = 
     | Sequence<"(",")"> -- patternTuple
-    | ListType? Atom ":" id -- patternList
+    | (ListType | DyanicSequenceType)? Atom ":" id -- patternList
     | Type Atom -- type
     | Atom
    Type = Type "=>" Type -- functionType
     | ListType
+    | DynamicSequenceType
     | id
    ListType = "[" Type "]"
-   
+   DynamicSequenceType = "FOR COMPILE TIME USE"
    
    SubRoutineGroup = Block<SubRoutine, ";"> | Block<Statement, ",">
 
@@ -69,12 +70,13 @@ Cuttlefish {
 	
    nospaceops = dynamicnospaceops | "~" | "+" | "++" | ">=" | "<=" | "!=" | "==" | "===" | "*"
    keyword = "fn" | "prc" | "srv" | "put" | "print"
-   reserved = keyword | nospaceops | "(" | ")" | "," | "[" | "]" | "->" | "=>" | ":" | ":=" | "=" | ".." | "#" | ";" | "\n" | indent | dedent
+   reserved = keyword | nospaceops | "(" | ")" | "," | "[" | "]" | "->" | "=>" | ":" | ":=" | "=" | ".." | "#" | ";" | "\n" | indent | dedent | dynamicReserved
    id = (~reserved ~space any)+
 
    dynamicnospaceops = "FOR COMPILE TIME USE"
    DynamicRawSequence = "FOR COMPILE TIME USE"
    DynamicSequence = "FOR COMPILE TIME USE"
+   dynamicReserved = "FOR COMPILE TIME USE"
 
    newline =  ("\n" comment?)+
    space :=  " " | "\t" | comment

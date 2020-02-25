@@ -18,7 +18,6 @@ CuttlefishMacros {
     
     nonMacroLine= (~"\n" any)+ ("\n" | end)
     emptyLine = "\n"
-    id = ((~space  ~"]" ~"," ~")")   any)+
+    id = ((~space  ~"]" ~"," ~")") any)+
     SequenceTuple = "(" id "," id "," id ")"
-	
 }

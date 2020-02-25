@@ -273,6 +273,79 @@ for [0..10]:
 end
 ```
 
+```py
 factorial = fn:
-0 -> 1
-Int x | x > 0 -> x \* factorial (x - 1)
+    0 -> 1
+    Int x | x > 0 -> x * factorial (x - 1)
+```
+
+```hs
+firstFib = fn: n -> # first fibonacci greater than or equal to n
+    a, b = 1, 1
+    while a < n:
+        a, b = b, a + b
+    put a
+
+print firstFib(12) # 13
+print firstFib(28) # 34
+```
+
+```py
+fibGen = prc:
+    () -> self(1, 1)
+    (a, b) -> put a, self(b, a+b)
+
+donovan = fibGen()
+print donovan() # 1
+print donovan() # 1
+print donovan() # 2
+print donovan() # 3
+print donovan() # 5
+print donovan() # 8
+```
+
+```
+num doTwice(num f:(num z), num x):
+    return f(f(x))
+
+Num doTwice := Num => Num f, Num x -> f(f(x))
+
+doTwice := f, x -> f(f(x))
+
+(f^2)(x)
+
+```
+
+```hs
+num largestNum(num x, num y, num z):
+    if (x >= y and x >= z):
+        return x
+    else if (y >= x and y >= z):
+        return y
+    else:
+        return z
+```
+
+```hs
+Num sum :=
+    [] -> 0
+    [Num] x:xs -> x + sum xs
+```
+
+(sum 23 45 1 8 23)()
+
+```hs
+sum :=
+    Num x -> fn:
+        () -> 0
+        y -> x + sum y
+```
+
+```hs
+sum_of_digits = fn: n 
+    | n < 0 -> sum_of_digits(-n)
+    | n < 10 -> n
+    | _ -> return sum_of_digits(n / 10) + (n % 10)
+
+print sum_of_digits 8835299
+```

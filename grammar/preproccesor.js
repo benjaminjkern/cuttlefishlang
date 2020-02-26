@@ -12,17 +12,8 @@ const interpreter = macroGrammar.createSemantics().addOperation('exec', {
     nonMacroLine(_1,_2){/* No-op */},
     emptyLine(_1){/* No-op */},
     MacroLine(_1, exp , _2){exp.exec();},
-    Exp(exptype){exptype.exec()},
-    Generics(_1,_2,_3,list,_4){list.exec().map(x => {generics.push(x)} )}, 
-    ZeroSpaceOps(_1,_2,_3,list,_4){list.exec().map(x => {zero_space_ops.push(x)} )}, 
-    ListOf(members){return members.exec() },
-    NonemptyListOf(_1,members,_2){return [_1.exec()].concat(_2.exec()) },
-    id(prim_id){return this.sourceString},
-    InheritScope(_){/* Probably Going to need something clever here*/},
-    Sequences(_1, _2, _3, list, _4){list.exec().map(x => {sequences.push(x)})},
-    RawSequences(_1,_2,_3,list, _4){list.exec().map(x => {raw_sequences.push(x)})},
-    SequenceTuple(_1,a,_2,b,_3,c,_4){return [a.sourceString,b.sourceString,c.exec()]},
-    _terminal(){}
+    Exp(_1,f,body,_2){return [...body.exec(), undefined].reduce((acc,head)=>acc(head),f.exec())},
+    Tuple(_1,body,_2)
 });
 const test = `
 #! Generics = [a,b,c]

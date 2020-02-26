@@ -1,23 +1,16 @@
 CuttlefishMacros {
 	Module = Lines+ end
     Lines = MacroLine | nonMacroLine | emptyLine
-    MacroLine = "#!" Exp #("\n" | end)
-    
-    Exp = 
-    | Generics
-    | InheritScope
-    | Sequences
-    | RawSequences
-    | ZeroSpaceOps
-    
-    Generics = "Generics" "=" "[" ListOf<id,","> "]"
-    InheritScope = "InheritScope"
-    Sequences = "Sequences" "=" "[" ListOf<SequenceTuple,","> "]"
-    RawSequences = "RawSequences" "=" "[" ListOf<SequenceTuple,","> "]"
-    ZeroSpaceOps = "ZeroSpaceOps" "=" "[" ListOf<id,","> "]"
-    
+    MacroLine = "#!" Exp
     nonMacroLine= (~"\n" any)+ ("\n" | end)
     emptyLine = "\n"
-    id = ((~space  ~"]" ~"," ~")") any)+
-    SequenceTuple = "(" id "," id "," id ")"
+
+    Exp = "(" func Body ")"
+    Body = (Tuple | Exp | id )+
+    
+    Tuple = "{" ListOf<id,","> "}" 
+    
+    func = id
+
+    id = ((~space  ~"]" ~"," ~")" ~"}") any)+
 }

@@ -48,6 +48,17 @@ function macroparse(filename){
                 return x => {return;}
             }
             return def_internal
+        },
+        print(string){
+            strs = [string]
+            function print_internal(str){
+                if(str == undefined){
+                    console.log(strs.join(" "))
+                }
+                strs.push(str)
+                return print_internal
+            }
+            return print_internal
         }
     }
     context.fns = builtin_funcs
@@ -57,7 +68,10 @@ function macroparse(filename){
         nonMacroLine(_1,_2){/* No-op */console.log(`No Macro ${this.sourceString}`)},
         emptyLine(_1){/* No-op */console.log("Empty Line")},
         MacroLine(_1, exp){console.log("macro");console.log(context);exp.exec();},
-        Exp(_1,f,body,_2){console.log(f.sourceString);return body.exec().reduce((acc,head)=>{return acc(head)},f.exec())(undefined)},
+        Exp(_1,f,body,_2){
+            console.log(f.sourceString);
+            return [...body.exec(), undefined].reduce((acc,head)=>{return acc(head)},f.exec());
+        },
         Tuple(_1,body,_2){return body.exec()},
         func(f){return context.fns[f.sourceString]},
         id(x){return this.sourceString},

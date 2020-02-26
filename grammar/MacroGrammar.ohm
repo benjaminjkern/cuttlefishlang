@@ -6,7 +6,7 @@ CuttlefishMacros {
     emptyLine = "\n"
 
     Exp = "(" func Body ")"
-    Body = (Tuple | Exp | id )+
+    Body = (Tuple | Exp | id )*
     
     Tuple = "{" ListOf<id,","> "}" 
     

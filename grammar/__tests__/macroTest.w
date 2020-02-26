@@ -1,4 +1,7 @@
 #! (append (get generics) a b c d)
 #! (def generics (noex (get fns append) (get generics)))
 #! (generics gotta love it)
-aa
+#! (def f (noex (get fns get) fns))
+#! (def test (noex (f print) hello world))
+#! (print order test)
+#! (test)

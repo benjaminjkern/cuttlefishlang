@@ -342,7 +342,7 @@ sum :=
 ```
 
 ```hs
-sum_of_digits = fn: n 
+sum_of_digits = fn: n
     | n < 0 -> sum_of_digits(-n)
     | n < 10 -> n
     | _ -> return sum_of_digits(n / 10) + (n % 10)

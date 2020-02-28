@@ -7,70 +7,52 @@ function macroparse(filename){
     const match = macroGrammar.match(fs.readFileSync(filename));
     let context = {}
     const builtin_funcs = { 
-        append(list){
-            function append_or_return(x){
-                if(x == undefined){
-                    return;
-                }
-                list.push(x);
-                return append_or_return
-            }
-            return append_or_return
+        get(list){
+            return list.reduce((acc,x) => {
+                if(acc[x] == undefined){acc[x] = []};
+                return acc[x]
+            },context)
         },
-        get(x){
-            z = context
-            function context_traverse(y){
-                if(y == undefined){
-                    return z
-                }
-                if(z[y] == undefined){
-                    z[y] = []
-                }
-                z = z[y]
-                return context_traverse
-            }
-            return context_traverse(x)
+        append(list){ 
+            return list.slice(1).map(x => list[0].push(x))
         },
-        noex(fn){
-            f = fn
-            function noex_internal(g){
-                if(g == undefined){
-                    return f
-                }
-                f = f(g)
-                return noex_internal
-            }
-            return noex_internal
+        print(list){
+            console.log(list.join(" "))
         },
-        def(handle){
-            function def_internal(f){
-                context.fns[handle] = f
-                return x => {return;}
-            }
-            return def_internal
+        def(list){
+            [handle, f] = list
+            context.fns[handle] = f
         },
-        print(string){
-            strs = [string]
-            function print_internal(str){
-                if(str == undefined){
-                    console.log(strs.join(" "))
-                }
-                strs.push(str)
-                return print_internal
+        partial(list){
+            [f, ...args] = list
+            g = context.fns[f]
+            return xs => g([...args, ...xs])
+        },
+        if(list){
+            [cond, trueexp, falseexp] = list
+            if(cond){
+                return trueexp
+            } else {
+                return falseexp
             }
-            return print_internal
+        },
+        set(list){
+            [x,val] = list
+            x = val
+        },
+        not(list){
+            return list.map(x => !x)
         }
     }
     context.fns = builtin_funcs
     const interpreter = macroGrammar.createSemantics().addOperation('exec', {
         Module(lines, _) {lines.exec();},
         Lines(linetype) {linetype.exec();},
-        nonMacroLine(_1,_2){/* No-op */console.log(`No Macro ${this.sourceString}`)},
-        emptyLine(_1){/* No-op */console.log("Empty Line")},
-        MacroLine(_1, exp){console.log("macro");console.log(context);exp.exec();},
+        nonMacroLine(_1,_2){/* No-op */},
+        emptyLine(_1){/* No-op */},
+        MacroLine(_1, exp){exp.exec();},
         Exp(_1,f,body,_2){
-            console.log(f.sourceString);
-            return [...body.exec(), undefined].reduce((acc,head)=>{return acc(head)},f.exec());
+            return f.exec()(body.exec())
         },
         Tuple(_1,body,_2){return body.exec()},
         func(f){return context.fns[f.sourceString]},

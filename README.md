@@ -1,27 +1,17 @@
-# Cuttlefish, a programming language for the rest of us
+# ![logo](etc/logo.png "Look at how cool this language is!") The Cuttlefish Programming Language ![logo](etc/logo.png "Look at how cool this language is!")
 
 ![cuttlefish](etc/cuttlefish.png "Cuttlefish!")
 
-![logo](etc/logo.png "Look at how cool this language is!")
-
 Cuttlefish is a strong, statically typed language designed to empower its users to write elegant, safe, and functional code for concurrent systems.
 
----
+It structurally draws from many aspects of Haskell, Elixir, and Python, and it strives to allow its users to have immense power over the style of their code, as long as it is falls into what is considered clean, cohesive, "Cuttly" code.
 
-title: "Title"
-author: "Author"
-output: html_document
+## Introduction
 
----
+There are three types of Routines that Cuttlefish can handle, all equipped with immersive pattern matching and precise functional capabilities.
 
-```{r, echo=FALSE}
-htmltools::img(src = knitr::image_uri(file.path(R.home("doc"), "html", "logo.jpg")),
-               alt = 'logo',
-               style = 'position:absolute; top:0; right:0; padding:10px;')
-```
-
----
-
-# 1. Header
-
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+| Routine        | Functions `fn:` | Processes `prc:`        | Servers `srv:`                    |
+| -------------- | --------------- | ----------------------- | --------------------------------- |
+| Description    |                 |                         |                                   |
+| Can call       | Functions       | Functions and Processes | Functions, Processes, and Servers |
+| Internal state |                 |                         |                                   |

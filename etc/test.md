@@ -55,18 +55,28 @@ Quick Sort
 ```hs
 [Num] quickSort = fn:
     [] -> []
-    [Num] x:xs -> quickSort xs[fn: $ < x] ++ [x] ++ quickSort xs[fn: $ >= x]
-;
+    [Num] x:xs -> quickSort xs[fn: $ < x] ++ x ++ quickSort xs[fn: $ >= x]
 
 print quickSort [2,4,5,3,6,1]
 ```
 
 > [1,2,3,4,5,6]
 
+```hs
+map = fn:
+    A => A fun, [] -> []
+    fun, [A] head:tail -> fun head ++ map fun tail
+
+filter = fn:
+    A => Bool fun, [] -> []
+    A => Bool fun, [A] head:tail | fun head -> head ++ filter fun tail
+    A => Bool fun, [A] head:tail -> filter fun tail
+```
+
 Primes less than 100
 
 ```hs
-primeFilter := [Int] p:xs -> p ++ primeFilter xs[fn: $ % p != 0]
+primeFilter := [Int] p:xs -> p ++ primeFilter xs[$ !%= p]
 
 primes = primeFilter [2..]
 
@@ -148,7 +158,7 @@ while = prc:
 while 5 fn: i -> i > 0; prc: print $, put $ - 1);
 
 
-
+while = fn:
 
 
 while = srv:
@@ -161,7 +171,7 @@ while = srv:
 Implementation of the for loop
 
 ```hs
-for = srv:
+for = fn:
     [] -> # No op
     [A] head:tail, A => _ process ->
         put process head
@@ -225,41 +235,15 @@ Operators
 ```
 
 ```py
-f = fn: x -> fn: y -> x + y
+f = fn: x, y -> x + y
 
 g = fn: z -> 8 * z
 
-(3 * g)(8)
-
-(g + 3)(3)
-
-
 f 3 g 3
 
-# left: f(3)(g)(3) -> (function that returns 3 + the input)(g)(3) -> (g + 3)(3)
+# f is of arity 2, g is of arity 1, and 3 is of arity 0 or 1. This can be parsed a whole asortment of ways
 
-# right: f(3(g(3))) -> f(3(24)) -> f(72) -> a function that returns 72 + the input
-
-
-f * 3 g 3
-
-# left: f(3(g)(3)) -> f( (3 * g)(3) )
-
-# right: f(3(g(3))) -> f(3(24)) -> f(72) -> a function that returns 72 + the input
-
-
-f 3 * g 3
-
-# left: f(3)(g(3)) -> (function that returns 3 + the input)(24) -> 27
-
-# right: " "
-
-
-f 3 g * 3
-
-# left: f(3)(g)(3) -> (function that returns 3 + the input)(g)(3) -> (g + 3)(3)
-
-# right: f(3(g))(3) -> f(3 * g)(3)
+f(3)(g 3) which would be fine
 ```
 
 Analog Clock Problem

@@ -1,10 +1,10 @@
 const ohm = require('ohm-js');
 const fs = require('fs');
-const macroGrammar = ohm.grammar(fs.readFileSync('MacroGrammar.ohm'))
+const path = require('path')
+const macroGrammar = ohm.grammar(fs.readFileSync(path.resolve(__dirname,'MacroGrammar.ohm')))
 
 function macroparse(filename){
-
-    const match = macroGrammar.match(fs.readFileSync(filename));
+    const match = macroGrammar.match(fs.readFileSync(path.resolve(__dirname,filename)));
     let context = {}
     const builtin_funcs = { 
         get(list){
@@ -67,5 +67,7 @@ function macroparse(filename){
       process.exitCode = 1;
     }
 }
-
-macroparse("__tests__/macroTest.w")
+module.exports = macroparse 
+if(!module.parent){
+    macroparse("__tests__/macroTest.w")
+}

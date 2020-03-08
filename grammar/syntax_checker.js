@@ -1,3 +1,4 @@
+module.exports = produceAST
 var DEBUG = true
 const fs = require("fs");
 const ohm = require("ohm-js");
@@ -47,10 +48,12 @@ function produceAST(filename){
         }
         return null
     }
+    let astBuilder = grammar.createSemantics().addOperation('ast',defaultASTBuilder)
+    return astBuilder(match).ast()
 }
 
 function node(type,...args){
-    let newNode = new obj.protype.constructor
+    let newNode = new type
     Object.keys(newNode).map((x,i) => newNode[x] = args[i])
     return newNode
 }
@@ -192,7 +195,7 @@ class Numlit{
 }
 const defaultASTBuilder = {
     Specification(_1,head,_2,tail,_3){
-        return node(Specification,[s1, ...s2].map(x => x.ast()))
+        return node(Specification,[head, tail].map(x => x.ast()))
     },
     Statement(statement){return statement.ast()},
     Statement_print(_1,exp){return node(PrintStatement,exp.ast())},
@@ -204,7 +207,7 @@ const defaultASTBuilder = {
         return node(AssignmentStatement,pattern.ast(),exp.ast())
     },
     Pattern(pelems){return node(Pattern,pelems.ast())},
-    PatternElement(atom){return node(AtomicPattern,id.ast())},
+    PatternElement(atom){return node(AtomicPattern,atom.ast())},
     PatternElement_patternTuple(contents){
         return node(TuplePatter,contents.ast())
     },
@@ -238,7 +241,7 @@ const defaultASTBuilder = {
     },
     Kwarg(id,_1,exp){return node(Kwarg,id,exp)},
     Atom(contents){return contents.ast()},
-    Atom_singleton(_1,exp_block,_2,_3){
+    Atom_singleton(_1,exp_block,_2){
         return node(GroupedExpressions,exp_block.ast())
     },
     AbstractType(_1, _2, id, _3,_4,pattern_block){
@@ -259,8 +262,9 @@ const defaultASTBuilder = {
     String(seq){
         return node(StringNode,seq.ast())
     },
-    id(_1,_2,_3){return node(Id,this.sourceString())},
-    numlit(..._1){return node(Numlit,this.sourceString())},
+    id(contents){return node(Id,this.sourceString)},
+    numlit(_1,_2,_3,_4,_5,_6){return node(Numlit,this.sourceString)},
+    NonemptyListOf(head,sep,tail){return [head,tail].map(x=>x.ast())},
 }
 
 if(!module.parent){

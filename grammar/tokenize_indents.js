@@ -1,20 +1,27 @@
+const fs = require('fs')
+const path = require('path')
 module.exports = tokenize_indents
 
 function tokenize_indents(source){
-    let [tokenized,_1] = source.split("\n").reduce((acc,x) => {
-        let [text,plen] = acc
+    let [tokenized,final_space,final_indent] = source.split("\n").reduce((acc,x) => {
+        let [text,plen,pind] = acc
         let clen = get_indentation(x)
         let y = x
+        let cind = pind
         if(clen !== null){
             if(clen > plen){
-               y = "⇨" + y 
+                y = "\n"+"⇨" + y
+                cind = cind + 1
             } else if(clen < plen){
-               y = "⇦" + y
+                y = "⇦" +"\n"+ y
+                cind = cind - 1
+            } else {
+                y = "\n" + y
             }
         }
-        return [text+"\n"+y,(clen !== null)? clen : plen ]
-    }  ,["",0])
-    return tokenized;
+        return [text+y,(clen !== null)? clen : plen,cind]
+    }  ,["",0,0])
+    return tokenized+Array.from(Array(final_indent), x => "⇦" );
 }
 
 let leading_whitespace = /^\s+/
@@ -28,4 +35,8 @@ function get_indentation(line){
         return 0
     }
     return l[0].length
+}
+
+if(!module.parent){
+    console.log(tokenize_indents(fs.readFileSync(path.resolve(__dirname,"../sample_programs/trivial_test.w"),'utf8')))
 }

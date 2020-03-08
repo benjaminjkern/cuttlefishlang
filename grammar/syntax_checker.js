@@ -1,20 +1,20 @@
+var DEBUG = true
 const fs = require("fs");
 const ohm = require("ohm-js");
 const path = require("path");
 const basegrammar = ohm.grammar(
   fs.readFileSync(path.resolve(__dirname, "cuttlefish.ohm"))
 );
-const macroparser = require("macroparser.js");
-
+const macroparser = require(path.resolve(__dirname,"macroparser.js"));
+const tokenize_indents = require(path.resolve(__dirname,"tokenize_indents.js"));
 
 function context2grammar(context){
     return ohm.grammar(`CLG <: cuttlefish {
-        ${grammarEntryExpander(context.global)}
-        ${grammarEntryExpander(context.local)}
-        ${grammarEntryExpander(context.exclusive)}
-    }`,basegrammar)
+        ${[context.local,context.global,context.exlusive].map(grammarEntryExpander).join("\n") }
+    }`,{"cuttlefish":basegrammar})
 }
 function grammarEntryExpander(category){
+    if(!category){return ""}
     return category.entries().map(entry => {
         let [name,body] = entry
         let inserter = body.inserter ? body.inserter : "+="
@@ -26,15 +26,28 @@ function grammarEntryExpander(category){
                 return `${constructor}<${x.join(",")}>`
             }
         }).join(' | ')
-    }) + "\n"
+    }).join("\n")
 }
 function produceAST(filename){
-    let source = fs.readFileSync(filename)
-    let grammar = context2grammar(macroparser(source))
-    grammar.match(source).createSemantics()
+    let source = fs.readFileSync(filename,"utf8")
+    let grammar = context2grammar(macroparser(filename))
+    let match = grammar.match(tokenize_indents(source))
+        
+    if(match.failed()){
+        console.log(match.message)
+        if(DEBUG){
+            let match = grammar.trace(tokenize_indents(source))
+            fs.writeFile(path.resolve(__dirname,"../logs/grammarTrace.txt"),match.toString(),function(err){
+                if(err){
+                    console.error(err)
+                } else {
+                    console.log("Trace written in logs")
+                }
+            })
+        }
+        return null
+    }
 }
-
-
 
 function node(type,...args){
     let newNode = new obj.protype.constructor
@@ -191,7 +204,7 @@ const defaultASTBuilder = {
         return node(AssignmentStatement,pattern.ast(),exp.ast())
     },
     Pattern(pelems){return node(Pattern,pelems.ast())},
-    PatternElement(atom){return node(AtomicPattern,id.ast())}
+    PatternElement(atom){return node(AtomicPattern,id.ast())},
     PatternElement_patternTuple(contents){
         return node(TuplePatter,contents.ast())
     },
@@ -248,4 +261,8 @@ const defaultASTBuilder = {
     },
     id(_1,_2,_3){return node(Id,this.sourceString())},
     numlit(..._1){return node(Numlit,this.sourceString())},
+}
+
+if(!module.parent){
+    produceAST(path.resolve(__dirname,"../sample_programs/trivial_test.w"))
 }

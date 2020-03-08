@@ -61,7 +61,6 @@ function macroparse(filename){
     });
     if (match.succeeded()) {
         interpreter(match).exec();
-        console.log(context)
         return context
     } else {
       console.error(match.message);

@@ -21,12 +21,14 @@ Cuttlefish {
     | Type Atom -- type
     | Atom
    Type = Type "=>" Type -- functionType
-    | ListType
+    | ListType --list
     | id
    ListType = "[" Type "]"
    
    
-   SubRoutineGroup = Block<SubRoutine, ";"> | Block<Statement, ",">
+   SubRoutineGroup = 
+    | Block<SubRoutine, ";"> 
+    | Block<Statement, ","> --singular
 
    Routine = Function | Process | Server
    Function = fn ":" SubRoutineGroup
@@ -90,7 +92,9 @@ Cuttlefish {
 
    newline =  ("\n" comment?)+
    space :=  " " | "\t" | comment
-   comment =  "#" (~"\n" any)* -- normalComment
+   comment =  
+    |#("#!" alnum+ ) --macroflag
+    |"#" (~"\n" any)* -- normalComment
     | rawSequence<"#/","/#">
 
    Sequence<open,close> = open ListOf<Atom,","> close

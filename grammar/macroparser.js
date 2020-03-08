@@ -1,6 +1,7 @@
 const ohm = require('ohm-js');
 const fs = require('fs');
 const path = require('path')
+const process = require('process')
 const macroGrammar = ohm.grammar(fs.readFileSync(path.resolve(__dirname,'MacroGrammar.ohm')))
 
 function macroparse(filename){
@@ -9,7 +10,7 @@ function macroparse(filename){
     const builtin_funcs = { 
         get(list){
             return list.reduce((acc,x) => {
-                if(acc[x] == undefined){acc[x] = []};
+                if(acc[x] == undefined){acc[x] = []}
                 return acc[x]
             },context)
         },
@@ -20,16 +21,16 @@ function macroparse(filename){
             console.log(list.join(" "))
         },
         def(list){
-            [handle, f] = list
+            let [handle, f] = list
             context.fns[handle] = f
         },
         partial(list){
-            [f, ...args] = list
-            g = context.fns[f]
+            let [f, ...args] = list
+            let g = context.fns[f]
             return xs => g([...args, ...xs])
         },
         if(list){
-            [cond, trueexp, falseexp] = list
+            let [cond, trueexp, falseexp] = list
             if(cond){
                 return trueexp
             } else {
@@ -37,7 +38,7 @@ function macroparse(filename){
             }
         },
         set(list){
-            [x,val] = list
+            let [x,val] = list
             x = val
         },
         not(list){

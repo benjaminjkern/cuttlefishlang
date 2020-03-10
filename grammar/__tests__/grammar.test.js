@@ -8,7 +8,7 @@
 const syntaxCheck = require("../syntax-checker");
 
 const program = String.raw `
-main =:
+main = prc:
 ⇨   limit = Number $[0]
 
     x = 1
@@ -50,7 +50,7 @@ print s() # 'Hello' or 'World'
 print s() # 'Hello' or 'World' or '3 Potato'
 print s() # 'Hello' or 'World' or '3 Potato' or '4 Potato'
 
-primeFilter := x:tail -> x ++ primeFilter tail[fn: $ % x != 0]
+primeFilter = fn: x:tail -> x ++ primeFilter tail[fn: $ % x != 0]
 
 print primeFilter [2..]
 

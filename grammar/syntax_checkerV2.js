@@ -29,50 +29,69 @@ function grammarEntryExpander(category){
         }).join(' | ')
     }).join("\n")
 }
+function logTrace(grammar,error,source){
+    console.log(error)
+    if(DEBUG){
+        let match = grammar.trace(tokenize_indents(source))
+        fs.writeFile(path.resolve(__dirname,"../logs/grammarTrace.txt"),
+            match.toString(),function(err){
+            if(err){
+                console.error(err)
+            } else {
+                console.log("Trace written in logs")
+            }
+        })
+    }
+}
+
 function produceAST(filename){
     let source = fs.readFileSync(filename,"utf8")
     let context = macroparser(filename)
-    let grammar = context2grammar(context)
+    let grammar = context2grammar(context) 
     let match = grammar.match(tokenize_indents(source))
-        
+    
     if(match.failed()){
-        console.log(match.message)
-        if(DEBUG){
-            let match = grammar.trace(tokenize_indents(source))
-            fs.writeFile(path.resolve(__dirname,"../logs/grammarTrace.txt"),match.toString(),function(err){
-                if(err){
-                    console.error(err)
-                } else {
-                    console.log("Trace written in logs")
-                }
-            })
-        }
+        logTrace(grammar,match.message,source)
         return null
     }
-    let nodeSpec = {}
-    Object.assign(nodeSpec,defaultNodeSpecs)
-    if(context.nodeSpec){
-        Object.assign(nodeSpec,context.nodeSpec)
-    }
-    
-    function node(type,...args){
-        return nodes[type].constructor(...args)
-    }
 
-    let nodes = {}
-    let baseNodeSpec = {}
-    for (const [name,args] of Object.entries(defaultNodeSpecs)){
-        nodes[name]={}
-        nodes[name].template = Object.create(baseNodeSpec)
-        nodes[name].template.type = name
-        nodes[name].constructor = function(){
-            let obj = Object.create(nodes[name].template)
-            args.map((x,i)=>{obj[x] = arguments[i]})
+    let nodeSpecs = {}
+    Object.assign(nodeSpecs,defaultNodeSpecs)
+    if(context.nodeSpecs){
+        Object.assign(nodeSpecs,context.nodeSpecs)
+    }
+    context.nodeSpecs = nodeSpecs
+
+    let baseNodeTemplate = {toString:defaultToString}
+    Object.assign(baseNodeTemplate,defaultBaseNodeTemplate)
+    if(context.baseNodeTemplate){
+        Object.assign(baseNodeTemplate,context.baseNodeTemplate)
+    }
+    context.baseNodeTemplate = baseNodeTemplate
+    Object.assign(context.baseNodeTemplate,defaultMethods.default)
+
+    context.nodeConstructors = {}
+    for (const [name,args] of Object.entries(context.nodeSpecs)){
+        context.nodeConstructors[name] = {}
+        context.nodeConstructors[name].template = Object.create(context.baseNodeTemplate)
+        context.nodeConstructors[name].template.type = name
+        context.nodeConstructors[name].construct = function(){
+            let obj = Object.create(context.nodeConstructors[name].template)
+            obj.fields = {}
+            args.map((x,i)=>{obj.fields[x] = arguments[i]})
             return obj
         }
     }
+    for (const [name,contents] of Object.entries(defaultMethods)){
+        if ( name !== "default"){
+            Object.assign(context.nodeConstructors[name].template,contents)
+        }
+    }
 
-    const defaultASTBuilder = {
+    function node(type, ...args){
+        return context.nodeConstructors[type].construct(...args)
+    }
+    const defaultASTOperations = {
         Specification(_1,head,_2,tail,_3){
             return node('Specification',[head, tail].map(x => x.ast()))
         },
@@ -145,14 +164,16 @@ function produceAST(filename){
         numlit(_1,_2,_3,_4,_5,_6){return node('Numlit',this.sourceString)},
         NonemptyListOf(head,sep,tail){return [head,tail].map(x=>x.ast())},
     }
-
     let ast_operations = {}
-    Object.assign(ast_operations,defaultASTBuilder)
-    if(context.ASTNodes){
-        Object.assign(ast_operations,context.ASTNodes)
+    Object.assign(ast_operations,defaultASTOperations)
+    if(context.ast_operations){
+        Object.assign(ast_operations,context.ast_operations)
     }
-    let astBuilder = grammar.createSemantics().addOperation('ast',ast_operations)
-    return astBuilder(match).ast()
+    context.ast_operations = ast_operations
+
+    let astBuilder = grammar.createSemantics().addOperation('ast',context.ast_operations)
+    return astBuilder(match).ast().toString()
+
 }
 
 const defaultNodeSpecs = {
@@ -188,8 +209,37 @@ const defaultNodeSpecs = {
   Id:["id"],
   Numlit:["num"],
 }
-
-
+const defaultBaseNodeTemplate = {}
+function defaultToString(){
+    return `
+    ${this.type}: {
+        ${Object.entries(this.fields).map(x => {
+            let [key,value] = x
+            return key+ ":"+ value.toString()
+        }).join("\n") }
+    }`
+}
+function baseToString(){
+    return Object.entries(this.fields).reduce((acc,x) =>{
+        let [key,value] = x
+        return acc + this.type + ":" + value + "\n"
+    },"")
+}
+const defaultMethods = {
+    default: {
+        toString : defaultToString
+    },
+    Id : {
+        toString : baseToString
+    },
+    Numlit : {
+        toString : baseToString
+    },
+    StringNode : {
+        toString : baseToString
+    },
+}
 if(!module.parent){
-    produceAST(path.resolve(__dirname,"../sample_programs/trivial_test.w"))
+    let ast = produceAST(path.resolve(__dirname,"../sample_programs/trivial_test.w"))
+    console.log(ast.toString())
 }

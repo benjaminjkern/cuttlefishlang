@@ -1,5 +1,5 @@
 module.exports = produceAST
-var DEBUG = true
+var DEBUG = false
 const fs = require("fs");
 const ohm = require("ohm-js");
 const path = require("path");
@@ -31,7 +31,6 @@ function grammarEntryExpander(category){
 }
 function logTrace(grammar,error,source){
     console.log(error)
-    if(DEBUG){
         let match = grammar.trace(tokenize_indents(source))
         fs.writeFile(path.resolve(__dirname,"../logs/grammarTrace.txt"),
             match.toString(),function(err){
@@ -41,7 +40,6 @@ function logTrace(grammar,error,source){
                 console.log("Trace written in logs")
             }
         })
-    }
 }
 
 function produceAST(filename){
@@ -50,9 +48,9 @@ function produceAST(filename){
     let grammar = context2grammar(context) 
     let match = grammar.match(tokenize_indents(source))
     
-    if(match.failed()){
+    if(match.failed() || DEBUG){
         logTrace(grammar,match.message,source)
-        return null
+        return ""
     }
 
     let nodeSpecs = {}
@@ -110,13 +108,15 @@ function produceAST(filename){
             return node('TuplePatter',contents.ast())
         },
         PatternElement_patternList(ltype,head,_1,tail){
-            return node('ListPattern',ltype,head,tail)
+            return node('ListPattern',ltype.ast(),head.ast(),tail.ast())
         },
-        PatternElement_type(type,atom){return node('TypePattern',type,atom)},
-        Type(id){return node('Type',id)},
-        Type_functionType(tin,_1,tout){return node('FunctionType',tin,tout)},
+        Block_large(a1,_1,a2,_2,_3,_4,a3,_5,a4,_6,_7,_8,_9){return [a1,a2,a3,a4].map(x => x.ast())},
+        Block_small(a1,_1,a2,_2){return [a1,a2].map(x=>x.ast()) },
+        PatternElement_type(type,atom){return node('TypePattern',type.ast(),atom.ast())},
+        Type(id){return node('Type',id.ast())},
+        Type_functionType(tin,_1,tout){return node('FunctionType',tin.ast(),tout.ast())},
         Type_list(lt){return lt.ast()},
-        ListType(_1,type,_2){return node('ListType',type)},
+        ListType(_1,type,_2){return node('ListType',type.ast())},
         SubRoutineGroup(srgblock){
             return node('SubRoutineGroup',srgblock.ast())
         },
@@ -135,7 +135,7 @@ function produceAST(filename){
         },
         Guard(_1,exp){node('Guard',exp)},
         Expression_newline(atoms,kwargblock){
-            return node('Expression',atoms,kwargblock)
+            return node('Expression',atoms.ast(),kwargblock.ast())
         },
         Kwarg(id,_1,exp){return node('Kwarg',id,exp)},
         Atom(contents){return contents.ast()},
@@ -146,7 +146,7 @@ function produceAST(filename){
             return node('AbstractType',id.ast(),pattern_block.ast())
         },
         Select(object,_1,selection,_2){
-            return node('Select',object,selection)
+            return node('Select',object.ast(),selection.ast())
         },
         Tuple(_1,neck,_2,rump,_3){
             return node('Tuple',[...neck,rump].map(x => x.ast()) )
@@ -160,9 +160,11 @@ function produceAST(filename){
         String(seq){
             return node('StringNode',seq.ast())
         },
+        SubRoutine(pattern,guard,_1,statements){return node("SubRoutine",pattern.ast(),guard.ast(),statements.ast())},
         id(contents){return node('Id',this.sourceString)},
         numlit(_1,_2,_3,_4,_5,_6){return node('Numlit',this.sourceString)},
         NonemptyListOf(head,sep,tail){return [head,tail].map(x=>x.ast())},
+        nospaceops(op){return node("Operator",this.sourceString)},
     }
     let ast_operations = {}
     Object.assign(ast_operations,defaultASTOperations)
@@ -172,7 +174,7 @@ function produceAST(filename){
     context.ast_operations = ast_operations
 
     let astBuilder = grammar.createSemantics().addOperation('ast',context.ast_operations)
-    return astBuilder(match).ast().toString()
+    return astBuilder(match).ast()
 
 }
 
@@ -208,16 +210,17 @@ const defaultNodeSpecs = {
   MacroFlag:["id"],
   Id:["id"],
   Numlit:["num"],
+    SubRoutine:["pattern","guard","statements"],
+  Operator:["op"],
 }
 const defaultBaseNodeTemplate = {}
-function defaultToString(){
-    return `
-    ${this.type}: {
-        ${Object.entries(this.fields).map(x => {
-            let [key,value] = x
-            return key+ ":"+ value.toString()
-        }).join("\n") }
-    }`
+function defaultToString(key="root",ind=0){
+    return indents(ind) + key+"->" + this.type + ":\n" +
+        Object.keys(this.fields).map(x => this.fields[x].toString(x,ind+1) ).join()
+}
+function indents(n){
+    console.log(`indenting :${this.type} ${n}`)
+    return "  ".repeat(n)
 }
 function baseToString(){
     return Object.entries(this.fields).reduce((acc,x) =>{

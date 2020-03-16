@@ -3,6 +3,7 @@ var DEBUG = false
 const fs = require("fs");
 const ohm = require("ohm-js");
 const path = require("path");
+const util = require('util')
 const basegrammar = ohm.grammar(
   fs.readFileSync(path.resolve(__dirname, "cuttlefish.ohm"))
 );
@@ -215,37 +216,30 @@ const defaultNodeSpecs = {
   Operator:["op"],
 }
 const defaultBaseNodeTemplate = {}
-function defaultToString(key="root",ind=0){
-    return indents(ind) + key+"->" + this.type + ":\n" +
-        Object.keys(this.fields).map(x => this.fields[x].toString(x,ind+1) ).join()
+function defaultToString(){
+    return util.inspect(this,false,null,true)
 }
-function indents(n){
-    return "  ".repeat(n)
+function inspector(depth,options){
+    let obj = {type:this.type}
+    Object.assign(obj,this.fields)
+    return obj
 }
-function baseToString(){
-    return Object.entries(this.fields).reduce((acc,x) =>{
-        let [key,value] = x
-        return acc + this.type + ":" + value + "\n"
-    },"")
-}
+
 const defaultMethods = {
     default: {
-        toString : defaultToString
+        toString : defaultToString,
+        [util.inspect.custom] : inspector
     },
     Operator :{
-        toString : baseToString,
         terminal : true
     },
     Id : {
-        toString : baseToString,
         terminal : true
     },
     Numlit : {
-        toString : baseToString,
         terminal : true
     },
     StringNode : {
-        toString : baseToString,
         terminal : true
     },
 }

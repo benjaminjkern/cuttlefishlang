@@ -174,8 +174,9 @@ function produceAST(filename){
     context.ast_operations = ast_operations
 
     let astBuilder = grammar.createSemantics().addOperation('ast',context.ast_operations)
-    return astBuilder(match).ast()
-
+    let ast = astBuilder(match).ast()
+    astArrayCleaner(ast)
+    return ast
 }
 
 const defaultNodeSpecs = {
@@ -219,7 +220,6 @@ function defaultToString(key="root",ind=0){
         Object.keys(this.fields).map(x => this.fields[x].toString(x,ind+1) ).join()
 }
 function indents(n){
-    console.log(`indenting :${this.type} ${n}`)
     return "  ".repeat(n)
 }
 function baseToString(){
@@ -232,15 +232,35 @@ const defaultMethods = {
     default: {
         toString : defaultToString
     },
+    Operator :{
+        toString : baseToString,
+        terminal : true
+    },
     Id : {
-        toString : baseToString
+        toString : baseToString,
+        terminal : true
     },
     Numlit : {
-        toString : baseToString
+        toString : baseToString,
+        terminal : true
     },
     StringNode : {
-        toString : baseToString
+        toString : baseToString,
+        terminal : true
     },
+}
+function astArrayCleaner(ast){
+    if(ast === undefined || ast.terminal){
+        return;
+    }
+    for (const [key,val] of Object.entries(ast.fields)){
+        if (Array.isArray(val)){
+            ast.fields[key] = ast.fields[key].flat()
+            ast.fields[key].map(x=>astArrayCleaner(x))
+        } else {
+            astArrayCleaner(val)
+        }
+    }
 }
 if(!module.parent){
     let ast = produceAST(path.resolve(__dirname,"../sample_programs/trivial_test.w"))

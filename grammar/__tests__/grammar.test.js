@@ -9,8 +9,13 @@ const path = require('path')
 const syntaxCheck = require(path.resolve(__dirname,"../syntax_checker.js"));
 
 const program = String.raw `
+<<<<<<< HEAD
 main =:
     limit = Number $[0]
+=======
+main = prc:
+⇨   limit = Number $[0]
+>>>>>>> 624d1ebd0105709fc3ce58318a9a5d6c2f52d49b
 
     x = 1
 
@@ -43,7 +48,7 @@ my_server = srv:
     2 -> put "World"
     x -> put \`{x} Potato\`
 
-primeFilter := x:tail -> x ++ primeFilter tail[fn: $ % x != 0]
+primeFilter = fn: x:tail -> x ++ primeFilter tail[fn: $ % x != 0]
 
 
 `;

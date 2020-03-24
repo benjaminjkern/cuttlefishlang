@@ -11,8 +11,7 @@ Cuttlefish {
     | A (delimiter A)* &newline? -- small
     
    AssignmentStatement =
-    | Pattern ":=" SubRoutineGroup -- functionAssignment
-    | Pattern "=" Expression -- regularAssignment
+    | Pattern "=" Expression
 
    Pattern = NonemptyListOf<PatternElement,",">
    PatternElement = 
@@ -21,7 +20,7 @@ Cuttlefish {
     | Type Atom -- type
     | Atom
    Type = Type "=>" Type -- functionType
-    | ListType --list
+    | ListType
     | id
    ListType = "[" Type "]"
    

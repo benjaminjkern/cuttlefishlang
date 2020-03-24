@@ -1,5 +1,5 @@
 module.exports = produceAST;
-var DEBUG = true;
+var DEBUG = false;
 const util = require("util");
 
 const fs = require("fs");
@@ -17,7 +17,7 @@ const tokenize_indents = require(path.resolve(
 function context2grammar(context) {
     return ohm.grammar(
         `CLG <: cuttlefish {
-        ${[context.local, context.global, context.exlusive]
+        ${[context.local, context.global, context.exclusive]
           .map(grammarEntryExpander)
           .join("\n")}
     }`, { cuttlefish: basegrammar }
@@ -50,7 +50,8 @@ function grammarEntryExpander(category) {
         .join("\n");
 }
 
-function produceAST(filename) {
+function produceAST(file) {
+    let filename = path.resolve(__dirname, file);
     let source = fs.readFileSync(filename, "utf8");
     let grammar = context2grammar(macroparser(filename));
     let match = grammar.match(tokenize_indents(source));
@@ -298,10 +299,7 @@ const defaultASTBuilder = {
     Statement_put(_1, exp) {
         return node(PutStatement, exp.ast());
     },
-    AssignmentStatement_functionAssignment(pattern, _1, srg) {
-        return node(SubRoutineAssignment, pattern.ast(), srg.ast());
-    },
-    AssignmentStatement_regularAssignment(pattern, _1, exp) {
+    AssignmentStatement(pattern, _1, exp) {
         return node(AssignmentStatement, pattern.ast(), exp.ast());
     },
     Pattern(pelems) {
@@ -324,9 +322,6 @@ const defaultASTBuilder = {
     },
     Type_functionType(tin, _1, tout) {
         return node(FunctionType, tin, tout);
-    },
-    Type_list(lt) {
-        return lt.ast();
     },
     ListType(_1, type, _2) {
         return node(ListType, type);
@@ -395,9 +390,15 @@ const defaultASTBuilder = {
     }
 };
 
-if (!module.parent) {
-    let ast = produceAST(
-        path.resolve(__dirname, "./sample_programs/trivial_test.w")
-    );
-    console.log(util.inspect(ast, false, 6, true));
+if (process.argv.length !== 3) {
+    console.error("Syntax: node index.js <Program>");
+    process.exitCode = 1;
+} else {
+    try {
+        let ast = produceAST(process.argv[2]);
+        //console.log(util.inspect(ast, false, 10, true));
+    } catch (e) {
+        console.error(e.message);
+        process.exitCode = 2;
+    }
 }

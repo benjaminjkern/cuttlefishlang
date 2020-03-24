@@ -12,11 +12,5 @@ str2pos = fn: String => Integer
 main = prc:
     String x -> print : factorial * str2num : x
 
-+ = op:
-    (Number > 0) x, (Number > 0) y => (Number > 0) : |
-    Number x, Number y => Number : #/ Some code that adds /#
-
-
-Maybe A = type: 
     
     

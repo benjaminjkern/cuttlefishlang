@@ -39,34 +39,3 @@ Q = fn:
 hand, table, dealer
 
 optimal = argmax {'hit', 'stay'} fn: action -> Q(hand, table, dealer, action)
-               
-
-argmax = fn:
-    x:xs, func | xs == None -> x
-               |  -> 
-
-sum = fn: 
-
-sum 5 4 3 6 1 3 5
-
-print 
-
-
-Num sum = fn:
-    [Num] a:rest, Num => Num fun -> fun a + sum rest fun
-    [], _ -> 0
-    a, b... -> sum a + sum b
-    Num+ tup -> sum List tup
-    [Num] a:xs -> a + sum xs
-    Num a -> a
-
-
-sum 34 [9, -1] (8, 9, 3)
-(sum 34) + (sum [9, -1] (8, 9, 3))
-34 + (sum [9, -1]) + (sum (8, 9, 3))
-34 + (9 + sum [-1]) + (sum [8, 9, 3])
-34 + (9 + (-1 + sum [])) + (8 + sum [9, 3])
-34 + (9 + (-1 + 0)) + (8 + (9 + sum [3]))
-34 + (9 + (-1 + 0)) + (8 + (9 + (3 + sum [])))
-34 + (9 + (-1 + 0)) + (8 + (9 + (3 + 0)))
-

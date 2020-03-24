@@ -51,8 +51,7 @@ Cuttlefish {
     | List
     | String
     | Tuple
-    | numlit 
-    | "()"
+    | numlit
     | "(" Block<Expression, ","> ")" -- singleton
     | nospaceops 
     | id 
@@ -61,8 +60,11 @@ Cuttlefish {
     
    Select = (List | Tuple | String | DynamicSequence | id) "[" (Function | numlit) "]"
 
-   Tuple = "(" (Atom ",")+  Atom? ")"
+   Tuple = 
+    | "(" (Atom ",")+  Atom? ")"
+    | "(" ")" --empty
    List =
+    | "[" "]" --empty
     | "[" Atom ".." (Atom "..")? Atom? "]" -- numlist
     | Sequence<"[","]">
    String = rawSequence<"\"","\"">

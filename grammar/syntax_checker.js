@@ -1,4 +1,7 @@
-module.exports = produceAST
+module.exports = {
+    produceAST,
+    file2AST
+}
 var DEBUG = false
 const fs = require("fs");
 const ohm = require("ohm-js");
@@ -7,7 +10,7 @@ const util = require('util')
 const basegrammar = ohm.grammar(
   fs.readFileSync(path.resolve(__dirname, "cuttlefish.ohm"))
 );
-const macroparser = require(path.resolve(__dirname,"macroparser.js"));
+const MacroHandler = require(path.resolve(__dirname,"macroparser.js"));
 const tokenize_indents = require(path.resolve(__dirname,"tokenize_indents.js"));
 
 function context2grammar(context){
@@ -43,9 +46,13 @@ function logTrace(grammar,error,source){
         })
 }
 
-function produceAST(filename){
-    let source = fs.readFileSync(filename,"utf8")
-    let context = macroparser(filename)
+function file2AST(filename){
+    return produceAST(fs.readFileSync(filename,"utf8"))
+}
+
+function produceAST(source){
+    
+    let context = MacroHandler.macroparse(source)
     let grammar = context2grammar(context) 
     let match = grammar.match(tokenize_indents(source))
     
@@ -257,6 +264,6 @@ function astArrayCleaner(ast){
     }
 }
 if(!module.parent){
-    let ast = produceAST(path.resolve(__dirname,"../sample_programs/trivial_test.w"))
+    let ast = file2AST(path.resolve(__dirname,"../sample_programs/super_program.w"))
     console.log(ast.toString())
 }

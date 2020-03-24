@@ -8,17 +8,19 @@ function tokenize_indents(source){
         let clen = get_indentation(x)
         let y = x
         let cind = pind
+        console.log(y) 
         if(clen !== null){
             if(clen > plen){
                 y = "\n"+"⇨" + y
                 cind = cind + 1
             } else if(clen < plen){
-                y = "⇦" +"\n"+ y
+                y ="\n"+ y + "⇦" 
                 cind = cind - 1
             } else {
                 y = "\n" + y
             }
         }
+        //console.log(`${String(clen + "     ").slice(0,5)} ${y}`)
         return [text+y,(clen !== null)? clen : plen,cind]
     }  ,["",0,0])
     return tokenized+Array.from(Array(final_indent), x => "⇦" );
@@ -38,5 +40,5 @@ function get_indentation(line){
 }
 
 if(!module.parent){
-    console.log(tokenize_indents(fs.readFileSync(path.resolve(__dirname,"../sample_programs/trivial_test.w"),'utf8')))
+    console.log(tokenize_indents(fs.readFileSync(path.resolve(__dirname,"../sample_programs/super_program.w"),'utf8')))
 }

@@ -1,6 +1,6 @@
 module.exports = tokenize_indents
-fs = require('fs')
-path = require('path')
+const fs = require('fs')
+const path = require('path')
 function tokenize_indents(source){
     let [tokenized,_1] = source.split("\n").reduce((acc,x) => {
         let [text,plen] = acc

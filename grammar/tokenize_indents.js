@@ -11,10 +11,10 @@ function tokenize_indents(source){
         console.log(y) 
         if(clen !== null){
             if(clen > plen){
-                y = "\n"+"⇨" + y
+                y = "\n"+"⇨"+"\n" + y
                 cind = cind + 1
             } else if(clen < plen){
-                y ="\n"+ y + "⇦" 
+                y ="\n"+ "⇦" + "\n"+ y
                 cind = cind - 1
             } else {
                 y = "\n" + y

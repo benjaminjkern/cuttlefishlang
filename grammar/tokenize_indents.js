@@ -8,7 +8,6 @@ function tokenize_indents(source){
         let clen = get_indentation(x)
         let y = x
         let cind = pind
-        console.log(y) 
         if(clen !== null){
             if(clen > plen){
                 y = "\n"+"⇨"+"\n" + y
@@ -40,5 +39,20 @@ function get_indentation(line){
 }
 
 if(!module.parent){
-    console.log(tokenize_indents(fs.readFileSync(path.resolve(__dirname,"../sample_programs/super_program.w"),'utf8')))
+    const tokenizer = require(path.resolve(__dirname,'tokenize_indents.js'))
+    const ohm = require("ohm-js");
+    const basegrammar = ohm.grammar(
+        fs.readFileSync(path.resolve(__dirname, "cuttlefish.ohm"))
+    );
+    const tokenized = tokenize_indents(
+        fs.readFileSync(path.resolve(__dirname,"../sample_programs/super_program.w"),'utf8')
+    )
+    const match = basegrammar.match(tokenized)
+    if (match.failed()){
+        console.log(match.message)
+    } else {
+        console.log("all dandy")
+    }
+
+
 }

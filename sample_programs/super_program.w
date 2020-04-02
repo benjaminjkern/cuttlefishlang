@@ -28,7 +28,7 @@ my_server = srv:
         self ++ proc 0
         self ++ proc 0
         self ++ proc 0
-    ⇦
+    
     1 -> put "Hello"
     2 -> put "World"
     x -> put '{x} Potato'

@@ -1,15 +1,30 @@
-#!(generics a b c)
+Set = Collection type: Hashable a -> [(Int, a)] elems
+Set = fn: [Hashable] list -> Set [(hash a, a) : a in list]
 
-Set a = Collection a type:
-    [Hashable a] contents
-    
-__contruct__ += 
-    Set a -> 
+size = fn:
+    Set mySet -> len mySet.elems
 
-elementOf += fn:
-    Set a ->
+b = Set Int [1, 2, 3]
+b = Set [1,2,3]
+b = {1, 2, 3}
+
+elementOf = fn:
+    Set mySet -> 
 
 
 Set Int yolo = [1,2,3]
 
-Map Set (List Int) yolo
+yolo = Map
+
+
+
+
+
+Set = Collection type:
+    [Hashable] list -> {hash a : a | a in list}
+    Int size
+
+__str__ += fn:
+    Set my_set -> str {str $[1] : my_set.elems}
+
+

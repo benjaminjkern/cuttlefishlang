@@ -5,12 +5,9 @@
         -> fun head ++ map tail fun
 
 [Object] filter = fn:
-    [], Object => Bool fun
-        -> []
-    [Object] head:tail, Object => Bool fun
-        | fun head -> head ++ filter fun tail
-    [Object] head:tail, Object => Bool fun
-        -> filter tail fun
+    [], Object => Bool fun -> []
+    [Object] head:tail, Object => Bool fun | fun head -> head ++ filter fun tail
+    [Object] head:tail, Object => Bool fun -> filter tail fun
 
 Num sum = fn:
     [Num] a:rest, Num => Num fun -> fun a + sum rest fun
@@ -26,8 +23,8 @@ Num dotProduct = fn:
     [], [] -> 0
     [Num] a:restA, [Num] b:restB -> a * b + dotProduct restA restB
 
-(Num ** 3) crossProduct = fn:
-    (Num ** 3) a, (Num ** 3) b -> (a[1]*b[2] - a[2]*b[1], a[2]*b[0] - a[0]*b[2], a[0]*b[1] - a[1]*b[0])
+[Num] crossProduct = fn:
+    [Num] a, [Num] b | len a == len b == 3 -> [a[1]*b[2] - a[2]*b[1], a[2]*b[0] - a[0]*b[2], a[0]*b[1] - a[1]*b[0]]
 
 Bool any = fn:
     [Bool] true:rest -> true

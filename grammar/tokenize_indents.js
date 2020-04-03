@@ -15,9 +15,7 @@ function tokenize_indents(source) {
             return "⇨\n" + line;
         }
 
-        console.log(indents);
         indents = indents.filter(num => num <= spaces)
-        console.log(indents);
         return "⇦\n".repeat(num_indents - indents.length + 1) + line;
     }).join("\n") + "\n⇦".repeat(indents.length - 1);
 }
@@ -35,7 +33,6 @@ function get_indentation(line) {
 }
 
 if (!module.parent) {
-    const tokenizer = require(path.resolve(__dirname, "tokenize_indents.js"));
     const ohm = require("ohm-js");
     const basegrammar = ohm.grammar(
         fs.readFileSync(path.resolve(__dirname, "cuttlefish.ohm"))

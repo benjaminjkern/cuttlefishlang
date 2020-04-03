@@ -1,107 +1,3 @@
-// Cuttlefish {
-//    Specification = newline* Statement (newline Statement)* newline*
-
-//    Statement = 
-//     | AssignmentStatement
-//     | print Expression -- print
-//     | put? Expression -- put
-    
-//    Block<A, delimiter> =
-//     | (A (delimiter A)*)? newline indent newline* A ((newline|delimiter) A)* newline* delimiter? dedent &newline? -- large
-//     | A (delimiter A)* &newline? -- small
-    
-//    AssignmentStatement =
-//     | Pattern "=" Expression
-
-//    Pattern = NonemptyListOf<PatternElement,",">
-//    PatternElement = 
-//     | Sequence<"(",")"> -- patternTuple
-//     | ListType? Atom ":" id -- patternList
-//     | Type Atom -- type
-//     | Atom
-//    Type = Type "=>" Type -- functionType
-//     | ListType
-//     | id
-//    ListType = "[" Type "]"
-   
-   
-//    SubRoutineGroup = 
-//     | Block<SubRoutine, ";"> 
-//     | Block<Statement, ","> --singular
-
-//    Routine = Function | Process | Server
-//    Function = fn ":" SubRoutineGroup
-//    Process = prc? ":" SubRoutineGroup
-//    Server = srv ":" SubRoutineGroup
-   
-//    SubRoutine = Pattern Guard? "->" Block<Statement, ",">
-
-//    Guard = "|" Expression
-
-//    Expression =
-//     | Atom+ Block<Kwarg, space>? -- newline
-    
-//    Kwarg = 
-//     | (id ":")? Expression
-
-//    Atom =
-//     | AbstractType
-//     | Routine
-//     | Select
-//     | List
-//     | String
-//     | Tuple
-//     | numlit
-//     | "(" Block<Expression, ","> ")" -- singleton
-//     | nospaceops 
-//     | id 
-
-//    AbstractType = "type" ("(" id ")")? (":" Block<Pattern, ",">)?
-    
-//    Select = (List | Tuple | String | DynamicSequence | id) "[" (Function | numlit) "]"
-
-//    Tuple = 
-//     | "(" (Atom ",")+  Atom? ")"
-//     | "(" ")" --empty
-//    List =
-//     | "[" "]" --empty
-//     | "[" Atom ".." (Atom "..")? Atom? "]" -- numlist
-//     | Sequence<"[","]">
-//    String = rawSequence<"\"","\"">
-//     | rawSequence<"\'","\'">
-//     | rawSequence<"`","`">
-    
-//    numlit = digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?
-   
-//    print = "print" ~alnum
-//    put = "put" ~alnum
-//    fn = "fn" ~alnum
-//    prc = "prc" ~alnum
-//    srv = "srv" ~alnum
-   
-//    indent = "⇨"
-//    dedent = "⇦"
-	
-//    nospaceops = dynamicnospaceops | "~" | "+" | "++" | ">=" | "<=" | "!=" | "==" | "===" | "*"
-//    keyword = fn | prc | srv | print | put
-//    reserved = keyword | nospaceops | "(" | ")" | "," | "[" | "]" | "->" | "=>" | ":" | ":=" | "=" | ".." | "#" | ";" | "\n" | "|" | indent | dedent
-//    id = (~reserved ~space any)+
-
-//    dynamicnospaceops = "FOR COMPILE TIME USE"
-//    DynamicRawSequence = "FOR COMPILE TIME USE"
-//    DynamicSequence = "FOR COMPILE TIME USE"
-
-//    newline =  ("\n" comment?)+
-//    space :=  " " | "\t" | comment
-//    comment =  
-//     |#("#!" alnum+ ) --macroflag
-//     |"#" (~"\n" any)* -- normalComment
-//     | rawSequence<"#/","/#">
-
-//    Sequence<open,close> = open ListOf<Atom,","> close
-//    rawSequence<open,close> = open (~open ~close any)*  close
-// }
-
 Cuttlefish {
    Specification = newline* Statement (newline Statement)* newline*
 
@@ -111,14 +7,14 @@ Cuttlefish {
     | put? Expression -- put
     
    Block<A, delimiter> =
-    | (A (delimiter A)*)? newline indent newline* A ((newline|delimiter) A)* newline* delimiter? dedent &newline? -- large
-    | A (delimiter A)* &newline? -- small
+    | newline indent newline* A (newline A)* newline* dedent &newline? -- large
+    | NonemptyListOf<A, delimiter> delimiter? &newline? -- small
 
    Pattern = NonemptyListOf<PatternElement,",">
    PatternElement = 
     | "(" Pattern ")" -- tuple
     | ListType? Atom ":" id -- list
-    | Type+ id -- typed
+    | Type PatternElement -- typed
     | Atom
    Type = Type "=>" Type -- function
     | "(" NonemptyListOf<Type, ","> ")" -- tuple
@@ -159,12 +55,13 @@ Cuttlefish {
     | List
 
    Tuple = 
-    | "(" (Atom ",")+  Atom? ")" -- nonempty
+    | "(" (Expression ",")+  Expression? ")" -- nonempty
     | "(" ")" -- empty
    List =
     | "[" "]" -- empty
-    | "[" Atom ".." (Atom "..")? Atom? "]" -- num
+    | "[" index ".." (index "..")? index? "]" -- num
     | Sequence<"[","]">
+   index = numlit | id
    String = rawSequence<"\"","\"">
     | rawSequence<"\'","\'">
     | rawSequence<"`","`">
@@ -191,9 +88,8 @@ Cuttlefish {
 
    newline =  ("\n" comment?)+
    space :=  " " | "\t" | comment
-   comment =  
-    |#("#!" alnum+ ) --macroflag
-    |"#" (~"\n" any)* -- normalComment
+   comment = 
+    | "#" ~"/" (~"\n" any)* -- normal
     | rawSequence<"#/","/#">
 
    Sequence<open,close> = open ListOf<Atom,","> close

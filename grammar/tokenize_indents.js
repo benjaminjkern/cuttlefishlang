@@ -19,7 +19,7 @@ function tokenize_indents(source) {
         indents = indents.filter(num => num <= spaces)
         console.log(indents);
         return "⇦\n".repeat(num_indents - indents.length + 1) + line;
-    }).join("\n") + "\n" + "⇦\n".repeat(indents.length - 1);
+    }).join("\n") + "\n⇦".repeat(indents.length - 1);
 }
 
 let leading_whitespace = /^\s+/;

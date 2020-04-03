@@ -3,30 +3,38 @@ const path = require('path')
 module.exports = tokenize_indents
 
 function tokenize_indents(source){
-    let [tokenized,final_space,final_indent] = source.split("\n").reduce((acc,x) => {
-        let [text,plen,pind] = acc
+    let [tokenized,final_indents] = source.split("\n").reduce((acc,x) => {
+        let [text,plens] = acc
         let clen = get_indentation(x)
         let y = x
-        let cind = pind
         if(clen !== null){
-            if(clen > plen){
+            if(clen > plens.peek()){
                 y = "\n"+"⇨"+"\n" + y
-                cind = cind + 1
-            } else if(clen < plen){
-                y ="\n"+ "⇦" + "\n"+ y
-                cind = cind - 1
+                plens.push(clen)
+            } else if(clen < plens.peek()){
+                while(clen < plens.peek()){
+                    y ="\n"+ "⇦" + "\n"+ y
+                    plens.pop()
+                }
             } else {
                 y = "\n" + y
             }
         }
-        //console.log(`${String(clen + "     ").slice(0,5)} ${y}`)
-        return [text+y,(clen !== null)? clen : plen,cind]
-    }  ,["",0,0])
-    return tokenized+Array.from(Array(final_indent), x => "⇦" );
+        return [text+y,plens]
+    }  ,["",stack([0])])
+    final_indents.pop() // Get rid of initial 0
+    final_indents.map(x => tokenized += "\n⇦\n" )
+    return tokenized;
 }
 
+function stack(x){
+    x.peek = function () { return this.slice(-1).pop()}
+    return x
+}
+
+
 let leading_whitespace = /^\s+/
-let empty_line = /^(\s*|\n)$/
+let empty_line = /^(\s*|\s*\n)$/
 function get_indentation(line){
     if (empty_line.test(line)){
         return null
@@ -47,6 +55,7 @@ if(!module.parent){
     const tokenized = tokenize_indents(
         fs.readFileSync(path.resolve(__dirname,"../sample_programs/super_program.w"),'utf8')
     )
+    console.log(tokenized)
     const match = basegrammar.match(tokenized)
     if (match.failed()){
         console.log(match.message)

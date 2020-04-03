@@ -6,14 +6,52 @@ const basegrammar = ohm.grammar(
     fs.readFileSync(path.resolve(__dirname, "../cuttlefish.ohm"))
 );
 
-describe("The Tokenizer+Grammar", ()=>{
-    test('parses the super program', done => {
-        expect(basegrammar.match(
-            tokenizer(fs.readFileSync(path.resolve(
-                __dirname,'../../sample_programs/super_program.w'))))
-        .succeeded())
-            .toBe(true);
+const containsArrow = /[⇦⇨]/
+function stripDentLines(text){
+    return text.split("\n").filter(x => !containsArrow.test(x)).join("\n")
+}
+function stripWhitespace(string){
+    return string.replace(/\s/g,'')
+}
 
-        done();
-    });
-});
+const basicIndents = `
+a
+⇨
+    b
+⇨
+        c
+        d
+⇦
+    e
+⇨
+        f
+        g
+⇦
+    h
+⇦
+i
+`.trim()
+test('basic indentation', ()=>{
+    expect(stripWhitespace(tokenizer(stripDentLines(basicIndents)))).toBe(stripWhitespace(basicIndents));
+})
+
+const variedIndents = `
+a
+⇨
+  b
+⇨
+        c
+        d
+⇦
+  e
+⇨
+      f
+      g
+⇦
+  h
+⇦
+i
+`
+test('varied indentation', ()=>{
+    expect(stripWhitespace(tokenizer(stripDentLines(variedIndents)))).toBe(stripWhitespace(variedIndents));
+})

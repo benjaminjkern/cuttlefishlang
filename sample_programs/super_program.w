@@ -28,6 +28,10 @@ my_server = srv:
         self ++ proc 0
         self ++ proc 0
         self ++ proc 0
+<<<<<<< HEAD
+=======
+    
+>>>>>>> e080476bc67c823b2dc0bf7c5aa31a487f610d14
     1 -> put "Hello"
     2 -> put "World"
     x -> put '{x} Potato'

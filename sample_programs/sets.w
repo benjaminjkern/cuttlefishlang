@@ -20,7 +20,11 @@ yolo = Map
 
 
 
-Set = Collection type: [Hashable] list -> {hash a : a | a in list}
+Set = Collection type:
+    [Hashable] list -> {hash a : a | a in list}
+    Int size
 
 __str__ += fn:
     Set my_set -> str {str $[1] : my_set.elems}
+
+

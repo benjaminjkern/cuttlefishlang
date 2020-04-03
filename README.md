@@ -8,7 +8,7 @@ Cuttlefish as a language structurally draws from many aspects of Haskell and Eli
 
 Cuttlefish strives to allow its users to have immense power over the style of their code, as long as it is falls into what is considered clean, cohesive, "Cuttly" code.
 
-## **With Cuttlefish, you should _never_ have to break your train of thought while coding.**
+## **While coding with Cuttlefish, you should _never ever_ have to break your train of thought.**
 
 # Routines
 
@@ -62,7 +62,7 @@ factorial = fn:
 ```
 
 The `|` is a guard, and it reads as "such that". In words, the function says:
-"Factorial is a function, if the input is a `0` it returns `1`, otherwise if the input is an integer `x` such that `x` is greater than `0`, then it returns `x` times the factorial of `x - 1`. If the input does not match any above patterns, the function will throw an error."
+"Factorial is a function, if the input is a `0` it returns `1`, otherwise if the input is an integer `x` such that `x` is greater than `0`, then it returns `x` times the factorial of `x - 1`. If the input does not match any above patterns, the function will throw an error. If the input is anything else, the function will throw an error."
 
 Here are map and filter implemented in Cuttlefish:
 

@@ -5,12 +5,9 @@
         -> fun head ++ map tail fun
 
 [Object] filter = fn:
-    [], Object => Bool fun
-        -> []
-    [Object] head:tail, Object => Bool fun
-        | fun head -> head ++ filter fun tail
-    [Object] head:tail, Object => Bool fun
-        -> filter tail fun
+    [], Object => Bool fun -> []
+    [Object] head:tail, Object => Bool fun | fun head -> head ++ filter fun tail
+    [Object] head:tail, Object => Bool fun -> filter tail fun
 
 Num sum = fn:
     [Num] a:rest, Num => Num fun -> fun a + sum rest fun

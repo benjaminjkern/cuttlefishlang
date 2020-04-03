@@ -55,3 +55,42 @@ i
 test('varied indentation', ()=>{
     expect(stripWhitespace(tokenizer(stripDentLines(variedIndents)))).toBe(stripWhitespace(variedIndents));
 })
+
+const multipleDedents = `
+a
+⇨
+  b
+⇨
+        c
+        d
+⇦
+  e
+⇨
+      f
+      g
+⇦
+⇦
+i
+`
+test('multiple dedentation', ()=>{
+    expect(stripWhitespace(tokenizer(stripDentLines(multipleDedents)))).toBe(stripWhitespace(multipleDedents));
+})
+
+const trailingDedents = `
+a
+⇨
+  b
+⇨
+        c
+        d
+⇦
+  e
+⇨
+      f
+      g
+⇦
+⇦
+`
+test('trailing dedentation', ()=>{
+    expect(stripWhitespace(tokenizer(stripDentLines(trailingDedents)))).toBe(stripWhitespace(trailingDedents));
+})

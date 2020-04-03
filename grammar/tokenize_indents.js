@@ -48,6 +48,15 @@ function get_indentation(line){
 
 if(!module.parent){
     const tokenizer = require(path.resolve(__dirname,'tokenize_indents.js'))
+    const test = `
+a
+    b
+        c
+    d
+e
+`
+    console.log(tokenizer(test))
+    /*
     const ohm = require("ohm-js");
     const basegrammar = ohm.grammar(
         fs.readFileSync(path.resolve(__dirname, "cuttlefish.ohm"))
@@ -62,6 +71,7 @@ if(!module.parent){
     } else {
         console.log("all dandy")
     }
+    */
 
 
 }

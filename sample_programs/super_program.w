@@ -2,6 +2,8 @@ quickSort = fn:
     [] -> []
     [Num] x:xs -> quickSort xs[fn: $ < x] ++ x ++ quickSort xs[fn: $ >= x]
 
+#! macro line
+
 print quickSort [2,4,5,3,6,1] # [1,2,3,4,5,6]
 
 dumb = fn:

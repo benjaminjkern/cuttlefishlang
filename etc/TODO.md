@@ -1,17 +1,11 @@
 1. #!ZeroSpaceOps = []
 1. #!Sequences = [(start,stop,operation)]
 1. #!RawSequences = []
-1. #!InheritScope / NOT NECESSARY
 1. #!Generics = []
 1. Types
-2. Method Concatanation
-3. Top level is omnipresent
-
-
-Dog = type:
-    String name
-    () => String speak
-
-myDog = Dog:
-    name -> "Max"
-    speak -> () -> "Woof"
+1. Method Concatanation
+1. Top level is omnipresent
+1. Slices
+1. Maps
+1. Arity
+1. Kwargs

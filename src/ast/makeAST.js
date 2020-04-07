@@ -1,8 +1,7 @@
-module.exports = {
-    produceAST,
-    file2AST: filename => produceAST(fs.readFileSync(filename, 'utf8'));
-}
-var DEBUG = false
+const DEBUG = false;
+
+
+
 const fs = require("fs");
 const ohm = require("ohm-js");
 const path = require("path");
@@ -14,45 +13,7 @@ const util = require('util')
 const MacroHandler = require('../grammar/macro_parser.js');
 const tokenize_indents = require('../grammar/tokenize_indents')
 
-function context2grammar(context) {
-    return ohm.grammar(`CLG <: cuttlefish {
-        ${[context.local,context.global,context.exlusive].map(grammarEntryExpander).join("\n") }
-    }`, { "cuttlefish": basegrammar })
-}
-
-function grammarEntryExpander(category) {
-    if (!category) { return "" }
-    return category.entries().map(entry => {
-        let [name, body] = entry
-        let inserter = body.inserter ? body.inserter : "+="
-        let constructor = body.constructor
-        return `${name} ${inserter} ` + body.map(x => {
-            if (!constructor) {
-                return `"${x}"`
-            } else {
-                return `${constructor}<${x.join(",")}>`
-            }
-        }).join(' | ')
-    }).join("\n")
-}
-
-function logTrace(grammar, error, source) {
-    console.log(error)
-    let match = grammar.trace(tokenize_indents(source))
-    fs.writeFile(path.resolve(__dirname, "../logs/grammarTrace.txt"),
-        match.toString(),
-        function(err) {
-            if (err) {
-                console.error(err)
-            } else {
-                console.log("Trace written in logs")
-            }
-        })
-}
-
-function
-
-function produceAST(source) {
+module.exports = source => {
 
     let context = MacroHandler.macroparse(source)
     let grammar = context2grammar(context)
@@ -62,6 +23,14 @@ function produceAST(source) {
         logTrace(grammar, match.message, source)
         return ""
     }
+
+
+    /*
+    I only kinda get whats going on here
+
+     |
+     V
+    */
 
     let nodeSpecs = {}
     Object.assign(nodeSpecs, defaultNodeSpecs)
@@ -189,6 +158,43 @@ function produceAST(source) {
     return ast
 }
 
+function context2grammar(context) {
+    return ohm.grammar(`CLG <: cuttlefish {
+        ${[context.local,context.global,context.exlusive].map(grammarEntryExpander).join("\n") }
+    }`, { "cuttlefish": basegrammar })
+}
+
+function grammarEntryExpander(category) {
+    if (!category) { return "" }
+    return category.entries().map(entry => {
+        let [name, body] = entry
+        let inserter = body.inserter ? body.inserter : "+="
+        let constructor = body.constructor
+        return `${name} ${inserter} ` + body.map(x => {
+            if (!constructor) {
+                return `"${x}"`
+            } else {
+                return `${constructor}<${x.join(",")}>`
+            }
+        }).join(' | ')
+    }).join("\n")
+}
+
+function logTrace(grammar, error, source) {
+    console.log(error)
+    let match = grammar.trace(tokenize_indents(source))
+    fs.writeFile(path.resolve(__dirname, "../logs/grammarTrace.txt"),
+        match.toString(),
+        function(err) {
+            if (err) {
+                console.error(err)
+            } else {
+                console.log("Trace written in logs")
+            }
+        })
+}
+
+
 const defaultNodeSpecs = {
     Specification: ["body"],
     PrintStatement: ["exp"],
@@ -267,8 +273,4 @@ function astArrayCleaner(ast) {
             astArrayCleaner(val)
         }
     }
-}
-if (!module.parent) {
-    let ast = file2AST(path.resolve(__dirname, "../sample_programs/super_program.w"))
-    console.log(ast.toString())
 }

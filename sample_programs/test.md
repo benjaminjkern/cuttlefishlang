@@ -136,7 +136,7 @@ Factorial, done in the lame way and the cool way
 factorial = fn: x ->
     n = x
     p = 1
-    while n > 0 prc:
+    while n > 0 do
         p = n
         n -= 1
     put p
@@ -184,10 +184,6 @@ x = 2
 for [0..] prc:
     y = x * $ ^ x
     x = $
-
-
-
-
 ```
 
 Processes both implicitly get passed the state as well as implicitly have the state stored in their inbox

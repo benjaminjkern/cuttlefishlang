@@ -3,9 +3,7 @@ const DEBUG = false;
 const fs = require("fs");
 const ohm = require("ohm-js");
 const path = require("path");
-const basegrammar = ohm.grammar(
-    fs.readFileSync(path.resolve(__dirname, "cuttlefish.ohm"))
-);
+const basegrammar = require("../grammar/base_grammar");
 
 const util = require("util");
 const MacroHandler = require("../grammar/macro_parser.js");
@@ -281,3 +279,5 @@ function astArrayCleaner(ast) {
         }
     }
 }
+
+

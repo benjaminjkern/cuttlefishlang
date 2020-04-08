@@ -1,17 +1,17 @@
 Cuttlefish {
-   Specification = newline* Statement (newline Statement)* newline*
+   Specification = newline? Statement (newline Statement)* newline?
 
-   Statement = 
+   Statement =
     | Pattern "=" Expression -- assignment
     | print Expression -- print
     | put? Expression -- put
-    
+
    Block<A, delimiter> =
-    | newline indent newline* A (delimiter? newline+ A)* delimiter? newline* dedent &newline? -- large
+    | newline indent newline? A (delimiter? newline A)* delimiter? newline? dedent &newline? -- large
     | NonemptyListOf<A, delimiter> delimiter? &newline? -- small
 
    Pattern = NonemptyListOf<PatternElement,",">
-   PatternElement = 
+   PatternElement =
     | "(" Pattern ")" -- tuple
     | ListType? Atom ":" id -- list
     | Type PatternElement -- typed
@@ -21,16 +21,16 @@ Cuttlefish {
     | ListType -- list
     | id
    ListType = "[" Type "]"
-   
-   SubRoutineGroup = 
-    | Block<SubRoutine, ";"> 
+
+   SubRoutineGroup =
+    | Block<SubRoutine, ";">
     | Block<Statement, ","> -- singular
 
    Routine = Function | Process | Server
    Function = fn ":" SubRoutineGroup
    Process = prc ":" SubRoutineGroup
    Server = srv ":" SubRoutineGroup
-   
+
    SubRoutine = Pattern ("|" Expression)? "->" Block<Statement, ",">
 
    Expression = Atom+
@@ -44,17 +44,17 @@ Cuttlefish {
     | "(" Expression ")" -- singleton
     | Tuple
     | numlit
-    | nospaceops 
-    | id 
+    | nospaceops
+    | id
 
    AbstractType = Type "type" (":" Block<DataPattern, ";">)?
    DataPattern = (Pattern "->")? Block<Pattern, ",">
-    
+
    Select = (List | Tuple | String | DynamicSequence | id) Selector
    Selector = "[" (Function | numlit | id) "]" -- nonSlice
     | List
 
-   Tuple = 
+   Tuple =
     | "(" Block<Expression,","> ")" -- nonempty
     | "(" ")" -- empty
    List =
@@ -67,18 +67,18 @@ Cuttlefish {
     | rawSequence<"\'","\'">
     | "`" stringbit ("{" Expression "}" stringbit)* "`" -- interpolated
    stringbit = (~"{" ~"`" any)*
-    
+
    numlit = digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?
-   
+
    print = "print" ~alnum
    put = "put" ~alnum
    fn = "fn" ~alnum
    prc = "prc" ~alnum
    srv = "srv" ~alnum
-   
+
    indent = "⇨"
    dedent = "⇦"
-	
+
    nospaceops = dynamicnospaceops | ">=" | "<=" | "!=" | "==" | "==="
    keyword = fn | prc | srv | print | put
    reserved = keyword | nospaceops | "(" | ")" | "," | "[" | "]" | "->" | "=>" | ":" | ":=" | "=" | "." | "#" | ";" | "\n" | "|" | indent | dedent
@@ -88,13 +88,12 @@ Cuttlefish {
    DynamicRawSequence = "FOR COMPILE TIME USE"
    DynamicSequence = "FOR COMPILE TIME USE"
 
-   newline =  ("\n" comment?)+
+   newline =  ("\r"? "\n" comment?)+
    space :=  " " | "\t" | comment
-   comment = 
+   comment =
     | "#" ~"/" (~"\n" any)* -- normal
     | rawSequence<"#/","/#">
 
    Sequence<open,close> = open ListOf<Atom,","> close
    rawSequence<open,close> = open (~open ~close any)* close
 }
-

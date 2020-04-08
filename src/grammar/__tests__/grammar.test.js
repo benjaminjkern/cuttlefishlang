@@ -8,7 +8,7 @@
 const fs = require("fs");
 const checkSyntax = require("../syntax_checker");
 
-const program = fs.readFileSync("sample_programs/super_program.w", "utf-8").replace(/\r\n/g, '\n');
+const program = fs.readFileSync("sample_programs/super_program.w", "utf-8");
 
 describe("The syntax checker", () => {
     test("accepts the mega program with all syntactic forms", () => {

@@ -88,7 +88,7 @@ Cuttlefish {
    DynamicRawSequence = "FOR COMPILE TIME USE"
    DynamicSequence = "FOR COMPILE TIME USE"
 
-   newline =  ("\r"? "\n" comment?)+
+   newline =  ("\n" comment?)+
    space :=  " " | "\t" | comment
    comment =
     | "#" ~"/" (~"\n" any)* -- normal

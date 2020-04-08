@@ -8,13 +8,13 @@ const checkSyntax = require("../syntax_checker");
 
 const errors = [
     ["unclosed paren", "x = (2 * 3"],
-    ["empty program", ""]
+    ["empty program", ""],
 ];
 
 describe("The syntax checker", () => {
     errors.forEach(([scenario, program]) => {
         test(`detects the error ${scenario}`, () => {
-            expect(checkSyntax(program)).toBe(false);
+            expect(checkSyntax(program).succeeded()).toBe(false);
         });
     });
 });

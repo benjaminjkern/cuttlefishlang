@@ -7,7 +7,7 @@ Cuttlefish {
     | put? Expression -- put
     
    Block<A, delimiter> =
-    | newline indent newline* A (newline A)* newline* dedent &newline? -- large
+    | newline indent newline* A (delimiter? newline+ A)* delimiter? newline* dedent &newline? -- large
     | NonemptyListOf<A, delimiter> delimiter? &newline? -- small
 
    Pattern = NonemptyListOf<PatternElement,",">
@@ -17,8 +17,8 @@ Cuttlefish {
     | Type PatternElement -- typed
     | Atom
    Type = Type "=>" Type -- function
-    | "(" NonemptyListOf<Type, ","> ")" -- tuple
-    | ListType
+    | "(" Block<Type, ","> ")" -- tuple
+    | ListType -- list
     | id
    ListType = "[" Type "]"
    
@@ -29,7 +29,7 @@ Cuttlefish {
    Routine = Function | Process | Server
    Function = fn ":" SubRoutineGroup
    Process = prc ":" SubRoutineGroup
-   Server = srv ":" Block<SubRoutine, ";">
+   Server = srv ":" SubRoutineGroup
    
    SubRoutine = Pattern ("|" Expression)? "->" Block<Statement, ",">
 
@@ -41,9 +41,9 @@ Cuttlefish {
     | Select
     | List
     | String
+    | "(" Expression ")" -- singleton
     | Tuple
     | numlit
-    | "(" Expression ")" -- singleton
     | nospaceops 
     | id 
 
@@ -55,16 +55,18 @@ Cuttlefish {
     | List
 
    Tuple = 
-    | "(" (Expression ",")+  Expression? ")" -- nonempty
+    | "(" Block<Expression,","> ")" -- nonempty
     | "(" ")" -- empty
    List =
-    | "[" "]" -- empty
+    | "[" Block<Expression,","> "]" -- nonempty
     | "[" index ".." (index "..")? index? "]" -- num
-    | Sequence<"[","]">
+    | "[" "]" -- empty
    index = numlit | id
+
    String = rawSequence<"\"","\"">
     | rawSequence<"\'","\'">
-    | rawSequence<"`","`">
+    | "`" stringbit ("{" Expression "}" stringbit)* "`" -- interpolated
+   stringbit = (~"{" ~"`" any)*
     
    numlit = digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?
    
@@ -77,9 +79,9 @@ Cuttlefish {
    indent = "⇨"
    dedent = "⇦"
 	
-   nospaceops = dynamicnospaceops | "~" | "+" | "++" | ">=" | "<=" | "!=" | "==" | "===" | "*"
+   nospaceops = dynamicnospaceops | ">=" | "<=" | "!=" | "==" | "==="
    keyword = fn | prc | srv | print | put
-   reserved = keyword | nospaceops | "(" | ")" | "," | "[" | "]" | "->" | "=>" | ":" | ":=" | "=" | ".." | "#" | ";" | "\n" | "|" | indent | dedent
+   reserved = keyword | nospaceops | "(" | ")" | "," | "[" | "]" | "->" | "=>" | ":" | ":=" | "=" | "." | "#" | ";" | "\n" | "|" | indent | dedent
    id = (~reserved ~space any)+
 
    dynamicnospaceops = "FOR COMPILE TIME USE"
@@ -93,6 +95,6 @@ Cuttlefish {
     | rawSequence<"#/","/#">
 
    Sequence<open,close> = open ListOf<Atom,","> close
-   rawSequence<open,close> = open (~open ~close any)*  close
+   rawSequence<open,close> = open (~open ~close any)* close
 }
 

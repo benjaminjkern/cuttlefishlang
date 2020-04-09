@@ -75,8 +75,4 @@ module.exports = (source) => {
         console.error(match.message);
         process.exitCode = 1;
     }
-<<<<<<< HEAD
-}
-=======
 };
->>>>>>> 473343b5a11b18126795d760a3327bef22d99115

@@ -1,4 +1,8 @@
 module.exports = source => {
+    return stripCarriageReturns(tokenize_indents(source));
+}
+const tokenize_indents = source => {
+    source = stripCarriageReturns(source);
     let indents = [0];
     return source.split("\n").map(line => {
         let spaces = get_indentation(line);
@@ -28,4 +32,8 @@ const get_indentation = line => {
     let l = line.match(leading_whitespace);
     if (l === null) return 0;
     return l[0].length;
+}
+
+const stripCarriageReturns = text => {
+    return text.replace(/\r\n/g,'\n');
 }

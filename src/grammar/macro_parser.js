@@ -2,7 +2,7 @@ const ohm = require('ohm-js');
 const fs = require('fs');
 const process = require('process')
 const path = require('path')
-const macroGrammar = require('./macro_grammer');
+const macroGrammar = require('./macro_grammar');
 
 module.exports = (source) => {
     const match = macroGrammar.match(source);

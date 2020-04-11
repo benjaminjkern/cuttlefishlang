@@ -1,0 +1,1808 @@
+{
+  type: 'Specification',
+  body: [
+    {
+      type: 'AssignmentStatement',
+      id: {
+        type: 'Pattern',
+        patternElems: [
+          {
+            type: 'AtomicPattern',
+            id: { type: 'Id', id: 'quickSort' }
+          }
+        ]
+      },
+      exp: {
+        type: 'Expression',
+        atoms: [
+          {
+            type: 'FunctionGroup',
+            subroutine_group: {
+              type: 'SubRoutineGroup',
+              subroutine_block: [
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: { type: 'List', contents: [] }
+                      }
+                    ]
+                  },
+                  guard: [],
+                  statements: [
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [ { type: 'List', contents: [] } ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                },
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: {
+                          type: 'ListPattern',
+                          list_type: [
+                            {
+                              type: {
+                                type: 'Type',
+                                id: { type: 'Id', id: 'Num' }
+                              }
+                            }
+                          ],
+                          head: { type: 'Id', id: 'x' },
+                          tail: { type: 'Id', id: 'xs' }
+                        }
+                      }
+                    ]
+                  },
+                  guard: [],
+                  statements: [
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [
+                          { type: 'Id', id: 'quickSort' },
+                          {
+                            type: 'Select',
+                            subject: { type: 'Id', id: 'xs' },
+                            predicate: {
+                              type: 'FunctionGroup',
+                              subroutine_group: {
+                                type: 'SubRoutineGroup',
+                                subroutine_block: {
+                                  type: 'SingularSubRoutineGroup',
+                                  statement_block: [
+                                    {
+                                      type: 'PutStatement',
+                                      exp: {
+                                        type: 'Expression',
+                                        atoms: [
+                                          { type: 'Id', id: '$' },
+                                          { type: 'Id', id: '<' },
+                                          { type: 'Id', id: 'x' }
+                                        ],
+                                        kwarg_block: undefined
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          },
+                          { type: 'Id', id: '++' },
+                          { type: 'Id', id: 'x' },
+                          { type: 'Id', id: '++' },
+                          { type: 'Id', id: 'quickSort' },
+                          {
+                            type: 'Select',
+                            subject: { type: 'Id', id: 'xs' },
+                            predicate: {
+                              type: 'FunctionGroup',
+                              subroutine_group: {
+                                type: 'SubRoutineGroup',
+                                subroutine_block: {
+                                  type: 'SingularSubRoutineGroup',
+                                  statement_block: [
+                                    {
+                                      type: 'PutStatement',
+                                      exp: {
+                                        type: 'Expression',
+                                        atoms: [
+                                          { type: 'Id', id: '$' },
+                                          {
+                                            type: 'Operator',
+                                            op: '>='
+                                          },
+                                          { type: 'Id', id: 'x' }
+                                        ],
+                                        kwarg_block: undefined
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        kwarg_block: undefined
+      }
+    },
+    {
+      type: 'PrintStatement',
+      exp: {
+        type: 'Expression',
+        atoms: [
+          {
+            type: 'Select',
+            subject: { type: 'Id', id: 'quickSort' },
+            predicate: {
+              type: 'List',
+              contents: [
+                {
+                  type: 'Expression',
+                  atoms: [ { type: 'Numlit', num: '2' } ],
+                  kwarg_block: undefined
+                },
+                {
+                  type: 'Expression',
+                  atoms: [ { type: 'Numlit', num: '4' } ],
+                  kwarg_block: undefined
+                },
+                {
+                  type: 'Expression',
+                  atoms: [ { type: 'Numlit', num: '5' } ],
+                  kwarg_block: undefined
+                },
+                {
+                  type: 'Expression',
+                  atoms: [ { type: 'Numlit', num: '3' } ],
+                  kwarg_block: undefined
+                },
+                {
+                  type: 'Expression',
+                  atoms: [ { type: 'Numlit', num: '6' } ],
+                  kwarg_block: undefined
+                },
+                {
+                  type: 'Expression',
+                  atoms: [ { type: 'Numlit', num: '1' } ],
+                  kwarg_block: undefined
+                }
+              ]
+            }
+          }
+        ],
+        kwarg_block: undefined
+      }
+    },
+    {
+      type: 'AssignmentStatement',
+      id: {
+        type: 'Pattern',
+        patternElems: [ { type: 'AtomicPattern', id: { type: 'Id', id: 'dumb' } } ]
+      },
+      exp: {
+        type: 'Expression',
+        atoms: [
+          {
+            type: 'FunctionGroup',
+            subroutine_group: {
+              type: 'SubRoutineGroup',
+              subroutine_block: [
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: {
+                          type: 'TuplePattern',
+                          contents: {
+                            type: 'Pattern',
+                            patternElems: [
+                              {
+                                type: 'AtomicPattern',
+                                id: {
+                                  type: {
+                                    type: 'Type',
+                                    id: { type: 'Id', id: 'a' }
+                                  },
+                                  id: {
+                                    type: 'AtomicPattern',
+                                    id: {
+                                      type: {
+                                        type: 'Type',
+                                        id: { type: 'Id', id: 'b' }
+                                      },
+                                      id: {
+                                        type: 'AtomicPattern',
+                                        id: {
+                                          type: {
+                                            type: 'Type',
+                                            id: { type: 'Id', id: 'c' }
+                                          },
+                                          id: {
+                                            type: 'AtomicPattern',
+                                            id: { type: 'Id', id: 'd' }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              {
+                                type: 'AtomicPattern',
+                                id: {
+                                  type: {
+                                    type: 'Type',
+                                    id: { type: 'Id', id: 'e' }
+                                  },
+                                  id: {
+                                    type: 'AtomicPattern',
+                                    id: {
+                                      type: {
+                                        type: 'Type',
+                                        id: { type: 'Id', id: 'f' }
+                                      },
+                                      id: {
+                                        type: 'AtomicPattern',
+                                        id: {
+                                          type: {
+                                            type: 'Type',
+                                            id: { type: 'Id', id: 'g' }
+                                          },
+                                          id: {
+                                            type: 'AtomicPattern',
+                                            id: { type: 'Id', id: 'h' }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              {
+                                type: 'AtomicPattern',
+                                id: {
+                                  type: {
+                                    type: 'Type',
+                                    id: { type: 'Id', id: 'i' }
+                                  },
+                                  id: {
+                                    type: 'AtomicPattern',
+                                    id: {
+                                      type: {
+                                        type: 'Type',
+                                        id: { type: 'Id', id: 'j' }
+                                      },
+                                      id: {
+                                        type: 'AtomicPattern',
+                                        id: {
+                                          type: {
+                                            type: 'Type',
+                                            id: { type: 'Id', id: 'k' }
+                                          },
+                                          id: {
+                                            type: 'AtomicPattern',
+                                            id: { type: 'Id', id: 'l' }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        type: 'AtomicPattern',
+                        id: {
+                          type: 'ListPattern',
+                          list_type: [
+                            {
+                              type: {
+                                type: 'Type',
+                                id: { type: 'Id', id: 'm' }
+                              }
+                            }
+                          ],
+                          head: { type: 'Id', id: 'n' },
+                          tail: { type: 'Id', id: 'o' }
+                        }
+                      }
+                    ]
+                  },
+                  guard: [],
+                  statements: [
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [
+                          { type: 'Id', id: 'd' },
+                          { type: 'Id', id: 'h' },
+                          { type: 'Id', id: 'l' }
+                        ],
+                        kwarg_block: undefined
+                      }
+                    },
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [
+                          { type: 'Id', id: 'n' },
+                          { type: 'Id', id: '++' },
+                          { type: 'Id', id: 'o' }
+                        ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                },
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: { type: 'Id', id: 'p' }
+                      }
+                    ]
+                  },
+                  guard: [],
+                  statements: [
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [
+                          {
+                            type: 'FunctionGroup',
+                            subroutine_group: {
+                              type: 'SubRoutineGroup',
+                              subroutine_block: [
+                                {
+                                  type: 'SubRoutine',
+                                  pattern: {
+                                    type: 'Pattern',
+                                    patternElems: [
+                                      {
+                                        type: 'AtomicPattern',
+                                        id: { type: 'Id', id: 'q' }
+                                      }
+                                    ]
+                                  },
+                                  guard: [],
+                                  statements: [
+                                    {
+                                      type: 'PutStatement',
+                                      exp: {
+                                        type: 'Expression',
+                                        atoms: [
+                                          {
+                                            type: 'FunctionGroup',
+                                            subroutine_group: {
+                                              type: 'SubRoutineGroup',
+                                              subroutine_block: [
+                                                {
+                                                  type: 'SubRoutine',
+                                                  pattern: {
+                                                    type: 'Pattern',
+                                                    patternElems: [
+                                                      {
+                                                        type: 'AtomicPattern',
+                                                        id: {
+                                                          type: 'Id',
+                                                          id: 'r'
+                                                        }
+                                                      }
+                                                    ]
+                                                  },
+                                                  guard: [],
+                                                  statements: [
+                                                    {
+                                                      type: 'PutStatement',
+                                                      exp: {
+                                                        type: 'Expression',
+                                                        atoms: [
+                                                          {
+                                                            type: 'Id',
+                                                            id: 'p'
+                                                          },
+                                                          {
+                                                            type: 'Id',
+                                                            id: 'q'
+                                                          },
+                                                          {
+                                                            type: 'Id',
+                                                            id: 'r'
+                                                          }
+                                                        ],
+                                                        kwarg_block: undefined
+                                                      }
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ],
+                                        kwarg_block: undefined
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        kwarg_block: undefined
+      }
+    },
+    {
+      type: 'AssignmentStatement',
+      id: {
+        type: 'Pattern',
+        patternElems: [ { type: 'AtomicPattern', id: { type: 'Id', id: 'dumber' } } ]
+      },
+      exp: {
+        type: 'Expression',
+        atoms: [
+          {
+            type: 'FunctionGroup',
+            subroutine_group: {
+              type: 'SubRoutineGroup',
+              subroutine_block: [
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: { type: 'Id', id: 'a' }
+                      }
+                    ]
+                  },
+                  guard: [],
+                  statements: [
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [
+                          {
+                            type: 'FunctionGroup',
+                            subroutine_group: {
+                              type: 'SubRoutineGroup',
+                              subroutine_block: [
+                                {
+                                  type: 'SubRoutine',
+                                  pattern: {
+                                    type: 'Pattern',
+                                    patternElems: [
+                                      {
+                                        type: 'AtomicPattern',
+                                        id: { type: 'Id', id: 'b' }
+                                      }
+                                    ]
+                                  },
+                                  guard: [],
+                                  statements: [
+                                    {
+                                      type: 'PutStatement',
+                                      exp: {
+                                        type: 'Expression',
+                                        atoms: [
+                                          {
+                                            type: 'FunctionGroup',
+                                            subroutine_group: {
+                                              type: 'SubRoutineGroup',
+                                              subroutine_block: [
+                                                {
+                                                  type: 'SubRoutine',
+                                                  pattern: {
+                                                    type: 'Pattern',
+                                                    patternElems: [
+                                                      {
+                                                        type: 'AtomicPattern',
+                                                        id: {
+                                                          type: 'Id',
+                                                          id: 'c'
+                                                        }
+                                                      }
+                                                    ]
+                                                  },
+                                                  guard: [],
+                                                  statements: [
+                                                    {
+                                                      type: 'PutStatement',
+                                                      exp: {
+                                                        type: 'Expression',
+                                                        atoms: [
+                                                          {
+                                                            type: 'Id',
+                                                            id: 'd'
+                                                          }
+                                                        ],
+                                                        kwarg_block: undefined
+                                                      }
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ],
+                                        kwarg_block: undefined
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        kwarg_block: undefined
+      }
+    },
+    {
+      type: 'AssignmentStatement',
+      id: {
+        type: 'Pattern',
+        patternElems: [ { type: 'AtomicPattern', id: { type: 'Id', id: 'dumber' } } ]
+      },
+      exp: {
+        type: 'Expression',
+        atoms: [
+          {
+            type: 'FunctionGroup',
+            subroutine_group: {
+              type: 'SubRoutineGroup',
+              subroutine_block: [
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: { type: 'Id', id: 'a' }
+                      },
+                      {
+                        type: 'AtomicPattern',
+                        id: { type: 'Id', id: 'b' }
+                      }
+                    ]
+                  },
+                  guard: [],
+                  statements: [
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [
+                          {
+                            type: 'FunctionGroup',
+                            subroutine_group: {
+                              type: 'SubRoutineGroup',
+                              subroutine_block: [
+                                {
+                                  type: 'SubRoutine',
+                                  pattern: {
+                                    type: 'Pattern',
+                                    patternElems: [
+                                      {
+                                        type: 'AtomicPattern',
+                                        id: { type: 'Id', id: 'c' }
+                                      }
+                                    ]
+                                  },
+                                  guard: [],
+                                  statements: [
+                                    {
+                                      type: 'PutStatement',
+                                      exp: {
+                                        type: 'Expression',
+                                        atoms: [ { type: 'Id', id: 'd' } ],
+                                        kwarg_block: undefined
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  type: 'SubRoutine',
+                                  pattern: {
+                                    type: 'Pattern',
+                                    patternElems: [
+                                      {
+                                        type: 'AtomicPattern',
+                                        id: { type: 'Id', id: 'e' }
+                                      }
+                                    ]
+                                  },
+                                  guard: [],
+                                  statements: [
+                                    {
+                                      type: 'PutStatement',
+                                      exp: {
+                                        type: 'Expression',
+                                        atoms: [ { type: 'Id', id: 'f' } ],
+                                        kwarg_block: undefined
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                },
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: { type: 'Id', id: 'g' }
+                      }
+                    ]
+                  },
+                  guard: [
+                    {
+                      type: 'Expression',
+                      atoms: [
+                        { type: 'Id', id: 'h' },
+                        { type: 'Id', id: 'i' },
+                        { type: 'Id', id: 'j' }
+                      ],
+                      kwarg_block: undefined
+                    }
+                  ],
+                  statements: [
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [ { type: 'Id', id: 'k' } ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                },
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: { type: 'Id', id: 'l' }
+                      },
+                      {
+                        type: 'AtomicPattern',
+                        id: { type: 'Id', id: 'm' }
+                      },
+                      {
+                        type: 'AtomicPattern',
+                        id: { type: 'Id', id: 'n' }
+                      }
+                    ]
+                  },
+                  guard: [
+                    {
+                      type: 'Expression',
+                      atoms: [ { type: 'Id', id: 'false' } ],
+                      kwarg_block: undefined
+                    }
+                  ],
+                  statements: [
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [
+                          { type: 'Id', id: 'o' },
+                          { type: 'Numlit', num: '5555555.99999999' },
+                          {
+                            type: 'FunctionGroup',
+                            subroutine_group: {
+                              type: 'SubRoutineGroup',
+                              subroutine_block: {
+                                type: 'SingularSubRoutineGroup',
+                                statement_block: [
+                                  {
+                                    type: 'PutStatement',
+                                    exp: {
+                                      type: 'Expression',
+                                      atoms: [
+                                        { type: 'Id', id: '$' },
+                                        { type: 'Id', id: '*' },
+                                        { type: 'Id', id: '$' }
+                                      ],
+                                      kwarg_block: undefined
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        kwarg_block: undefined
+      }
+    },
+    {
+      type: 'AssignmentStatement',
+      id: {
+        type: 'Pattern',
+        patternElems: [
+          {
+            type: 'AtomicPattern',
+            id: {
+              type: { type: 'Type', id: { type: 'Id', id: 'Int' } },
+              id: {
+                type: 'AtomicPattern',
+                id: { type: 'Id', id: 'factorial' }
+              }
+            }
+          }
+        ]
+      },
+      exp: {
+        type: 'Expression',
+        atoms: [
+          {
+            type: 'FunctionGroup',
+            subroutine_group: {
+              type: 'SubRoutineGroup',
+              subroutine_block: [
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: { type: 'Numlit', num: '0' }
+                      }
+                    ]
+                  },
+                  guard: [],
+                  statements: [
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [ { type: 'Numlit', num: '1' } ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                },
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: {
+                          type: {
+                            type: 'Type',
+                            id: { type: 'Id', id: 'Int' }
+                          },
+                          id: {
+                            type: 'AtomicPattern',
+                            id: { type: 'Id', id: 'x' }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  guard: [
+                    {
+                      type: 'Expression',
+                      atoms: [
+                        { type: 'Id', id: 'x' },
+                        { type: 'Id', id: '>' },
+                        { type: 'Numlit', num: '0' }
+                      ],
+                      kwarg_block: undefined
+                    }
+                  ],
+                  statements: [
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [
+                          { type: 'Id', id: 'x' },
+                          { type: 'Id', id: '*' },
+                          { type: 'Id', id: 'factorial' },
+                          {
+                            type: 'Expression',
+                            atoms: {
+                              type: 'Expression',
+                              atoms: [
+                                { type: 'Id', id: 'x' },
+                                { type: 'Id', id: '-' },
+                                { type: 'Numlit', num: '1' }
+                              ],
+                              kwarg_block: undefined
+                            },
+                            kwarg_block: undefined
+                          }
+                        ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        kwarg_block: undefined
+      }
+    },
+    {
+      type: 'AssignmentStatement',
+      id: {
+        type: 'Pattern',
+        patternElems: [
+          {
+            type: 'AtomicPattern',
+            id: {
+              type: {
+                type: 'Type',
+                id: {
+                  type: { type: 'Type', id: { type: 'Id', id: 'Int' } }
+                }
+              },
+              id: { type: 'AtomicPattern', id: { type: 'Id', id: 'fibs' } }
+            }
+          }
+        ]
+      },
+      exp: {
+        type: 'Expression',
+        atoms: [
+          {
+            type: 'FunctionGroup',
+            subroutine_group: {
+              type: 'SubRoutineGroup',
+              subroutine_block: [
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: { type: 'Tuple', contents: [] }
+                      }
+                    ]
+                  },
+                  guard: [],
+                  statements: [
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [
+                          { type: 'Id', id: 'fibs' },
+                          {
+                            type: 'Tuple',
+                            contents: [
+                              {
+                                type: 'Expression',
+                                atoms: [ { type: 'Numlit', num: '1' } ],
+                                kwarg_block: undefined
+                              },
+                              {
+                                type: 'Expression',
+                                atoms: [ { type: 'Numlit', num: '1' } ],
+                                kwarg_block: undefined
+                              }
+                            ]
+                          }
+                        ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                },
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: {
+                          type: 'TuplePattern',
+                          contents: {
+                            type: 'Pattern',
+                            patternElems: [
+                              {
+                                type: 'AtomicPattern',
+                                id: {
+                                  type: {
+                                    type: 'Type',
+                                    id: { type: 'Id', id: 'Int' }
+                                  },
+                                  id: {
+                                    type: 'AtomicPattern',
+                                    id: { type: 'Id', id: 'a' }
+                                  }
+                                }
+                              },
+                              {
+                                type: 'AtomicPattern',
+                                id: {
+                                  type: {
+                                    type: 'Type',
+                                    id: { type: 'Id', id: 'Int' }
+                                  },
+                                  id: {
+                                    type: 'AtomicPattern',
+                                    id: { type: 'Id', id: 'b' }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  guard: [],
+                  statements: [
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [
+                          { type: 'Id', id: 'a' },
+                          { type: 'Id', id: '++' },
+                          { type: 'Id', id: 'fibs' },
+                          {
+                            type: 'Tuple',
+                            contents: [
+                              {
+                                type: 'Expression',
+                                atoms: [ { type: 'Id', id: 'b' } ],
+                                kwarg_block: undefined
+                              },
+                              {
+                                type: 'Expression',
+                                atoms: [
+                                  { type: 'Id', id: 'a' },
+                                  { type: 'Id', id: '+' },
+                                  { type: 'Id', id: 'b' }
+                                ],
+                                kwarg_block: undefined
+                              }
+                            ]
+                          }
+                        ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        kwarg_block: undefined
+      }
+    },
+    {
+      type: 'PutStatement',
+      exp: {
+        type: 'Expression',
+        atoms: [ { type: 'Id', id: 'fibs' }, { type: 'Tuple', contents: [] } ],
+        kwarg_block: undefined
+      }
+    },
+    {
+      type: 'AssignmentStatement',
+      id: {
+        type: 'Pattern',
+        patternElems: [
+          {
+            type: 'AtomicPattern',
+            id: {
+              type: { type: 'Type', id: { type: 'Id', id: 'Int' } },
+              id: {
+                type: 'AtomicPattern',
+                id: { type: 'Id', id: 'fibGen' }
+              }
+            }
+          }
+        ]
+      },
+      exp: {
+        type: 'Expression',
+        atoms: [
+          {
+            type: 'ProcessGroup',
+            subroutine_group: {
+              type: 'SubRoutineGroup',
+              subroutine_block: [
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: { type: 'Tuple', contents: [] }
+                      }
+                    ]
+                  },
+                  guard: [],
+                  statements: [
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [
+                          { type: 'Id', id: 'self' },
+                          {
+                            type: 'Tuple',
+                            contents: [
+                              {
+                                type: 'Expression',
+                                atoms: [ { type: 'Numlit', num: '1' } ],
+                                kwarg_block: undefined
+                              },
+                              {
+                                type: 'Expression',
+                                atoms: [ { type: 'Numlit', num: '1' } ],
+                                kwarg_block: undefined
+                              }
+                            ]
+                          }
+                        ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                },
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: {
+                          type: 'TuplePattern',
+                          contents: {
+                            type: 'Pattern',
+                            patternElems: [
+                              {
+                                type: 'AtomicPattern',
+                                id: {
+                                  type: {
+                                    type: 'Type',
+                                    id: { type: 'Id', id: 'Int' }
+                                  },
+                                  id: {
+                                    type: 'AtomicPattern',
+                                    id: { type: 'Id', id: 'a' }
+                                  }
+                                }
+                              },
+                              {
+                                type: 'AtomicPattern',
+                                id: {
+                                  type: {
+                                    type: 'Type',
+                                    id: { type: 'Id', id: 'Int' }
+                                  },
+                                  id: {
+                                    type: 'AtomicPattern',
+                                    id: { type: 'Id', id: 'b' }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  guard: [],
+                  statements: [
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [ { type: 'Id', id: 'a' } ],
+                        kwarg_block: undefined
+                      }
+                    },
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [
+                          { type: 'Id', id: 'self' },
+                          {
+                            type: 'Tuple',
+                            contents: [
+                              {
+                                type: 'Expression',
+                                atoms: [ { type: 'Id', id: 'b' } ],
+                                kwarg_block: undefined
+                              },
+                              {
+                                type: 'Expression',
+                                atoms: [
+                                  { type: 'Id', id: 'a' },
+                                  { type: 'Id', id: '+' },
+                                  { type: 'Id', id: 'b' }
+                                ],
+                                kwarg_block: undefined
+                              }
+                            ]
+                          }
+                        ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        kwarg_block: undefined
+      }
+    },
+    {
+      type: 'AssignmentStatement',
+      id: {
+        type: 'Pattern',
+        patternElems: [ { type: 'AtomicPattern', id: { type: 'Id', id: 'f' } } ]
+      },
+      exp: {
+        type: 'Expression',
+        atoms: [
+          { type: 'Id', id: 'fibGen' },
+          { type: 'Tuple', contents: [] }
+        ],
+        kwarg_block: undefined
+      }
+    },
+    {
+      type: 'PrintStatement',
+      exp: {
+        type: 'Expression',
+        atoms: [ { type: 'Id', id: 'f' }, { type: 'Tuple', contents: [] } ],
+        kwarg_block: undefined
+      }
+    },
+    {
+      type: 'PrintStatement',
+      exp: {
+        type: 'Expression',
+        atoms: [ { type: 'Id', id: 'f' }, { type: 'Tuple', contents: [] } ],
+        kwarg_block: undefined
+      }
+    },
+    {
+      type: 'PrintStatement',
+      exp: {
+        type: 'Expression',
+        atoms: [ { type: 'Id', id: 'f' }, { type: 'Tuple', contents: [] } ],
+        kwarg_block: undefined
+      }
+    },
+    {
+      type: 'PrintStatement',
+      exp: {
+        type: 'Expression',
+        atoms: [ { type: 'Id', id: 'f' }, { type: 'Tuple', contents: [] } ],
+        kwarg_block: undefined
+      }
+    },
+    {
+      type: 'AssignmentStatement',
+      id: {
+        type: 'Pattern',
+        patternElems: [ { type: 'AtomicPattern', id: { type: 'Id', id: 'proc' } } ]
+      },
+      exp: {
+        type: 'Expression',
+        atoms: [
+          {
+            type: 'ProcessGroup',
+            subroutine_group: {
+              type: 'SubRoutineGroup',
+              subroutine_block: [
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: { type: 'Id', id: 'x' }
+                      }
+                    ]
+                  },
+                  guard: [],
+                  statements: [
+                    {
+                      type: 'AssignmentStatement',
+                      id: {
+                        type: 'Pattern',
+                        patternElems: [
+                          {
+                            type: 'AtomicPattern',
+                            id: { type: 'Id', id: 'x' }
+                          }
+                        ]
+                      },
+                      exp: {
+                        type: 'Expression',
+                        atoms: [
+                          { type: 'Id', id: 'x' },
+                          { type: 'Id', id: '+' },
+                          { type: 'Numlit', num: '1' }
+                        ],
+                        kwarg_block: undefined
+                      }
+                    },
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [ { type: 'Id', id: 'x' } ],
+                        kwarg_block: undefined
+                      }
+                    },
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [
+                          { type: 'Id', id: 'self' },
+                          { type: 'Id', id: 'x' }
+                        ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        kwarg_block: undefined
+      }
+    },
+    {
+      type: 'AssignmentStatement',
+      id: {
+        type: 'Pattern',
+        patternElems: [
+          {
+            type: 'AtomicPattern',
+            id: { type: 'Id', id: 'my_server' }
+          }
+        ]
+      },
+      exp: {
+        type: 'Expression',
+        atoms: [
+          {
+            type: 'ServerGroup',
+            subroutine_group: {
+              type: 'SubRoutineGroup',
+              subroutine_block: [
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: { type: 'Tuple', contents: [] }
+                      }
+                    ]
+                  },
+                  guard: [],
+                  statements: [
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [
+                          { type: 'Id', id: 'self' },
+                          { type: 'Id', id: '++' },
+                          { type: 'Id', id: 'proc' },
+                          { type: 'Numlit', num: '0' }
+                        ],
+                        kwarg_block: undefined
+                      }
+                    },
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [
+                          { type: 'Id', id: 'self' },
+                          { type: 'Id', id: '++' },
+                          { type: 'Id', id: 'proc' },
+                          { type: 'Numlit', num: '0' }
+                        ],
+                        kwarg_block: undefined
+                      }
+                    },
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [
+                          { type: 'Id', id: 'self' },
+                          { type: 'Id', id: '++' },
+                          { type: 'Id', id: 'proc' },
+                          { type: 'Numlit', num: '0' }
+                        ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                },
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: { type: 'Numlit', num: '1' }
+                      }
+                    ]
+                  },
+                  guard: [],
+                  statements: [
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [ { type: 'String', contents: '"Hello"' } ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                },
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: { type: 'Numlit', num: '2' }
+                      }
+                    ]
+                  },
+                  guard: [],
+                  statements: [
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [ { type: 'String', contents: '"World"' } ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                },
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: { type: 'Id', id: 'x' }
+                      }
+                    ]
+                  },
+                  guard: [],
+                  statements: [
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [
+                          { type: 'String', contents: "'{x} Potato'" }
+                        ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        kwarg_block: undefined
+      }
+    },
+    {
+      type: 'AssignmentStatement',
+      id: {
+        type: 'Pattern',
+        patternElems: [
+          {
+            type: 'AtomicPattern',
+            id: { type: 'Id', id: 'primeFilter' }
+          }
+        ]
+      },
+      exp: {
+        type: 'Expression',
+        atoms: [
+          {
+            type: 'FunctionGroup',
+            subroutine_group: {
+              type: 'SubRoutineGroup',
+              subroutine_block: [
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: {
+                          type: 'ListPattern',
+                          list_type: [],
+                          head: { type: 'Id', id: 'x' },
+                          tail: { type: 'Id', id: 'tail' }
+                        }
+                      }
+                    ]
+                  },
+                  guard: [],
+                  statements: [
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [
+                          { type: 'Id', id: 'x' },
+                          { type: 'Id', id: '++' },
+                          { type: 'Id', id: 'primeFilter' },
+                          {
+                            type: 'Select',
+                            subject: { type: 'Id', id: 'tail' },
+                            predicate: {
+                              type: 'FunctionGroup',
+                              subroutine_group: {
+                                type: 'SubRoutineGroup',
+                                subroutine_block: {
+                                  type: 'SingularSubRoutineGroup',
+                                  statement_block: [
+                                    {
+                                      type: 'PutStatement',
+                                      exp: {
+                                        type: 'Expression',
+                                        atoms: [
+                                          { type: 'Id', id: '$' },
+                                          { type: 'Id', id: '%' },
+                                          { type: 'Id', id: 'x' },
+                                          {
+                                            type: 'Operator',
+                                            op: '!='
+                                          },
+                                          { type: 'Numlit', num: '0' }
+                                        ],
+                                        kwarg_block: undefined
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        kwarg_block: undefined
+      }
+    },
+    {
+      type: 'AssignmentStatement',
+      id: {
+        type: 'Pattern',
+        patternElems: [
+          {
+            type: 'AtomicPattern',
+            id: {
+              type: {
+                type: 'Type',
+                id: {
+                  type: { type: 'Type', id: { type: 'Id', id: 'Object' } }
+                }
+              },
+              id: {
+                type: 'AtomicPattern',
+                id: { type: 'Id', id: 'filter' }
+              }
+            }
+          }
+        ]
+      },
+      exp: {
+        type: 'Expression',
+        atoms: [
+          {
+            type: 'FunctionGroup',
+            subroutine_group: {
+              type: 'SubRoutineGroup',
+              subroutine_block: [
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: { type: 'List', contents: [] }
+                      },
+                      {
+                        type: 'AtomicPattern',
+                        id: {
+                          type: {
+                            type: 'Type',
+                            id: {
+                              type: 'FunctionType',
+                              input_type: {
+                                type: 'Type',
+                                id: { type: 'Id', id: 'Object' }
+                              },
+                              output_type: {
+                                type: 'Type',
+                                id: { type: 'Id', id: 'Bool' }
+                              }
+                            }
+                          },
+                          id: {
+                            type: 'AtomicPattern',
+                            id: { type: 'Id', id: 'fun' }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  guard: [],
+                  statements: [
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [ { type: 'List', contents: [] } ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                },
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: {
+                          type: 'ListPattern',
+                          list_type: [
+                            {
+                              type: {
+                                type: 'Type',
+                                id: { type: 'Id', id: 'Object' }
+                              }
+                            }
+                          ],
+                          head: { type: 'Id', id: 'head' },
+                          tail: { type: 'Id', id: 'tail' }
+                        }
+                      },
+                      {
+                        type: 'AtomicPattern',
+                        id: {
+                          type: {
+                            type: 'Type',
+                            id: {
+                              type: 'FunctionType',
+                              input_type: {
+                                type: 'Type',
+                                id: { type: 'Id', id: 'Object' }
+                              },
+                              output_type: {
+                                type: 'Type',
+                                id: { type: 'Id', id: 'Bool' }
+                              }
+                            }
+                          },
+                          id: {
+                            type: 'AtomicPattern',
+                            id: { type: 'Id', id: 'fun' }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  guard: [
+                    {
+                      type: 'Expression',
+                      atoms: [
+                        { type: 'Id', id: 'fun' },
+                        { type: 'Id', id: 'head' }
+                      ],
+                      kwarg_block: undefined
+                    }
+                  ],
+                  statements: [
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [
+                          { type: 'Id', id: 'head' },
+                          { type: 'Id', id: '++' },
+                          { type: 'Id', id: 'filter' },
+                          { type: 'Id', id: 'fun' },
+                          { type: 'Id', id: 'tail' }
+                        ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                },
+                {
+                  type: 'SubRoutine',
+                  pattern: {
+                    type: 'Pattern',
+                    patternElems: [
+                      {
+                        type: 'AtomicPattern',
+                        id: {
+                          type: 'ListPattern',
+                          list_type: [
+                            {
+                              type: {
+                                type: 'Type',
+                                id: { type: 'Id', id: 'Object' }
+                              }
+                            }
+                          ],
+                          head: { type: 'Id', id: 'head' },
+                          tail: { type: 'Id', id: 'tail' }
+                        }
+                      },
+                      {
+                        type: 'AtomicPattern',
+                        id: {
+                          type: {
+                            type: 'Type',
+                            id: {
+                              type: 'FunctionType',
+                              input_type: {
+                                type: 'Type',
+                                id: { type: 'Id', id: 'Object' }
+                              },
+                              output_type: {
+                                type: 'Type',
+                                id: { type: 'Id', id: 'Bool' }
+                              }
+                            }
+                          },
+                          id: {
+                            type: 'AtomicPattern',
+                            id: { type: 'Id', id: 'fun' }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  guard: [],
+                  statements: [
+                    {
+                      type: 'PutStatement',
+                      exp: {
+                        type: 'Expression',
+                        atoms: [
+                          { type: 'Id', id: 'filter' },
+                          { type: 'Id', id: 'tail' },
+                          { type: 'Id', id: 'fun' }
+                        ],
+                        kwarg_block: undefined
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        kwarg_block: undefined
+      }
+    }
+  ]
+}

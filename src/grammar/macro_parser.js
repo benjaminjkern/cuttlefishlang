@@ -4,36 +4,40 @@ const macroGrammar = require('./macro_grammar');
 module.exports = (source) => {
     const match = macroGrammar.match(source);
     let context = {
-        funcs: {
-            get: (list) =>
-                list.reduce((acc, x) => {
-                    if (acc[x] === undefined) acc[x] = [];
-                    return acc[x];
-                }, context),
-            append: (list) => list.slice(1).map((x) => list[0].push(x)),
-            print: (list) => {
-                console.log(list.join(" "));
+        global : {
+            funcs: {
+                get: (list) =>
+                    list.reduce((acc, x) => {
+                        if (acc[x] === undefined) acc[x] = [];
+                        return acc[x];
+                    }, context),
+                append: (list) => list.slice(1).map((x) => list[0].push(x)),
+                print: (list) => {
+                    console.log(list.join(" "));
+                },
+                def: (list,scope) => {
+                    let [handle, f] = list;
+                    context.scope.funcs[handle] = f;
+                },
+                partial: (list) => {
+                    let [f, ...args] = list;
+                    let g = context.exlusive.funcs[f];
+                    return (xs) => g([...args, ...xs]);
+                },
+                if: (list) => {
+                    let [cond, trueExp, falseExp] = list;
+                    return cond ? trueExp : falseExp;
+                },
+                set: (list) => {
+                    let [x, val] = list;
+                    x = val;
+                },
+                not: (list) => list.map((x) => !x),
             },
-            def: (list) => {
-                let [handle, f] = list;
-                context.funcs[handle] = f;
-            },
-            partial: (list) => {
-                let [f, ...args] = list;
-                let g = context.funcs[f];
-                return (xs) => g([...args, ...xs]);
-            },
-            if: (list) => {
-                let [cond, trueExp, falseExp] = list;
-                return cond ? trueExp : falseExp;
-            },
-            set: (list) => {
-                let [x, val] = list;
-                x = val;
-            },
-            not: (list) => list.map((x) => !x),
-        },
+        }
     };
+    context.local = Object.create(context.global);
+    context.exlusive = Object.create(context.local);
 
     const interpreter = macroGrammar.createSemantics().addOperation("exec", {
         Module(lines, _) {
@@ -58,7 +62,7 @@ module.exports = (source) => {
             return body.exec();
         },
         func(f) {
-            return context.funcs[f.sourceString];
+            return context.exlusive.funcs[f.sourceString];
         },
         id(x) {
             return this.sourceString;

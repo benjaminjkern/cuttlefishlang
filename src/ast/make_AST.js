@@ -187,7 +187,7 @@ const defaultNodeSpecs = {
     MacroFlag: ["id"],
     Id: ["id"],
     Numlit: ["num"],
-    SubRoutine: ["pattern", "guard", "statements"],
+    SubRoutine: ["pattern", "guard", "returnTypes", "statements"],
     Operator: ["op"],
     String: ["contents"],
     InterpolatedString: ["strings", "expressions"],

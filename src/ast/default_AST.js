@@ -32,7 +32,7 @@ module.exports = macroContext => {
         Function(_1, _2, subroutine_group) { return node("FunctionGroup", subroutine_group.ast()) },
         Process(_1, _2, subroutine_group) { return node("ProcessGroup", subroutine_group.ast()) },
         Server(_1, _2, subroutine_group) { return node("ServerGroup", subroutine_group.ast()) },
-        SubRoutine(pattern, _1, guard, _2, block) { return node("SubRoutine", pattern.ast(), guard.ast(), block.ast()) },
+        SubRoutine(pattern, _1, guard, _2, returnTypeList, _3, _4, block) { return node("SubRoutine", pattern.ast(), guard.ast(), returnTypeList.map ? returnTypeList.map(x => x.ast()) : returnTypeList.ast(), block.ast()) },
         Expression(atom_list) {
             return node(
                 "Expression",

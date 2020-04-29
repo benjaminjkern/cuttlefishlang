@@ -1,0 +1,12 @@
+{
+  funcs: {
+    get: [Function: get],
+    append: [Function: append],
+    print: [Function: print],
+    def: [Function: def],
+    partial: [Function: partial],
+    if: [Function: if],
+    set: [Function: set],
+    not: [Function: not]
+  }
+}

@@ -322,10 +322,13 @@ sum :=
 ```
 
 ```hs
-sum_of_digits = fn: n
-    | n < 0 -> sum_of_digits(-n)
-    | n < 10 -> n
-    | _ -> return sum_of_digits(n / 10) + (n % 10)
+sum_of_digits = fn:
+    n   | n < 0 -> sum_of_digits(-n)
+        | n < 10 -> n
+        | _ -> sum_of_digits(n // 10) + n % 10
 
 print sum_of_digits 8835299
 ```
+
+f (6 + (f 3))
+(f 6) + (f 3)

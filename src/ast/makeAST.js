@@ -181,7 +181,7 @@ module.exports = (source) => {
 function context2grammar(context) {
     return ohm.grammar(
         `CLG <: cuttlefish {
-        ${[context.local, context.global, context.exlusive]
+        ${[context.local.grammar, context.global.grammar, context.exlusive.grammar]
           .map(grammarEntryExpander)
           .join("\n")}
     }`, { cuttlefish: basegrammar }

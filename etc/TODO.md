@@ -83,15 +83,7 @@ print f() # 5
 print f() # 8
 ```
 
-10. String interpolation : is not implemented. This is just because I wasn't sure if this should be tested for at the grammar level or not. Didn't think much about it.
-
-```
-x = 5
-print `x is {x}` # x is 5
-```
-
 11. Standard Library : More stuff. all of the above should affect how the standard library turns out
-12. Fix AST : I screwed up a lot with the grammar when I cleaned it all up. It should be good now though. But a lot of the code for the AST is gonna be screwed up now. I'll fix it tomorrow.
 
 # Big picture stuff that needs to get done ![logo](logo.png "Look at how cool this language is!")
 

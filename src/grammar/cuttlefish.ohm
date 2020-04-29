@@ -31,7 +31,7 @@ Cuttlefish {
    Process = prc ":" SubRoutineGroup
    Server = srv ":" SubRoutineGroup
 
-   SubRoutine = Pattern ("|" Expression)? "->" Block<Statement, ",">
+   SubRoutine = Pattern ("|" Expression)? ("-{" NonemptyListOf<Type,","> "}")? "->" Block<Statement, ",">
 
    Expression = Atom+
 
@@ -81,7 +81,7 @@ Cuttlefish {
 
    nospaceops = dynamicnospaceops | ">=" | "<=" | "!=" | "==" | "==="
    keyword = fn | prc | srv | print | put
-   reserved = keyword | nospaceops | "(" | ")" | "," | "[" | "]" | "->" | "=>" | ":" | ":=" | "=" | "." | "#" | ";" | "\n" | "|" | indent | dedent
+   reserved = keyword | nospaceops | "(" | ")" | "," | "[" | "]" | "->" | "=>" | ":" | ":=" | "=" | "." | "#" | ";" | "\n" | "|"  | indent | dedent
    id = (~reserved ~space any)+
 
    dynamicnospaceops = "FOR COMPILE TIME USE"

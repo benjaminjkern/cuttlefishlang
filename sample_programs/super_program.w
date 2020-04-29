@@ -1,6 +1,6 @@
-quickSort = fn:
+[Num] quickSort = fn:
     [] -> []
-    [Num] x:xs -> quickSort xs[fn: $ < x] ++ x ++ quickSort xs[fn: $ >= x]
+    [Num] x:xs -> quickSort(xs[< x]) ++ x ++ quickSort(xs[>= x])
 
 #! macro line
 

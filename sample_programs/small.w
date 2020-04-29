@@ -1,2 +1,2 @@
 weirdFunc = fn:
-    x -{KABLAMO}-> x + 5
+    x y -{p, p, p, p}-> x + 5

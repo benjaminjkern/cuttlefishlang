@@ -81,7 +81,7 @@ Cuttlefish {
 
    nospaceops = dynamicnospaceops | ">=" | "<=" | "!=" | "==" | "==="
    keyword = fn | prc | srv | print | put
-   reserved = keyword | nospaceops | "(" | ")" | "," | "[" | "]" | "->" | "=>" | ":" | ":=" | "=" | "." | "#" | ";" | "\n" | "|"  | indent | dedent
+   reserved = keyword | nospaceops | "(" | ")" | "," | "[" | "]" | "{" | "}" | "->" | "=>" | ":" | ":=" | "=" | "." | "#" | ";" | "\n" | "|"  | "-{" | indent | dedent
    id = (~reserved ~space any)+
 
    dynamicnospaceops = "FOR COMPILE TIME USE"

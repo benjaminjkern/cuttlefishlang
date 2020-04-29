@@ -224,9 +224,9 @@ const defaultMethods = {
 };
 
 Object.defineProperty(Array.prototype, 'flat', {
-    value: function(depth = 1) {
+    value: function(depth = -1) {
         return this.reduce(function(flat, toFlatten) {
-            return flat.concat((Array.isArray(toFlatten) && (depth > 1)) ? toFlatten.flat(depth - 1) : toFlatten);
+            return flat.concat((Array.isArray(toFlatten) && (depth === -1 || depth > 1)) ? toFlatten.flat(depth > 1 ? depth - 1 : -1) : toFlatten);
         }, []);
     }
 });
@@ -236,7 +236,9 @@ function astArrayCleaner(ast) {
 
     Object.entries(ast.fields).forEach(([key, val]) => {
         if (Array.isArray(val)) {
+            console.log(ast.fields[key])
             ast.fields[key] = ast.fields[key].flat();
+            console.log(ast.fields[key])
             ast.fields[key].map((x) => astArrayCleaner(x));
         } else {
             astArrayCleaner(val);

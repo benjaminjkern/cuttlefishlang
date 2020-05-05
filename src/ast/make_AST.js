@@ -15,12 +15,12 @@ module.exports = (source) => {
     let match = grammar.match(tokenize_indents(source));
 
     if (match.failed() || DEBUG) {
-        console.log(inspect)
+        console.log(inspect);
         logTrace(grammar, match.message, source);
         return "";
     }
 
-    /* 
+    /*
      * Creates the Node Specifications, by pulling any made by macros and combining them with the default ones.
      * Node Specifications are a name of an AST node keyed to an array of fields in that node.
      */
@@ -81,9 +81,9 @@ module.exports = (source) => {
     /*
      * The dynamic constructor of nodes. Just looks up the Node type's constructor and uses it.
      */
-    const defaultASTOperations = require('./default_AST')(macroContext);
+    const defaultASTOperations = require("./default_AST")(macroContext);
 
-    /* 
+    /*
      * This adds macro-defined ASTOperations to the ast operation object
      */
     let ast_operations = {};
@@ -223,22 +223,20 @@ const defaultMethods = {
     },
 };
 
-Object.defineProperty(Array.prototype, 'flat', {
-    value: function(depth = -1) {
-        return this.reduce(function(flat, toFlatten) {
-            return flat.concat((Array.isArray(toFlatten) && (depth === -1 || depth > 1)) ? toFlatten.flat(depth > 1 ? depth - 1 : -1) : toFlatten);
-        }, []);
-    }
-});
+// Object.defineProperty(Array.prototype, 'flat', {
+//     value: function(depth = -1) {
+//         return this.reduce(function(flat, toFlatten) {
+//             return flat.concat((Array.isArray(toFlatten) && (depth === -1 || depth > 1)) ? toFlatten.flat(depth > 1 ? depth - 1 : -1) : toFlatten);
+//         }, []);
+//     }
+// });
 
 function astArrayCleaner(ast) {
     if (ast === undefined || ast === null || ast.terminal) return;
 
     Object.entries(ast.fields).forEach(([key, val]) => {
         if (Array.isArray(val)) {
-            console.log(ast.fields[key])
             ast.fields[key] = ast.fields[key].flat();
-            console.log(ast.fields[key])
             ast.fields[key].map((x) => astArrayCleaner(x));
         } else {
             astArrayCleaner(val);

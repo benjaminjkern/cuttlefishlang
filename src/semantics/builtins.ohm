@@ -1,0 +1,18 @@
+Object = String | Bool | Function | Collection
+Collection = List | Set
+List = list_lit
+    | Object '++' List | List '++' Object | List '++' List
+Set = set_lit
+    | Set '|' Set | Set '&' Set | Set '-' Set | Set '^' Set
+Function = fn_lit
+    | Num
+    | Function '*' Function | Function '^' Int
+Num = num_lit
+    | Int
+    | Num '^' Num | Num Num | Num '*' Num | Num '/' Num | Num '+' Num | Num '-' Num | 'sum' Collection
+Int = int_lit
+    | Int '!'
+String = string_lit
+    | String '++' String
+Bool = bool_lit
+    | Num '>' Num | Num '<' Num | Num '>=' Num | Num '<=' Num | Bool '||' Bool | Bool '&&' Bool

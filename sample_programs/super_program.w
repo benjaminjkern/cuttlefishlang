@@ -1,10 +1,10 @@
 [Num] quickSort = fn:
     [] -> []
-    [Num] x:xs -> quickSort(xs[< x]) ++ x ++ quickSort(xs[>= x])
+    [Num] x:xs -> quickSort xs[fn: $ < x] ++ x ++ quickSort xs[fn: $ >= x]
 
 #! macro line
 
-print quickSort [2,4,5,3,6,1] # [1,2,3,4,5,6]
+print quickSort [2,4,5,3,6,1]
 
 dumb = fn:
     (a b c d, e f g h, i j k l), [m] n:o ->
@@ -54,25 +54,27 @@ Int fibGen = prc:
     () -> self (1, 1)
     (Int a, Int b) -> put a, self (b, a + b)
 
-f = fibGen()
+f = fibGen() ## THIS IS INCONSISTENT in how processes work
 print f() # 1
 print f() # 1
 print f() # 2
 print f() # 3
 
-proc = prc: x ->
+my_proc = prc: x ->
     x = x + 1
     put x
     self x
 
 my_server = srv:
     () ->
-        self ++ proc 0
-        self ++ proc 0
-        self ++ proc 0
-    1 -> put "Hello"
-    2 -> put "World"
-    x -> put '{x} Potato'
+        my_proc 0
+        my_proc 0
+        my_proc 0
+    1 -> "Hello"
+    2 -> "World"
+    x -> '{x} Potato'
+
+my_server()
 
 primeFilter = fn: x:tail -> x ++ primeFilter tail[fn: $ % x != 0]
 

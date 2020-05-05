@@ -23,7 +23,7 @@
     "homepage": "https://github.com/benjaminjkern/cuttlefishlang#readme",
     "dependencies": {
         "fs": "0.0.1-security",
-        "jest": "^25.1.0",
+        "jest": "^25.5.2",
         "ohm-js": "^0.14.0"
     },
     "devDependencies": {

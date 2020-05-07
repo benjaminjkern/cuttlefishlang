@@ -41,8 +41,8 @@ appendType("Boolean","Equatable")
 appendType("SubRoutineGroup","Entity")
 appendType("SubRoutine", "Entity")
 appendType("Server", "SubRoutine")
-appendType("Proccess", "SubRountine")
-appendType("Function", "SubRountine")
+appendType("Proccess", "SubRoutine")
+appendType("Function", "SubRoutine")
 //Sequences
 appendType("Sequence","Entity")//Not neccessarily finite
 appendType("List","Sequence")//Finite Sequence

@@ -4,7 +4,6 @@
 
 #! macro line
 
-print quickSort [2,4,5,3,6,1]
 
 dumb = fn:
     (a b c d, e f g h, i j k l), [m] n:o ->
@@ -18,13 +17,13 @@ dumber = fn:
         b -> fn:
             c -> d
 
-dumber = fn:
+dumberer = fn:
     a,b ->
-        fn:             c -> d; e ->f
+        fn:             c -> c; e ->e
 # comments within indentations, not sure if they fuck it up
-    g | h i j -> k
+    g | h i j -> g
             # more comments
-    l, m, n | false -> o 5555555.99999999 fn: $ * $
+    l, m, n | false -> l 5555555.99999999 fn: $ * $
         #     ^ this should not work when we do optimization because the guard of "false" should never run
 
 
@@ -46,19 +45,12 @@ Int factorial = fn:
     () -> fibs (1,1)
     (Int a, Int b) -> a ++ fibs (b, a + b)
 
-fibs() # [1, 1, 2, 3, 5, 8, 13, 21, 34, 55...]
 
 # same thing as above but with a process that iteratively returns next instead of a function that returns an infinite list
 
 Int fibGen = prc:
     () -> self (1, 1)
     (Int a, Int b) -> put a, self (b, a + b)
-
-f = fibGen() ## THIS IS INCONSISTENT in how processes work
-print f() # 1
-print f() # 1
-print f() # 2
-print f() # 3
 
 my_proc = prc: x ->
     x = x + 1
@@ -73,8 +65,6 @@ my_server = srv:
     1 -> "Hello"
     2 -> "World"
     x -> '{x} Potato'
-
-my_server()
 
 primeFilter = fn: x:tail -> x ++ primeFilter tail[fn: $ % x != 0]
 

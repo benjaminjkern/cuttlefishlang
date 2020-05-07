@@ -28,8 +28,13 @@ function appendType(name,appendTo){
         type_tree[name] = type_tree[appendTo].append(name)
     }
 }
+function alias(alias,typename){
+    type_tree[alias] = type_tree[typename]
+}
+
 //Notes to self: SubTypes of Tuple are subtypes of the intersection of their constituent types
 newType("Entity",[])
+appendType("Glyph","Entity")
 appendType("Tuple","Entity")
 appendType("Equatable","Entity")
 appendType("Comparable","Equatable")
@@ -43,14 +48,23 @@ appendType("SubRoutine", "Entity")
 appendType("Server", "SubRoutine")
 appendType("Proccess", "SubRoutine")
 appendType("Function", "SubRoutine")
+//Operators
+appendType("Operator","SubRoutineGroup")
+appendType("InfixOperator","Operator")
+appendType("PrefixOperator","Operator")
+appendType("PostfixOperator","Operator")
+
 //Sequences
 appendType("Sequence","Entity")//Not neccessarily finite
 appendType("List","Sequence")//Finite Sequence
 appendType("String","List")//Finite Sequence of characters
 //Number Stuff
 appendType("Number","Comparable")
+alias("Num","Number")
 appendType("Real","Number")
 appendType("Ordinal","Comparable")//Countably infinite
 appendType("Rational",["Real","Ordinal"])
 appendType("Integer",["Rational","Ordinal","Boolean"]) //Hack to make 0 False and non-zero True
+alias("Int","Integer")
+
 module.exports = type_tree

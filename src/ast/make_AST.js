@@ -103,8 +103,15 @@ module.exports = (source) => {
     let ast = astBuilder(match).ast();
     astArrayCleaner(ast);
     ast.specification_context = macroContext
+    ast.traverse(ast,line_numberer,ast.line_ends,[])
     return ast;
 };
+
+function line_numberer(node,sequence,type){
+    node.line_number = sequence.filter(x=> x<node.sourceIdx).length
+    delete node.sourceIdx
+    return sequence
+}
 
 function macroContext2grammar(macroContext) {
     return ohm.grammar(
@@ -215,21 +222,23 @@ function children(node){
 function traverse(node,callback,acc,exclude=[]){//callback of form f(node,accumulator,type) feel free to append
     
     var next_acc = callback(node,acc,node.type)
-    return node.children(node).filter(x=> !exclude.includes(x.type)).map(x => {
+    node.children(node).filter(x=> !exclude.includes(x.type)).map(x => {
         if(x.type){
             return (next_acc = x.traverse(x,callback,next_acc))
         }
         if(Array.isArray(x)){
             return x.filter(x=> !exclude.includes(x.type)).reduce((racc,y) =>{return y.traverse(y,callback,racc,exclude)},next_acc)
         }
-    }).slice(-1).pop() || next_acc
+    })
+    return acc
 }
-function query(node,callback,acc,exclude){ //callback of the form f(node,accumulator,type). Returns an object with res(ults) and acc(ulumlator) 
-    let {acc:vacc,res:new_out }= callback(node,acc,node.type)
+function query(node,callback,_1,exclude){ //callback of the form f(node,accumulator,type). Returns an object with res(ults) and acc(ulumlator) 
+    if(exclude.includes(node.type)){return undefined}
+    let new_out = callback(node,undefined,node.type)
     return [new_out ,
-        ...node.children(node).filter(x => x && x.type).flatMap(x => { var {res:out ,acc:vacc} = query(x,callback,vacc,exclude);return out} ),   
-        ...node.children(node).filter(x => x && Array.isArray(x)).flatMap(y => y.filter(x => x && x.type)
-            .flatMap(x => { var {res:out ,acc:vacc} = query(x,callback,vacc,exclude);return out})) 
+        ...node.children(node).filter(x => x && x.type).filter(x=>!exclude.includes(x)).flatMap(x => query(x,callback,undefined,exclude)),   
+        ...node.children(node).filter(x => x && Array.isArray(x)).flatMap(y => y.filter(x => x && x.type).filter(x=>!exclude.includes(x.type))
+            .flatMap(x => query(x,callback,undefined,exclude)))
     ].flat(Infinity).filter(x => x)
 }
 

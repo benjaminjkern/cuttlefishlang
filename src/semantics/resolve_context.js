@@ -1,51 +1,58 @@
-const builtins = {}
-
-const global_bound = Object.create(builtins)
-const bound_rules = {
-    set: function(obj,id,value){
-        if(Object.prototype.hasOwnProperty.call(obj,id)){
-            throw `id: ${id} has aleady been bound in this scope`
+const gen_builtins = require("./builtins")
+module.exports = function resolve_context(ast){
+    
+    const builtins = gen_builtins(ast)
+    const global_bound = Object.create(builtins)
+    const bound_rules = {
+        set: function(obj,id,value,reciever){
+            if(Object.prototype.hasOwnProperty.call(obj,id)){
+                console.log(obj)
+                throw `id: ${id} at line ${value.line_number} has aleady been bound in this scope`
+            }
+            Object.defineProperty(reciever,id,{value:value});
+            return true
         }
-        obj[id] = value
-        return true
+
     }
 
-}
+
+    const global_proxy = new Proxy(global_bound,bound_rules)
 
 
-const global_proxy = new Proxy(global_bound,bound_rules)
+    const identified_resolution = { bound:global_proxy,referenced:{},children:[]}
+    identified_resolution.level = 0
 
 
-const identified_resolution = { bound:global_proxy,referenced:{},children:[]}
-
-const scope_transitions = ["SubRoutine","AssignmentStatement"] //Fishy hack to deal with statements in a block re-binding stuff.
-
-module.exports = function resolve_context(ast){
     ast.traverse(ast,resolver,identified_resolution,["Pattern"])
     decorator(identified_resolution)
 }
+
 function decorator(binding_context){
     Object.entries(binding_context.referenced).map(([id,instances])=>{
         let bound_entity = binding_context.bound[id]
         if(!bound_entity){
-            throw `id: ${id} not bound in current scope`
+            throw `Error on line ${instances[0].line_number} : id: ${id} not bound in current scope`
         }
         instances.map(node => {node.representing = bound_entity})
     })
     binding_context.children.map(x=>decorator(x))
 }
 
+const scope_transitions = ["SubRoutine","AssignmentStatement"] //Fishy hack to deal with statements in a block re-binding stuff.
 
 function resolver(node,binding_context,type){
-    console.log(`type: ${type},bc: ${binding_context}`)
+    console.log(`level:${binding_context.level}`)
     //Happens before scope change, because you expect access to the name
     //of a function in that function, in order to recurse.
     let parent_context = undefined
     if(scope_transitions.includes(type)){
+        console.log(`Lowered Scope: ${type} Line: ${node.line_number}`)
         let new_context = {
             bound:Object.create(binding_context.bound),
             referenced: {},
-            children: []
+            children: [],
+            parent: binding_context,
+            level: binding_context.level + 1
         }
         binding_context.children.push(new_context)
         parent_context = binding_context
@@ -78,13 +85,13 @@ function bind_pattern_expression(pattern,expression,binding_context,parent_conte
     pattern.form = "Output"
     if(parent_context){
         if(expression.fields.atoms.length == 1 && expression.fields.atoms[0].query(expression.fields.atoms[0],selectType("SubRoutine"),undefined,["Expression"]).length>0){
-            parent_context = binding_context
+            [parent_context,binding_context] = [binding_context,parent_context]
         }
     }
 
     for(const elem of pattern.fields.patternElems){
         elem.query(elem,selectType("Id"),undefined,["Type"]).map(id=> {
-            binding_context.bound[id] = pattern
+            binding_context.bound[id.fields.id] = pattern
         })
         elem.query(elem,selectType("Type"),undefined,[]).map(type => {
             if(type.fields.id.type == "Id"){
@@ -95,10 +102,15 @@ function bind_pattern_expression(pattern,expression,binding_context,parent_conte
 }
 function bind_subroutine_input(subroutine,pattern,binding_context){
     subroutine.arity = pattern.fields.patternElems.length
-    pattern.form = "Input" 
+    pattern.form = "Input"
     for(const elem of pattern.fields.patternElems){
-        elem.query(elem,selectType("Id"),undefined,["Type"]).map(id=> {
-            binding_context.bound[id] = pattern
+        elem.query(elem,selectType("Id"),undefined,["Type","ListPattern"]).map(id=> { 
+            console.log(`binding ${id.fields.id} on line ${pattern.line_number}`)
+            binding_context.bound[id.fields.id] = pattern
+        })
+        elem.query(elem,selectType("ListPattern"),undefined,[]).map(lp => {
+            binding_context.bound[lp.fields.head.fields.id] = pattern
+            binding_context.bound[lp.fields.tail.fields.id] = pattern
         })
         elem.query(elem,selectType("Type"),undefined,[]).map(type => {
             if(type.fields.id.type == "Id"){
@@ -123,9 +135,9 @@ function selectType(target_type,skip=false){
     }
     return function get_node(node,acc,type){
         if(type == target_type){
-            return {res: node.fields.id}
+            return node
         }
-        return {res: undefined}
+        return undefined
     }
 }
 function default_push(object,fieldname,value){

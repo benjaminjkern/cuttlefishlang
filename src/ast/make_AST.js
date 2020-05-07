@@ -108,7 +108,7 @@ module.exports = (source) => {
 function macroContext2grammar(macroContext) {
     return ohm.grammar(
         `CLG <: cuttlefish {
-        ${[macroContext.local, macroContext.global, macroContext.exlusive]
+        ${[macroContext.local, macroContext.global, macroContext.exclusive]
           .map(grammarEntryExpander)
           .join("\n")}
     }`, { cuttlefish: basegrammar }
@@ -118,8 +118,7 @@ function macroContext2grammar(macroContext) {
 function grammarEntryExpander(category) {
     if (!category) return "";
 
-    return category
-        .entries()
+    return Object.entries(category.contents)
         .map((entry) => {
             let [name, body] = entry;
             let inserter = body.inserter ? body.inserter : "+=";
@@ -200,14 +199,47 @@ function defaultToString() {
 
 function inspector(depth, options) {
     let obj = { type: this.type };
-    Object.assign(obj, this.fields);
+    Object.assign(obj,Object.getPrototypeOf(this))
+    Object.assign(obj,this)
     return obj;
+}
+
+function children(node){ 
+    if(node.terminal){
+        return []
+    }
+    return Object.values(node.fields).filter(x => x && (x.fields || (Array.isArray(x) && x.every(y => y && y.fields)  )))
+}
+
+function traverse(node,callback,acc,exclude=[]){//callback of form f(node,accumulator,type) feel free to append
+    
+    var next_acc = callback(node,acc,node.type)
+    return node.children(node).filter(x=> !exclude.includes(x.type)).map(x => {
+        if(x.type){
+            return (next_acc = x.traverse(x,callback,next_acc))
+        }
+        if(Array.isArray(x)){
+            return x.filter(x=> !exclude.includes(x.type)).reduce((racc,y) =>{return y.traverse(y,callback,racc,exclude)},next_acc)
+        }
+    }).slice(-1).pop() || next_acc
+}
+function query(node,callback,acc,exclude){ //callback of the form f(node,accumulator,type). Returns an object with res(ults) and acc(ulumlator) 
+    let {acc:vacc,res:new_out }= callback(node,acc,node.type)
+    return [new_out ,
+        ...node.children(node).filter(x => x && x.type).flatMap(x => { var {res:out ,acc:vacc} = query(x,callback,vacc,exclude);return out} ),   
+        ...node.children(node).filter(x => x && Array.isArray(x)).flatMap(y => y.filter(x => x && x.type)
+            .flatMap(x => { var {res:out ,acc:vacc} = query(x,callback,vacc,exclude);return out})) 
+    ].flat(Infinity).filter(x => x)
 }
 
 const defaultMethods = {
     default: {
         toString: defaultToString,
         [inspect.custom]: inspector,
+        children(node){return children(node)},
+        traverse(a,b,c,d){return traverse(a,b,c,d)},
+        query(a,b,c,d){return query(a,b,c,d)},
+        show(){return inspect(this,{colors:true,customInspect:false,showHidden:true,depth:4})}
     },
     Operator: {
         terminal: true,

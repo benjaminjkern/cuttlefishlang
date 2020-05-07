@@ -3,6 +3,16 @@ const macroGrammar = require('./macro_grammar');
 
 module.exports = (source) => {
     const match = macroGrammar.match(source);
+    const always_available = {
+        get: function(obj,val){
+            if(obj[val] === undefined){
+                obj[val] = []
+            }
+            return obj[val]
+        }
+    }
+
+
     let context = {
         global : {
             funcs: {
@@ -11,17 +21,19 @@ module.exports = (source) => {
                         if (acc[x] === undefined) acc[x] = [];
                         return acc[x];
                     }, context),
-                append: (list) => list.slice(1).map((x) => list[0].push(x)),
+                append: (list) => {
+                    list.slice(1).map((x) => context.exclusive.contents[list[0]].push(x))
+                },
                 print: (list) => {
                     console.log(list.join(" "));
                 },
-                def: (list,scope) => {
+                def: (list) => {
                     let [handle, f] = list;
-                    context.scope.funcs[handle] = f;
+                    context.exclusive.funcs[handle] = f;
                 },
                 partial: (list) => {
                     let [f, ...args] = list;
-                    let g = context.exlusive.funcs[f];
+                    let g = context.exclusive.funcs[f];
                     return (xs) => g([...args, ...xs]);
                 },
                 if: (list) => {
@@ -34,10 +46,18 @@ module.exports = (source) => {
                 },
                 not: (list) => list.map((x) => !x),
             },
+            _content : {},
         }
     };
+
+    context.global.contents = new Proxy(context.global._content,always_available)
     context.local = Object.create(context.global);
-    context.exlusive = Object.create(context.local);
+    context.local._content = Object.create(context.global._content)
+    context.local.contents = new Proxy(context.local._content,always_available)
+    context.exclusive = Object.create(context.local);
+    context.exclusive._content = Object.create(context.local._content)
+    context.exclusive.contents = new Proxy(context.exclusive._content,always_available)
+
 
     const interpreter = macroGrammar.createSemantics().addOperation("exec", {
         Module(lines, _) {
@@ -62,7 +82,7 @@ module.exports = (source) => {
             return body.exec();
         },
         func(f) {
-            return context.exlusive.funcs[f.sourceString];
+            return context.exclusive.funcs[f.sourceString];
         },
         id(x) {
             return this.sourceString;

@@ -4,39 +4,6 @@
 
 #! macro line
 
-
-dumb = fn:
-    (a b c d, e f g h, i j k l), [m] n:o ->
-        d h l
-        n ++ o
-    p -> fn: q -> fn: r -> #/ hello /# p q r
-
-
-dumber = fn:
-    a -> fn:
-        b -> fn:
-            c -> d
-
-dumberer = fn:
-    a,b ->
-        fn:             c -> c; e ->e
-# comments within indentations, not sure if they fuck it up
-    g | h i j -> g
-            # more comments
-    l, m, n | false -> l 5555555.99999999 fn: $ * $
-        #     ^ this should not work when we do optimization because the guard of "false" should never run
-
-
-#/ this is a
-
-
-  yeet
-
-
-
-
-multiline comment/#
-
 Int factorial = fn:
                0 -> 1
                Int x | x > 0 -> x * factorial (x - 1)

@@ -41,12 +41,10 @@ function decorator(binding_context){
 const scope_transitions = ["SubRoutine","AssignmentStatement"] //Fishy hack to deal with statements in a block re-binding stuff.
 
 function resolver(node,binding_context,type){
-    console.log(`level:${binding_context.level}`)
     //Happens before scope change, because you expect access to the name
     //of a function in that function, in order to recurse.
     let parent_context = undefined
     if(scope_transitions.includes(type)){
-        console.log(`Lowered Scope: ${type} Line: ${node.line_number}`)
         let new_context = {
             bound:Object.create(binding_context.bound),
             referenced: {},
@@ -102,10 +100,11 @@ function bind_pattern_expression(pattern,expression,binding_context,parent_conte
 }
 function bind_subroutine_input(subroutine,pattern,binding_context){
     subroutine.arity = pattern.fields.patternElems.length
+    console.log(pattern)
+    console.log(subroutine.arity)
     pattern.form = "Input"
     for(const elem of pattern.fields.patternElems){
         elem.query(elem,selectType("Id"),undefined,["Type","ListPattern"]).map(id=> { 
-            console.log(`binding ${id.fields.id} on line ${pattern.line_number}`)
             binding_context.bound[id.fields.id] = pattern
         })
         elem.query(elem,selectType("ListPattern"),undefined,[]).map(lp => {

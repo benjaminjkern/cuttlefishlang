@@ -32,7 +32,9 @@ module.exports = (ast) => {
     bib("false",tt.Boolean,"False")
     bib("*",tt.InfixOperator,"Multiplication")
     bib("/",tt.InfixOperator,"Division")
+    bib("%",tt.InfixOperator,"Modulo Division")
     bib("+",tt.InfixOperator,"Addition")
     bib("-",tt.InfixOperator,"Subtraction")
+    bib("self",tt.Glyph,"Self-Reference")
     return builtins
 }

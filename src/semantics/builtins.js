@@ -19,15 +19,16 @@ module.exports = (ast) => {
         bib(symbol,tt.Type,{},{typetree:type})
     })
     bib("$",tt.Glyph,"Supposed to magically turn expression into SubRoutine")
-    type_symmetries.InfixOperator={arity_signatures:{[-1]:"Num",[1]:"Num"}}
-    type_symmetries.PrefixOperator = {arity_signatures:{[1]:"Num"}}
-    type_symmetries.PostfixOperate = {arity_signatures:{[-1]:"Num"}}
+    type_symmetries.InfixOperator={arity_signature:{in:{[-1]:tt.Num,[1]:tt.Num},out:tt.Num}}
+    type_symmetries.PrefixOperator = {arity_signature:{in:{[1]:tt.Num},out:tt.Num}}
+    type_symmetries.PostfixOperate = {arity_signature:{[-1]:tt.Num}}
     bib("<",tt.InfixOperator,"Less than")
     bib("<=",tt.InfixOperator,"Less than or Equal to")
     bib("==",tt.InfixOperator,"Equal to")
     bib(">=",tt.InfixOperator,"Greater than or Equal to")
     bib(">",tt.InfixOperator,"Greater than")
-    bib("++",tt.InfixOperator,"Concatanate",{[-1]:"List",[1]:"List"})
+    let [a1,a2,a3] = degreeOfFreedom(3)
+    bib("++",tt.InfixOperator,"Concatanate",{in:{[-1]:tt.List.AbstractSubType(a1),[1]:tt.List.AbstractSubType(a2)},out:tt.List.AbstractSubType(a3) })
     bib("true",tt.Boolean,"True")
     bib("false",tt.Boolean,"False")
     bib("*",tt.InfixOperator,"Multiplication")

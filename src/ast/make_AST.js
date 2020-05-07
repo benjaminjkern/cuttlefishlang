@@ -102,6 +102,7 @@ module.exports = (source) => {
         .addOperation("ast", macroContext.ast_operations);
     let ast = astBuilder(match).ast();
     astArrayCleaner(ast);
+    ast.specification_context = macroContext
     return ast;
 };
 

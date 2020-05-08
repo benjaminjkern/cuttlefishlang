@@ -8,7 +8,9 @@ Cuttlefish as a language structurally draws from many aspects of Haskell and Eli
 
 Cuttlefish strives to allow its users to have immense power over the style of their code, as long as it is falls into what is considered clean, cohesive, "Cuttly" code.
 
-Cuttlefish also strives to achieve Alan Kay's ideas of ideal Object Oriented Programming which still being a functional programming language
+Cuttlefish also strives to achieve Alan Kay's ideas of ideal Object Oriented Programming which still being a functional programming language.
+
+[Here is our website! (Click me!) (Please!)](https://benjaminjkern.github.io/cuttlefishlang)
 
 # Routines
 

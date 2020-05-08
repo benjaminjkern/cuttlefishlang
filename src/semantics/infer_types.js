@@ -15,10 +15,10 @@ function getType(x){
 function canConsume(element,exp){
     return exp.fields.atoms.some( (x,i,src) => {
         if(getType(src[i]) === element.symbol){
-            return Object.entries(element.arity_sig).every( entry=> {
+            return Object.entries(element.arity_signature.in).every( entry=> {
                 let [offset,type] = entry
                 offset = parseInt(offset)
-                return getType(src[i+offset]) === type 
+                return getType(src[i+offset]) === getType(type)
             })
         }
         return false

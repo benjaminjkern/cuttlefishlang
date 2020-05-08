@@ -90,5 +90,7 @@ module.exports = (ast) => {
         {in:{"subject":tt.List.AbstractSubType(a1),"predicate":tt.Ordinal},out:tt.AbstractType(a2)  },
         {in:{subject:tt.List.AbstractSubType(b1),predicate:tt.List.ConcreteSubType(tt.Ordinal)},out:tt.List.AbstractSubType(b2)},
         {in:{"subject":tt.List.AbstractSubType(c1),"predicate":tt.SubRoutine.SubType(c3,tt.Boolean)},out:tt.List.AbstractSubType(c2)}])
+    
+    
     return builtins
 }

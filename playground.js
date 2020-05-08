@@ -10,7 +10,7 @@ const { inspect } = require("util");
 
 const program = fs.readFileSync("sample_programs/super_program.w", "utf-8");
 
-const program2 = "x = fn: Num a, Num b, (Poop a, Fart k) | a - b > 12 -> a + b";
+const program2 = "x = fn: Num a, Num b | a - b > 12 -> a + b";
 
 console.log(inspect(makeAST(program), false, null, false));
 //console.log(generateJS(program));

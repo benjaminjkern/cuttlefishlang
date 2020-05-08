@@ -12,10 +12,10 @@ Cuttlefish {
 
    Pattern = NonemptyListOf<PatternElement,",">
    PatternElement =
-    | "(" Pattern ")" -- tuple
+    | "(" NonemptyListOf<PatternElement,","> ")" -- tuple
     | ListType? Atom ":" id -- list
-    | Type PatternElement -- typed
-    | Atom
+    | (Type &id)? id -- typed
+    | Atom -- atomic
    Type = Type "=>" Type -- function
     | "(" Block<Type, ","> ")" -- tuple
     | ListType -- list

@@ -8,17 +8,20 @@ Cuttlefish as a language structurally draws from many aspects of Haskell and Eli
 
 Cuttlefish strives to allow its users to have immense power over the style of their code, as long as it is falls into what is considered clean, cohesive, "Cuttly" code.
 
-## **While coding with Cuttlefish, you should _never ever_ have to break your train of thought.**
+Cuttlefish also strives to achieve Alan Kay's ideas of ideal Object Oriented Programming which still being a functional programming language
 
 # Routines
 
 There are three types of Routines that Cuttlefish can handle, all equipped with immersive pattern matching and precise functional capabilities.
 
-| Routine        | Functions `fn:` | Processes `prc:`        | Servers `srv:`                    |
-| -------------- | --------------- | ----------------------- | --------------------------------- |
-| Description    |                 |                         |                                   |
-| Can call       | Functions       | Functions and Processes | Functions, Processes, and Servers |
-| Internal state |                 |                         |                                   |
+| Routine        | Functions `fn:`                                                              | Processes `prc:`                                                                                | Servers `srv:`                                                                                                   |
+| -------------- | ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Description    | Regular functions, lazily evaluated, can be passed around like objects       | Act like generator functions, meant to eagerly run until they are terminated                    | Used for organized distribution and interconnection of processes, eagerly run all child processes asynchronously |
+| Can call       | Functions                                                                    | Functions and Processes                                                                         | Functions, Processes, and Servers                                                                                |
+| Internal state | Any internal state is immediately deleted upon return                        | Have an outbox and store internal state until process is completed                              | Have an inbox and outbox, internal state is stored until server forcefully ended                                 |
+| Scope          | Inherit scope at definition time (for constants and internal function calls) | Inherit scope at creation time, can edit state of anything it knows is in its scope or subscope | Inherit scope similar to processes                                                                               |
+
+# Functions |
 
 Here is an example function.
 
@@ -77,16 +80,42 @@ filter = fn:
     A => Bool fun, [A] head:tail -> filter fun tail
 ```
 
+Pattern matching can be incredibly expressive for exactly which cases you want to run and how your processes should respond. The patterns are tested against the argument in definition order:
+
+```py
+doTaxes = prc:
+    Person p | p.debt > 1000 or p.name == 'Karen' ->
+        print 'Aint nothin I can do about that'
+    Person p ->
+        p.debt = 0
+
+    Monster m | m.color == 'green' -> m.eyeballs = 1
+    Monster m | m.hasFur -> m.scream()
+
+    Dog d ->
+        print 'Dogs dont have to do taxes!'
+        d.love += 1
+
+    # This will never match, since every dog matches above
+    Dog d | d.love > 100 ->
+        d.love -= 1
+```
+
 # Expression Operators
 
-| Operator | Operator Name               | Defined For | Extendable? |
-| -------- | --------------------------- | ----------- | ----------- |
-| `+`/`-`  | Addition and Subtraction    | Numbers     |             |
-| `*`      | Composition, Multiplication |             |             |
-| `^`      | Compound Composition        |             |             |
-| `/`      | Division                    |             |             |
-| `++`     | Concatenation               |             |             |
-| `**`     | Compound Concatenation      |             |             |
+The following operators are built in to the language:
+
+| Operator        | Operator Name                                                                                 | Defined For        |
+| --------------- | --------------------------------------------------------------------------------------------- | ------------------ |
+| `+`/`-`         | Addition and Subtraction                                                                      | Numbers            |
+| `*`             | Composition, Multiplication                                                                   | Numbers, Functions |
+| `^`             | Compound Composition, Exponentiation                                                          |                    |
+| `/`             | Division                                                                                      |                    |
+| `++`            | Concatenation                                                                                 |                    |
+| `**`            | Compound Concatenation                                                                        |                    |
+| `==`            | Equivalence                                                                                   |                    |
+| `===`           | Pointer equivalence                                                                           |                    |
+| `&`/`|`/`^`/`-` | Intersection, Union, Xor, and Difference set operators (`^` and `-` are used in two patterns) |                    |
 
 As seen in the functions section, the `twice` function is not actually necessary to implement in Cuttlefish, as this code can be written:
 
@@ -125,8 +154,18 @@ print 55     != 25 # 55 is just 55, so duh its False
 ```py
 print 5 ^ 4 == 5 * 5 * 5 * 5
 print (f ^ 4)(2) == (f * f * f * f)(2) # Which would also be equal to f(f(f(f(2))))
+print 5 ^ 2.5 # 55.90169943749474
+# It still works for regular floating point exponentiation!
 ```
 
-`^` would need to be defined slightly diffrerntly for number inputs, so that it isnt slow. For example it could run, for inputs `a` and `b`: `exp(b * ln(a))` or something of the sort.
-
 # Types
+
+Since Cuttlefish is statically typed, types are very important.
+
+# Macros
+
+Using macros, Cuttlefish can become an extremely expressive and customizable language.
+
+```
+
+```

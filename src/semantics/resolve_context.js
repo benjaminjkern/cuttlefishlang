@@ -119,6 +119,16 @@ function bind_subroutine_input(subroutine,pattern,binding_context){
     }
 }
 
+function pattern_clean_up(pattern){
+    pattern.arity = pattern.fields.patternElems.length
+    pattern.elements = []
+    for(const elem of pattern.fields.patternElems){
+        elem.query(elem,selectType("TypePattern"),undefined)
+    }
+}
+
+
+
 function selectType(target_type,skip=false){
     if(skip){ 
         return function get_node_skip(node,acc,type){
@@ -145,4 +155,3 @@ function default_push(object,fieldname,value){
     }
     object[fieldname].push(value)
 }
-

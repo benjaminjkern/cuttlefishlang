@@ -250,7 +250,6 @@ for [0..10]:
   h = t // 3600
   m = t % 3600
   print `{(h - 1) % 12 + 1}:{m // 60}:{m % 60}`
-end
 ```
 
 ```py
@@ -323,9 +322,10 @@ sum :=
 
 ```hs
 sum_of_digits = fn:
-    n   | n < 0 -> sum_of_digits(-n)
+    n
+        | n < 0 -> sum_of_digits(-n)
         | n < 10 -> n
-        | _ -> sum_of_digits(n // 10) + n % 10
+        | -> sum_of_digits(n // 10) + n % 10
 
 print sum_of_digits 8835299
 ```

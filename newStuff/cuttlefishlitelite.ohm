@@ -1,0 +1,33 @@
+CuttlefishLiteLite {
+    Specification = newline? ListOf<Statement, newline> newline?
+
+    Statement =
+        | Pattern "=" Expression
+   
+    Expression =
+        | Atom+
+
+    Atom = 
+        | "(" Expression ")" -- singleton
+        | numlit
+        | stringlit
+        | id
+
+    
+    stringlit = "\"" (~"\"" any)* "\"" -- double
+        | "'" (~"'" any)* "'" -- single
+
+    numlit = digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?
+    
+    reserved = "(" | ")" | "#"
+    id = (~reserved ~space ~newline alnum)+
+
+    indent = "⇨" ~alnum
+    dedent = "⇦" ~alnum
+
+    newline = ( "\n" | "\r" )+
+    space :=  " " | "\t" | comment
+    comment =
+        | "###" (~"###" any)* "###" -- multiline
+        | "#" (~"\n" any)* -- single
+}

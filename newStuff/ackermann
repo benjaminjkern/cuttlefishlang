@@ -1,0 +1,35 @@
+ackermann = fn:
+    (0, Int n) -> n + 1
+    (Int m, 0) -> ackermann(m - 1, 1)
+    (Int m, Int n) -> ackermann(m - 1, ackermann(m, n - 1))
+
+
+
+ackermann = (m,n) => {
+    if (m.value === 0 && n.type === 'Int') return {value:n.value + 1,type:'Int'};
+    if (m.type === 'Int' && n.value === 0) return ackermann({value:m.value - 1,type:'Int'}, {value:1,type:'Int'});
+    if (m.type === 'Int' && n.type === 'Int') return ackermann({value:m.value - 1,type:'Int'}, ackermann(m, {value:n.value - 1,type:'Int'}));
+    throw new Error(`No match at ackermann(${m},${n})`)
+}
+
+ackermann = fn:
+    (Int m, Int n)
+        | m == 0 -> n + 1
+        | n == 0 -> ackermann(m - 1, 1)
+        | -> ackermann(m - 1, ackermann(m, n - 1))
+
+A = fn:
+    Int m, Int n
+        | m == 0 -> n + 1
+        | n == 0 -> A (m - 1) 1
+        | -> A (m - 1) A m (n - 1)
+
+
+ackermann = (m,n) => {
+    if (m.type === 'Int' && n.type === 'Int') {
+        if (m.value === 0) return {value:n.value + 1,type:'Int'};
+        if (n.value === 0) return ackermann({value:m.value - 1,type:'Int'}, {value:1,type:'Int'})
+        return ackermann({value:m.value - 1,type:'Int'}, ackermann(m, {value:n.value - 1,type:'Int'}));
+    }
+    throw new Error(`No match at ackermann(${m},${n})`)
+}

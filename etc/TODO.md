@@ -7,14 +7,17 @@
    I was thinking:
 
 ```
+# with this as the definition
 method = fn: a, b, c, d -> a + b + c + d
 
+
+# then this:
 method 5 8 7 9
 
-# would be the same as
+# would be the same as:
 method
-    a: 5
     b: 8
+    a: 5
     d: 9
     c: 7
 
@@ -24,9 +27,15 @@ method
 5. Repeated patterns/guards : I really want to do this too but like the kwargs, they proved to be difficult to effectively implement, and I figured its easier to leave it out for now until we get the ast and stuff working.
 
 ```
+filter = fn: [Object] list, Object => Bool fun 
+    | list == [] -> []
+    | fun list[0] -> list[0] ++ filter fun list[1..]
+    | -> filter list[1..] fun
+
+
 [Object] filter = fn:
     [], Object => Bool fun -> []
-    [Object] head:tail, Object => Bool fun | fun head -> head ++ filter fun tail
+    [Object] list, Object => Bool fun | fun head -> head ++ filter fun tail
     [Object] head:tail, Object => Bool fun -> filter tail fun
 
 # could be (potentially) shortened to

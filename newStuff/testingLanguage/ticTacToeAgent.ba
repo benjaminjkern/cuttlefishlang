@@ -1,0 +1,15 @@
+###
+Tic Tac Toe Agent in Ba
+
+By Ben Kern
+###
+
+import tictactoe
+
+agentTurn = 'X'
+otherTurn = 'O'
+
+choose(board) = {
+    if tictactoe.win(board, agentTurn) -> 1
+    if tictactoe.win(board, otherTurn) -> -1
+}

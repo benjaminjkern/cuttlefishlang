@@ -1,0 +1,148 @@
+CuttlefishExpressions {
+    Process = 
+        | id<"="> "=" Object -- assignment
+        | id<"+="> "+=" Number -- addAssignment
+        | id<"-="> "-=" Number -- subAssignment
+        | id<"*="> "*=" Number -- multAssignment
+        | id<"/="> "/=" Number -- divAssignment
+        | id<"^="> "^=" Number -- expAssignment
+        | id<"++="> "++=" Object -- concatAssignment
+        | id<"U="> "U=" Set -- unionAssignment
+        
+        | "if" Boolean Process ("else" Process)? -- ifelse
+        | "while" Boolean Process -- while
+        | "for" Collection Function -- for
+        | "put"? Object -- put
+        | "return" Object -- return
+        | "print" String -- print
+        | "continue"
+		| "break"
+
+    Pattern<avoid> =
+        | (Type<avoid> &id<avoid>)? id<avoid>
+
+    Type<avoid> =
+    	| "Type"
+    	| "Object"
+        | "Number"
+        | "Boolean"
+        | "String"
+        | Type<"=>"> "=>" Type<avoid> -- functional
+        | "[" Type<"]"> "]" -- list
+        | "{" Type<"}"> "}" -- set
+        | GenericType<avoid>
+
+    GenericType<avoid> =
+        | id<avoid>
+
+    Object =
+        | Function Object -- application
+        | Boolean "?" Object ":" Object -- ternary
+        | List "[" Integer "]" -- select
+        | Boolean
+        | Number
+        | String
+        | Collection
+        | Function
+        | Object "|>" Function -- backwardsApp
+
+    Function =
+    	| Function "*" Function -- composition
+        | Function "^" Integer -- compoundComposition
+        | "fn" ":" (Subroutine | Process) -- literal
+
+    Subroutine =
+        | Pattern<("->" | "|")> Guard? "->" Process
+        
+    Guard =
+    	| "|" Boolean?
+
+    Collection =
+        | List
+        | Set
+    
+    List = 
+        | List "++" List -- concat
+        | List "[" Function "]" -- filter
+        | List "++" Object -- append
+        | "[" ListOf<Object,","> ","? "]" -- literal
+        | DiscreteRange -- range
+        | Object "++" List -- prepend
+
+    DiscreteRange =
+        | ("[" | "(") Number ".." (Number "..")? Number? ("]" | ")")
+
+    Set = 
+        | Set "U" Set -- union
+        | Set "^" Set -- intersect
+        | Set "-" Set -- diff
+        | Set "X" Set -- cross
+        | "Set" List -- makeSet
+        | "{" ListOf<Object,","> ","? "}" -- literal
+        | ContinuousRange -- range
+    
+    ContinuousRange =
+        | ("[" | "(") Number? "..." Number? ("]" | ")")
+
+    Boolean =
+    	| ("not" | "!") Boolean -- not
+    	| Number ">" Number -- gt
+    	| Number "<" Number -- lt
+    	| Number ">=" Number -- gte
+    	| Number "<=" Number -- lte
+        | Number "%=" Number -- modComp
+        | Boolean ("and" | "&&") Boolean -- and
+        | Boolean ("or" | "||") Boolean -- or
+        | Boolean "nand" Boolean -- nand
+        | Boolean "nor" Boolean -- nor
+        | Boolean "xor" Boolean -- xor
+        | Boolean "xnor" Boolean -- xnor
+        | Collection "contains" Object -- contains
+        | "true"
+        | "false"
+        | Object ("is not" | "!=") Object -- isNot
+        | Object ("equals" | "==") Object -- deepEqual
+        | Object ("is" | "===") Object -- pointerEqual
+        | Object "in" Collection -- in
+
+    Number = 
+    	| "sum" List -- sum
+        | "|" Number "|" -- abs
+        | Number "+" Num2 -- add
+        | Number "-" Num2 -- sub
+        | Num2
+        | Integer
+    Num2 =
+        | Num2 "/" Num3 -- div
+        | Num2 "%" Num3 -- mod
+        | Num2 "*"? Num3 -- mult
+        | Num3
+    Num3 =
+        | Num3 "^" numlit -- exp
+        | "-" numlit -- negative
+        | numlit
+
+    numlit =
+        | "Infinity"
+        | "NaN"
+        | #(digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?) -- literal
+        
+    Integer =
+        | Num2 "//" Num3 -- intDiv
+    	| #digit+
+
+    String =
+        | "\"" (~"\"" any)* "\"" -- double
+        | "'" (~"'" any)* "'" -- single
+        | "`" ListOf<stringbit,Stringbreak> "`" -- interpolated
+        | String "++" String -- concat
+    	| Number
+        | Boolean
+        
+    Stringbreak =
+    	| "{" String "}"
+        
+    stringbit = (~"`" ~"{" any)*
+
+    id<avoid> = (~avoid ~space any)+
+}

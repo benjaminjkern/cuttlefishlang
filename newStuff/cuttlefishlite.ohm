@@ -1,0 +1,127 @@
+CuttlefishLite {
+   Specification = newline? Process (newline Process)* newline?
+
+   Process =
+    | TypedPattern "=" Exp -- assignment
+    | put? Exp -- put
+
+   Block<A, delimiter> =
+    | newline indent newline A (delimiter? newline A)* delimiter? newline dedent -- large
+    | NonemptyListOf<A, delimiter> delimiter? -- small
+
+   NullSpaceBlock<A> =
+    | newline indent newline A (newline A)* newline dedent -- large
+    | A* -- small
+
+   SemiBlock<A, delimiter> =
+    | A (delimiter A)* delimiter? (newline indent newline A (spacedelim<delimiter> A)* spacedelim<delimiter> dedent newline (A (delimiter A)*)?)?
+    
+   spacedelim<delimiter> =
+    | delimiter
+    | newline
+    | delimiter newline -- both
+
+   Pattern = NonemptyListOf<PatternElement,",">
+   PatternElement =
+    | "(" NonemptyListOf<PatternElement,","> ")" -- tuple
+    | TypedPattern
+    | Atom -- atomic
+   TypedPattern = ID+
+   PatternA<avoid> = NonemptyListOf<PatternElementA<avoid>,",">
+   PatternElementA<avoid> =
+    | "(" NonemptyListOf<PatternElementA<")">,","> ")" -- tuple
+    | TypedPatternA<avoid>
+    | AtomA<avoid> -- atomic
+   TypedPatternA<avoid> = IDA<avoid>+
+   
+
+   Function = fn ":" SubRoutineGroup
+   FunctionA<avoid> = fn ":" SubRoutineGroupA<avoid>
+
+   SubRoutineGroup =
+    | Block<SubRoutine, ";">
+    | Block<Process, ","> -- dollarSign
+   SubRoutineGroupA<avoid> =
+    | Block<SubRoutineA<avoid>, ";">
+    | Block<ProcessA<avoid>, ","> -- dollarSign
+
+   SubRoutine = PatternA<("|" | "->")> Block<Guard, ";">
+   Guard = ("|" ExpA<"->">?)? "->" Block<Process, ",">
+   SubRoutineA<avoid> = PatternA<("|" | "->")> Block<GuardA<avoid>, ";">
+   GuardA<avoid> = ("|" ExpA<"->">?)? "->" Block<ProcessA<avoid>, ",">
+   
+   Exp = 
+    | (Atom | ID) NullSpaceBlock<Exp>? -- normal
+    | (Atom | ID) Block<Kwarg, myspaces> -- justKwargs
+    | (Atom | ID) NullSpaceBlock<Exp> Block<Kwarg, myspaces>? -- both
+
+   ExpA<avoid> =
+    | ~avoid (AtomA<avoid> | IDA<avoid>) NullSpaceBlock<ExpA<avoid>>? -- normal
+    | ~avoid (AtomA<avoid> | IDA<avoid>) Block<KwargA<avoid>, myspaces> -- justKwargs
+    | ~avoid (Atom | ID) NullSpaceBlock<ExpA<avoid>> Block<KwargA<avoid>, myspaces>? -- both
+
+   Kwarg =
+    | IDA<":"> ":" Exp
+    
+   KwargA<avoid> = 
+    | ~avoid IDA<":"> ":" ExpA<avoid>
+
+   Atom =
+    | Range
+    | "(" ExpA<")"> ")" -- singleton
+    | Tuple
+    | Function
+    | List
+    | Set
+    | String
+    | numlit
+   
+   AtomA<avoid> =
+    | Range
+    | "(" ExpA<")"> ")" -- singleton
+    | Tuple
+    | FunctionA<avoid>
+    | List
+    | Set
+    | String
+    | numlit
+
+   Tuple =
+    | "(" ~(ExpA<")"> ~",") SemiBlock<ExpA<")">,","> ")" -- nonempty
+    | "(" ")" -- empty
+   List =
+    | "[" ~(ExpA<"]"> ~",") SemiBlock<ExpA<"]">,","> "]" -- nonempty
+    | "[" "]" -- empty
+   Set =
+    | "{" SemiBlock<ExpA<"}">,","> "}" -- nonempty
+    | "{" "}" -- empty
+   Range =
+    | ("[" | "(") ExpA<"..."> "..." ExpA<("]" | ")")>? ("]" | ")") -- continuous
+    | ("[" | "(") ExpA<".."> ".." (ExpA<(".." | "]" | ")")> "..")? ExpA<("]" | ")")>? ("]" | ")") -- discrete
+
+   String = "\"" (~"\"" any)* "\"" -- double
+    | "'" (~"'" any)* "'" -- single
+    | "`" stringbit ("{" ExpA<"}"> "}" stringbit)* "`" -- interpolated
+   stringbit = (~"{" ~"`" any)*
+
+   numlit = digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?
+
+   fn = "fn" ~alnum
+   type = "type" ~alnum
+   put = "put" ~alnum
+
+   indent = "⇨" ~alnum
+   dedent = "⇦" ~alnum
+
+   keyword = fn | type | put
+   reserved = keyword | "," | ";" | "#" | "\n" | "." | indent | dedent
+   ID = (~Atom #(~reserved ~space any))+
+   IDA<avoid> =  (~Atom #(~reserved ~space ~avoid any))+
+
+   newline =  ("\n" comment?)+
+   space :=  " " | "\t" | comment
+   myspaces = space+
+   comment =
+    | "###" (~"###" any)* "###" -- multiline
+    | "#" ~("##") (~"\n" any)* -- single
+}

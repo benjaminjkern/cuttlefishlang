@@ -1,0 +1,78 @@
+[
+  {
+    ASTType: 'Assignment',
+    assignments: [
+      {
+        ASTType: 'SingleAssignment',
+        assignee: { ASTType: 'Ref', id: 'sum' },
+        value: {
+          ASTType: 'Function',
+          patterns: [
+            [
+              {
+                ASTType: 'Pattern',
+                input: [ { ASTType: 'List' } ],
+                output: [ { ASTType: 'Put', value: { ASTType: 'List' } } ]
+              },
+              {
+                ASTType: 'Pattern',
+                input: [
+                  {
+                    ASTType: 'PatternElem',
+                    id: 'nums',
+                    type: {
+                      ASTType: 'ListType',
+                      type: { ASTType: 'Ref', id: 'Num' }
+                    },
+                    optional: false,
+                    multiple: false,
+                    default: []
+                  }
+                ],
+                output: [
+                  {
+                    ASTType: 'Put',
+                    value: {
+                      ASTType: 'Application',
+                      func: { ASTType: 'Ref', id: 'nums' },
+                      input: [
+                        {
+                          ASTType: 'BinaryOp',
+                          left: {
+                            ASTType: 'List',
+                            values: [ { ASTType: 'Num', value: 0 } ]
+                          },
+                          op: '+',
+                          right: {
+                            ASTType: 'Application',
+                            func: { ASTType: 'Ref', id: 'sum' },
+                            input: [
+                              {
+                                ASTType: 'Application',
+                                func: { ASTType: 'Ref', id: 'nums' },
+                                input: [
+                                  {
+                                    ASTType: 'DiscreteRange',
+                                    start: { ASTType: 'Num', value: 1 },
+                                    includeStart: true,
+                                    end: [],
+                                    includeEnd: true,
+                                    step: []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          ]
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,71 @@
+(define roman 
+        (lambda(n)
+    
+          (define iftrue      ; standard if function requires an "else" bit
+              (lambda(b t)
+                (if b t nil)))
+    
+          (define digit 
+              (lambda(loop num c)
+                (loop (gep n num) 
+                   (lambda()
+                     (print c)
+                     (define n (sub n num))))))
+          (define digits
+              (lambda(loop num c1 c2)
+                (loop (gep n num)
+                   (lambda()
+                     (print c1)
+                     (print c2)
+                     (define n (sub n num))))))
+    
+          (define hundred (mult ten ten))
+    
+          (digit  while   (mult ten hundred) 'M   )
+          (digits iftrue (mult nine hundred) 'C 'M)
+          (digit  iftrue (mult five hundred) 'D   )
+          (digits iftrue (mult four hundred) 'C 'D)
+          (digit  while              hundred 'C   )
+          (digits iftrue     (mult nine ten) 'X 'C)
+          (digit  iftrue     (mult five ten) 'L   )
+          (digits iftrue     (mult four ten) 'X 'L)
+          (digit  while                  ten 'X   )
+          (digits iftrue                nine 'I 'X)
+          (digit  iftrue                five 'V   )
+          (digits iftrue                four 'I 'V)
+          (digit  while                  one 'I   )))
+
+roman = fn:
+    n ->
+        iftrue = fn: b, t -> if b t nil
+        digit = fn:
+            loop, num, c ->
+                loop
+                    n >= num
+                    fn:
+                        () -> 
+                            print c
+                            n = n - num
+        digits = fn:
+            loop, num, c1, c2 ->
+                loop
+                    n >= num
+                    fn:
+                        () ->
+                            print c1
+                            print c2
+                            n = n - num
+
+        digit while 1000 'M'
+        digits iftrue 900 'C' 'M'
+        digit iftrue 500 'D'
+        digits iftrue 400 'C' 'D'
+        digit while 100 'C'
+        digits iftrue 90 'X' 'C'
+        digit iftrue 50 'L'
+        digits iftrue 40 'X' 'L'
+        digit while 10 'X'
+        digits iftrue 9 'I' 'X'
+        digit iftrue 5 'V'
+        digits iftrue 4 'I' 'V'
+        digit while 1 'I'

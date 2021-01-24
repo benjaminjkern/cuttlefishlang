@@ -1,0 +1,114 @@
+# Fizzbuzz
+for [1..100] prc: i ->
+    output = ''
+    if i %= 3 output ++= 'Fizz'
+    else if i %= 3 || i %= 5 output ++= 'Buzz'
+    else output ++= i
+    print output
+
+# cooler way
+for [1..100] prc: i ->
+    | i %= 15 -> print 'FizzBuzz'
+    | i %= 3 -> print 'Fizz'
+    | i %= 5 -> print 'Buzz'
+    | -> print i
+
+# even cooler way, though its technically longer
+fizzBuzz = fn:
+    [Num] x:xs
+        | -> [next || x] ++ fizzBuzz xs
+        | x %= 3 -> 'Fizz' ++ next
+        | x %= 5 -> 'Buzz'
+    [] -> []
+
+join fizzBuzz [1..100] '\n'
+
+1
+2
+Fizz
+4
+Buzz
+Fizz
+7
+8
+Fizz
+Buzz
+11
+Fizz
+13
+14
+FizzBuzz
+...
+
+# shorter code!
+
+
+# This is valid code
+a = fn:
+    b
+        | c ->
+            d
+                e
+                f
+            g
+        | h ->
+            i
+    j ->
+        k
+    
+
+# VALID
+a = fn: b | c -> d(e, f); g; | h -> i; j -> k
+
+# VALID
+a = fn: b | c -> d(e, f); g; | h -> i; j -> # IT IS clear that the k is part of a block from the j pattern
+    k
+
+# NOT VALID
+a = fn: b | c -> d(e, f); g; | h -> i; # IT ASSUMES ALL PATTERNS WILL BE ON THIS LINE, SO THIS DOESNT WORK
+    j -> k
+
+# NOT VALID
+a = fn: b               # Because of the b on this line it assumes there is only one line of pattern cases
+    | c -> d(e, f); g;  # But breaking into this line breaks any possibility of multiple patterns
+    | h -> i; j -> k    # This is trying to decalare an alternative pattern, so it breaks
+
+a = fn: b | c ->        # Similar to the last, this is saying hey there is only one line of guards
+    d(e, f)             # This says oh actually there is only one guard
+    g; | h -> i; j -> k # This says oops no thats another guard I dont care what you say
+
+
+# THIS IS VALID THOUGH
+a = fn:
+    b | c -> d(e, f); g; | h -> i;   # Multiple patterns to match to, the first pattern happens to have one line of guards
+    j -> k
+                
+
+# The best way of doing this is probably this, but who am I to judge
+a = fn:
+    b
+        | c -> d(e, f); g
+        | h -> i
+    j -> k
+
+
+# Guards, even though they are technically boolean expressions, cannot be indented. Its just easier, trust me
+
+# otherwise this owuld have to work
+
+weirdFunc = fn:
+    Num a, Num b
+        | greaterThanPrefix
+            a
+            b
+            ->
+                a + b
+        | lessThanPrefix a b -> a - b
+
+weirdFunc = fn:
+    Num a, Num b
+        | greaterThanPrefix a b -> a + b
+        | lessThanPrefix a b -> a - b
+
+# the spaces dont need to be there at all
+a=fn:b|c->d(e,f);g;|h->i;j->k

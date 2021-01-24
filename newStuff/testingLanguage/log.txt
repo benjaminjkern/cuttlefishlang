@@ -1,0 +1,219 @@
+[('m',), ('y',), ('N',), ('a',), ('m',), ('e',), (' ',), ('=',), (' ',), ('1',), ('2',), ('4',), ('1',), ('2',), ('5',), ('8',), ('1',), ('5',), ('0',), (';',), ('j',), ('e',), ('f',), ('f',), ('=',), ('2',), (';',), (' ',), ('#',), ('\n',), (' ',), ('j',), ('e',), ('f',), ('f',), (' ',), ('=',), (' ',), ('2',), ('2',), ('1',), (' ',), ('#',), (' ',), ('y',), ('e',), ('u',), ('h',), ('\n',), ('h',), ('e',), ('l',), ('l',), ('o',), (' ',), ('=',), (' ',), ('t',), ('r',), ('u',), ('e',), (' ',), ('#',), (' ',), ('h',), ('e',), ('h',), ('e',), ('h',), ('e',), ('\x00',)]
+
+
+(0) ".myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" ACCEPTS
+(1) "m.yName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" 
+(2) "my.Name = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" 
+(3) "myN.ame = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" 
+(4) "myNa.me = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" 
+(5) "myNam.e = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" 
+(6) "myName. = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" 
+(7) "myName .= 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" ACCEPTS
+(8) "myName =. 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" 
+(9) "myName = .1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" 
+(10) "myName = 1.241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" ACCEPTS
+(11) "myName = 12.41258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" ACCEPTS
+(12) "myName = 124.1258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" ACCEPTS
+(13) "myName = 1241.258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" ACCEPTS
+(14) "myName = 12412.58150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" ACCEPTS
+(15) "myName = 124125.8150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" ACCEPTS
+(16) "myName = 1241258.150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" ACCEPTS
+(17) "myName = 12412581.50;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" ACCEPTS
+(18) "myName = 124125815.0;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" ACCEPTS
+(19) "myName = 1241258150.;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" ACCEPTS
+(20) "myName = 1241258150;.jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" 
+(21) "myName = 1241258150;j.eff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" 
+(22) "myName = 1241258150;je.ff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" 
+(23) "myName = 1241258150;jef.f=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" 
+(24) "myName = 1241258150;jeff.=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" 
+(25) "myName = 1241258150;jeff=.2; #
+ jeff = 221 # yeuh
+hello = true # hehehe" 
+(26) "myName = 1241258150;jeff=2.; #
+ jeff = 221 # yeuh
+hello = true # hehehe" 
+(27) "myName = 1241258150;jeff=2;. #
+ jeff = 221 # yeuh
+hello = true # hehehe" 
+(28) "myName = 1241258150;jeff=2; .#
+ jeff = 221 # yeuh
+hello = true # hehehe" 
+(29) "myName = 1241258150;jeff=2; #.
+ jeff = 221 # yeuh
+hello = true # hehehe" 
+(30) "myName = 1241258150;jeff=2; #
+. jeff = 221 # yeuh
+hello = true # hehehe" 
+(31) "myName = 1241258150;jeff=2; #
+ .jeff = 221 # yeuh
+hello = true # hehehe" 
+(32) "myName = 1241258150;jeff=2; #
+ j.eff = 221 # yeuh
+hello = true # hehehe" 
+(33) "myName = 1241258150;jeff=2; #
+ je.ff = 221 # yeuh
+hello = true # hehehe" 
+(34) "myName = 1241258150;jeff=2; #
+ jef.f = 221 # yeuh
+hello = true # hehehe" 
+(35) "myName = 1241258150;jeff=2; #
+ jeff. = 221 # yeuh
+hello = true # hehehe" 
+(36) "myName = 1241258150;jeff=2; #
+ jeff .= 221 # yeuh
+hello = true # hehehe" 
+(37) "myName = 1241258150;jeff=2; #
+ jeff =. 221 # yeuh
+hello = true # hehehe" 
+(38) "myName = 1241258150;jeff=2; #
+ jeff = .221 # yeuh
+hello = true # hehehe" 
+(39) "myName = 1241258150;jeff=2; #
+ jeff = 2.21 # yeuh
+hello = true # hehehe" 
+(40) "myName = 1241258150;jeff=2; #
+ jeff = 22.1 # yeuh
+hello = true # hehehe" 
+(41) "myName = 1241258150;jeff=2; #
+ jeff = 221. # yeuh
+hello = true # hehehe" 
+(42) "myName = 1241258150;jeff=2; #
+ jeff = 221 .# yeuh
+hello = true # hehehe" 
+(43) "myName = 1241258150;jeff=2; #
+ jeff = 221 #. yeuh
+hello = true # hehehe" 
+(44) "myName = 1241258150;jeff=2; #
+ jeff = 221 # .yeuh
+hello = true # hehehe" 
+(45) "myName = 1241258150;jeff=2; #
+ jeff = 221 # y.euh
+hello = true # hehehe" 
+(46) "myName = 1241258150;jeff=2; #
+ jeff = 221 # ye.uh
+hello = true # hehehe" 
+(47) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeu.h
+hello = true # hehehe" 
+(48) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh.
+hello = true # hehehe" 
+(49) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+.hello = true # hehehe" 
+(50) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+h.ello = true # hehehe" 
+(51) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+he.llo = true # hehehe" 
+(52) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hel.lo = true # hehehe" 
+(53) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hell.o = true # hehehe" 
+(54) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello. = true # hehehe" 
+(55) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello .= true # hehehe" 
+(56) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello =. true # hehehe" 
+(57) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = .true # hehehe" 
+(58) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = t.rue # hehehe" 
+(59) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = tr.ue # hehehe" 
+(60) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = tru.e # hehehe" 
+(61) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true. # hehehe" 
+(62) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true .# hehehe" 
+(63) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true #. hehehe" 
+(64) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # .hehehe" 
+(65) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # h.ehehe" 
+(66) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # he.hehe" 
+(67) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # heh.ehe" 
+(68) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehe.he" 
+(69) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # heheh.e" 
+(70) "myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe." 
+myName = 1241258150;jeff=2; #
+ jeff = 221 # yeuh
+hello = true # hehehe DOES NOT ACCEPT

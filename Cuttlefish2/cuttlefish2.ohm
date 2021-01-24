@@ -1,0 +1,193 @@
+CuttlefishRemastered {
+	Program = newline? ListOf<Process, newline> newline?
+    
+    Process =
+        | If
+        | While
+        | Repeat
+        | For
+        | Assignment
+        | Reassignment
+        | Print
+        | Return
+        | Put
+        | "(" (Process | Block<Process>) ")" -- group
+
+    Block<Object> =
+        | newline? indent newline NonemptyListOf<Object, newline> newline dedent
+
+    If =
+        | if Expression ":"? (Process | Block<Process>) else ":"? (Process | Block<Process>) -- else
+        | if Expression ":"? (Process | Block<Process>) -- default
+    
+    While =
+        | while Expression ":"? (Process | Block<Process>)
+
+    For =
+        | for id in Expression ":"? (Process | Block<Process>)
+
+    Assignment =
+        | id "=" Expression
+    
+    Reassignment =
+        | id binaryOp #"=" Expression
+
+    Print =
+        | print Expression
+
+    Return =
+        | return Expression?
+
+    Put = 
+        | put? Expression
+
+    Expression =
+        | id ":=" Expression -- walrus
+        | Expression4
+
+    Expression4 =
+        | Expression5 "?" Expression4 ":" Expression4 -- ternary
+        | Expression5
+
+    Expression5 =
+        | Expression5 ("||"|or) Expression6 -- or
+        | Expression6
+
+    Expression6 =
+        | Expression6 ("&&"|and) Expression10 -- and
+        | Expression10
+
+    Expression10 =
+        | Expression10 eqOp Expression11 -- equal
+        | Expression11
+
+    Expression11 =
+        | Expression11 relOp Expression12 -- relation
+        | Expression12
+
+    Expression12 =
+        | Expression12 bitOp Expression13 -- bit
+        | Expression13
+
+    Expression13 =
+        | Expression13 addOp Expression14 -- add
+        | Expression14
+
+    Expression14 =
+        | Expression14 multOp Expression15 -- mult
+        | Expression15
+
+    Expression15 =
+        | Expression16 "^" Expression15 -- exp
+        | Expression16
+
+    Expression16 =
+        | unaryOp Expression16 -- unary
+        | Expression19
+
+    Expression19 =
+        | Expression19 "." id -- element
+        | Expression19 "[" Expression "]" -- select
+        | Expression19 Atom -- application
+        | Atom
+
+    Atom =
+        | "(" Expression ")" -- singleton
+        | Function
+        | List
+        | Tuple
+        | Map
+        | Set
+        | String
+        | boollit
+        | numlit
+        | id
+
+    Function =
+        | "fn" ":" (Subroutine | Block<Subroutine> | Process | Block<Process>)
+
+    Subroutine =
+        | Pattern (GuardedProcess | Block<GuardedProcess>) -- guarded
+        | Pattern "->" (Process | Block<Process>) -- direct
+        
+    Pattern = NonemptyListOf<PatternElement,",">
+   	PatternElement =
+    	| "(" NonemptyListOf<PatternElement,","> ")" -- tuple
+    	| ListType? Atom ":" id -- list
+    	| (Type &id)? id -- typed
+    	| Atom 
+  	Type = Type "=>" Type -- function
+    	| "(" NonemptyListOf<Type,","> ")" -- tuple
+    	| ListType -- list
+        | SetType -- set
+    	| id
+   	ListType = "[" Type "]"
+    SetType = "{" Type "}"
+
+    GuardedProcess =
+        | "|" Expression? "->" (Process | Block<Process>)
+        
+    List =
+    	| "[" (ListOf<Expression,","> | Block<Expression>) ","? "]"
+        
+    Tuple =
+    	| "(" ")" -- empty
+    	| "(" Expression "," ")" -- single
+        | "(" Expression "," (ListOf<Expression,",">) ","? ")" -- multiple
+        
+    Map =
+        | "{" (ListOf<Pairing,",">|Block<Pairing>) ","? "}"
+        
+    Pairing =
+    	| Expression "->" Expression
+        
+    Set = 
+    	| "{" (ListOf<Expression,","> | Block<Expression>) ","? "}"
+
+    String = "\"" (~"\"" any)* "\"" -- double
+        | "'" (~"'" any)* "'" -- single
+        | "`" stringbit ("{" Expression "}" stringbit)* "`" -- interpolated
+    stringbit = (~"{" ~"`" any)*
+    
+    boollit = true | false
+    numlit = digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?
+    
+    binaryOp = "||" | or | and | "&&" | addOp | multOp | bitOp | "^"
+    
+    addOp = "+" ~"+" | "-" | "++" | u
+    multOp = "*" | "/" | "%"
+    bitOp = "<<" ~"<" | ">>" | "<<<"
+    eqOp = "==" ~"=" | "!=" ~"=" | "===" | "!=="
+    relOp = "<" ~"=" | ">" ~"=" | "<=" | ">=" | in
+    
+    unaryOp = "!" | "-" | "+" | not
+
+    indent = "⇨" | "indent" ~alnum
+    dedent = "⇦" | "dedent" ~alnum
+
+	if = "if" ~alnum
+    while = "while" ~alnum
+    print = "print" ~alnum
+    return = "return" ~alnum
+    put = "put" ~alnum
+    for = "for" ~alnum
+    or = "or" ~alnum
+    and = "and" ~alnum
+    else = "else" ~alnum
+    true = "true" ~alnum
+    false = "false" ~alnum
+    not = "not" ~alnum
+    u = "U" ~alnum
+    in = "in" ~alnum
+
+	reserved = if | while | print | return | put | for | or | and | else | true | false | not | indent | dedent | u | in
+    id = ~reserved (letter | "_") (alnum | "_")*
+
+    newline = (("\n" | "\r") comment?)+
+    space := " " | "\t" | comment
+    
+    comment =
+        | "###" (~"###" any)* ("###" | end) -- multiline
+        | "#" ~("##") (~"\n" any)* -- single
+
+}

@@ -1,0 +1,142 @@
+Cuttlefish {
+    Program = newline? ListOf<Statement, newline> newline?
+
+    Statement =
+        | Assignment
+        | Reassignment
+        | Print
+        | If
+        | Catch
+        | While
+        | Repeat
+        | For
+        | Break
+        | Continue
+        | Return
+        | Put
+        
+    Assignment =
+        | Assignable "=" Expression -- single
+        | NonemptyListOf<Assignable, ","> "=" NonemptyListOf<~Function ~Process Expression, ","> -- multiple
+    Reassignment =
+        | Assignable binaryOp ~space "=" Expression
+    Print = print Expression
+    If = if Expression ":" Block<Statement> (newline else ":"? Block<Statement>)?
+    Catch = catch ":"? Block<Pattern>
+    While = while Expression ":" Block<Statement>
+    Repeat = repeat ":"? Block<Statement>
+    For = for Expression ":" Block<Pattern>
+    Break = break
+    Continue = continue
+    Return = return Expression
+    Put = put? Expression
+    
+   	keyword = print | if | else | catch | while | repeat | for | break | continue | return | put | fn | prc
+    print = "print" &sep
+    if = "if" &sep
+    else = "else" &sep
+    catch = "catch" &sep
+    while = "while" &sep
+    repeat = "repeat" &sep
+    for = "for" &sep
+    break = "break" &sep
+    continue = "continue" &sep
+    return = "return" &sep
+    put = "put" &sep
+    fn = "fn" &sep
+    prc = "prc" &sep
+    sep = space | reserved | &end | newline
+
+    Assignable = ElementOf | ref
+
+    Expression = 
+        | Expression1 "?" Expression1 ":" Expression -- ternary
+        | Expression1
+
+    Expression1 =
+        | Expression1 binaryOp Expression2 -- operator
+        | Expression2
+        
+    Expression2 =
+        | Expression2 Expression3 -- application
+        | Expression2 Block<Expression> -- block
+        | Expression3
+
+    Expression3 =
+        | Expression4 #(~space &sep) Expression -- nospaceapplication
+        | Expression4
+
+    Expression4 =
+        | ElementOf
+        | Atom
+
+    Atom =
+        | "(" Expression ")" -- group
+        | List
+        | DiscreteRange
+        | ContinuousRange
+        | Tuple
+        | Set
+        | Map
+        | Function
+        | Process
+        | String
+        | number
+        | ref
+
+    binaryOp = "===" | "==" | ">=" | "<=" | ">" | "<" | "*" | "//" | "/"  | "^" | "++" | "!=" | "!==" | "%=" | "|>" | "+" | "-"
+    
+    reserved = binaryOp | "=" | "." | "," | "(" | ")" | "{" | "}" | "[" | "]" | ":" | ".." | "→" | "←" | "?"
+    ref =  ~number ~keyword (~reserved ~space ~newline any)+
+    
+    DiscreteRange = ("[" | "(") Expression ".." (Expression "..")? Expression? (")" | "]")
+    ContinuousRange = ("[" | "(") Expression "..." Expression? (")" | "]")
+
+    ElementOf = Expression3 #(~space) "." #(~space) ref
+
+    Tuple = "(" ListOf<Expression, ","> ","? ")"
+    List = "[" ListOf<Expression, ","> ","? "]"
+    Set = "{" ListOf<Expression, ","> ","? "}"
+    Map = "{" Block<Pattern> "}"
+
+    Function =
+        | fn ":" Block<Pattern> -- pattern
+        | fn ":" Block<Statement> -- statement
+    Process =
+        | prc ":" Block<Pattern> -- pattern
+        | prc ":" Block<Statement> -- statement
+
+    Pattern =
+        | NonemptyListOf<PatternElem, ","> Block<Guard> -- guard
+        | NonemptyListOf<PatternElem, ","> Returnbit -- return
+    Guard =
+        | "|" Expression Block<Guard> -- guard
+        | "|" Expression? Returnbit -- return
+    Returnbit = "->" Block<Statement>
+
+    PatternElem = TypeMatch ("=" Expression)? -- anonymous
+        | ~ref Atom -- specific
+    patternModifier = "*" | "?" | "+"
+    TypeMatch =
+        | Type (#(~space) patternModifier)? ref -- typed
+        | ref -- untyped
+    Type =
+        | "[" Type "]" -- list
+        | ref -- ref
+
+    Block<Inside> = Inside -- single
+    	| newline "→" newline ListOf<Inside, newline> newline "←" -- indented
+    String = string<"'"> | string<"\"">
+    	| "`" ListOf<stringbit, StringExp> "`" -- expression
+
+    stringbit = ("\\`" | "\\{" | ~"`" ~"{" any)*
+    StringExp = "{" Expression "}"
+    
+    
+    number = "-"? digit+ ("." digit+)? (("e" | "E") ("-" | "+")? digit+)?
+    string<delim> = delim (escape<delim> | ~delim any)* delim
+    escape<delim> = "\\" delim
+    comment = "###" (~"###" any)* ("###"|&end) | "#" (~newline any)* (&newline|&end)
+    newline = ("\n" | "\r") (space* ("\n" | "\r"))*
+    space := ~newline ("\u0000".." "  | comment)
+}

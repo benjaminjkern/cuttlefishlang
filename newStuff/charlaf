@@ -1,0 +1,6 @@
+const inMandelbrot = (z,c,openset={},maxDepth = 200) => {
+    if (c === undefined) return inMandelbrot(0,z);
+    if (Math.abs(z) > 2) return false;
+    if (z in openset || maxDepth === 0) return true;
+    return inMandelbrot(z**2 + c, c, {...openSet, [z]:z}, maxDepth-1);
+}

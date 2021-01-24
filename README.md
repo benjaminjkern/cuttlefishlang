@@ -23,7 +23,7 @@ There are three types of Routines that Cuttlefish can handle, all equipped with 
 | Internal state | Any internal state is immediately deleted upon return                        | Have an outbox and store internal state until process is completed                              | Have an inbox and outbox, internal state is stored until server forcefully ended                                 |
 | Scope          | Inherit scope at definition time (for constants and internal function calls) | Inherit scope at creation time, can edit state of anything it knows is in its scope or subscope | Inherit scope similar to processes                                                                               |
 
-# Functions |
+# Functions
 
 Here is an example function.
 

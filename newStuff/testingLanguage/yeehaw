@@ -1,0 +1,107 @@
+factorial: Integer -> Integer
+
+factorial[0] => 1
+factorial => x * factorial(x-1)
+
+
+x = 1
+
+...
+
+x = "James"
+
+
+5 + '5'
+# 5 + 53
+# 10
+# '55'
+# '10'
+# Error
+
+
+5 ++ '5'
+# 55
+# '55'
+
+
+5 ++ 5
+# 55
+# [5, 5]
+# '55'
+
+5 ++ [5]
+# [5, 5]
+
+[5] ++ 5
+# [5, 5]
+
+[5] ++ [5]
+# [5, 5]
+
+
+for (0..20) (i -> print i)
+
+derivative
+    (f) -> x -> lim (0) (h -> (f(x + h) - f(x)) / h )
+
+derivative = {
+    _add(a, b) = derivative(a) + derivative(b)
+    _mult(a, b) = derivative(a) * b + a * derivative(b)
+    Number -> 0
+    Number => Number f -> fn:
+        Number x -> lim (0) fn:(f(x + $) - f(x))/$;
+}
+
+d(a + b)/dx = da/dx + db/dx
+d(a * b)/dx = da/dx * b + a * db/dx
+d(a ^ b)/dx = b * a ^ (b-1) * da/dx + db/dx * ln a * a ^ b
+dx/dx = 1
+df/dx = lim_{h->0} ( f(x + h) - f(x) )/h
+
+
+
+a ^ b = y
+
+b * ln a = ln y
+
+db/dx * ln a + b / a * da/dx = 1 / y * dy/dx
+
+dy/dx = db/dx * ln a * a ^ b + b * da/dx * a ^ (b-1)
+
+
+
+x := Number # true
+
+
+addFive = fn: Number x -> x + 5
+
+addFive(Number x) := 
+
+printNumbers = prc:
+    for [0..5]:
+        print $
+
+
+
+
+
+sum = fn: Collection list -> foldr fn:$[0] + $[1]: list
+
+sum(Collection list) := foldr fn:$[0] + $[1]: list
+
+
+
+f g h 3
+
+f(g)(h)(3)
+
+f(g(h(3)))
+
+f * g * h 3
+
+
+
+
+f (g) (h) (3)
+
+f <- g <- h <- 3

@@ -1,0 +1,38 @@
+VALUES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+SUITS = ['C', 'D', 'H'];
+
+sum = fn: (array, f) => reduce array ((a, b) => a + (f ? f(a, b) : b), 0)
+
+scoreHand = fn: array -> sum(array, score)
+
+score = fn: (total, card)
+    | card[0] == 'J' -> 10
+    | card[0] == 'Q' -> 10
+    | card[0] == 'K' -> 10
+    | card[0] == 'A' | total > 10 -> 1
+                     | -> 11
+    | card[0] in /[2-9]|1\d/ -> int(card[0])
+
+Vopt = fn: (yourHand, dealer, cardsLeft)
+    | dealer.length < 1 -> (sum cardsLeft fn: card -> Vopt(yourHand, dealer ++ card, cardsLeft -- card)) / cardsLeft.length
+    | yourHand.length < 2 -> calcHit(yourHand, delaer, cardsLeft)
+    | scoreHand yourHand > 21 -> -1
+    | -> (yourHand, dealer, cardsLeft) |> fn: max(calcStay $, calcHit $)
+
+calcHit = fn: (yourHand, dealer, cardsLeft)
+    | cardsLeft.length == 0 -> calcStay(yourHand, dealer, cardsLeft)
+    | -> (sum cardsLeft fn: card -> Vopt(yourHand ++ card, dealer, cardsLeft -- card)) / cardsLeft.length
+
+calcStay = fn: (yourHand, dealer, cardsLeft)
+    | scoreHand yourHand > 21 -> -1
+    | scoreHand dealer > 21 -> 1
+    | scoreHand dealer < 17 && cardsLeft.length > 0 -> (sum cardsLeft fn: card -> calcStay(yourHand, dealer ++ card, cardsLeft -- card))/ cardsLeft.length
+    | scoreHand dealer == scoreHand yourHand -> 0
+    | scoreHand dealer > scoreHand yourHand -> -1
+    | -> 1
+
+CARDS = VALUES ** SUITS
+
+myHand = [['2','C'],['6','D']]
+currentDealer = [['A',S']]
+print Vopt(myHand, currentDealer, CARDS)

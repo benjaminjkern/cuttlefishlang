@@ -1,0 +1,7299 @@
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num' }, ')' ] with [] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ ')' ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ ')' ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ ')' ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [] with [ ')' ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ ')' ] with [] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ '+', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num' }, ')' ] with [ '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num' }, ')' ] with [ '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ ')', '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ ')', '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ ')', '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [] with [ ')', '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ ')' ] with [ '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ { type: 'Num' }, '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ { type: 'Num' }, '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ { type: 'Num' }, '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ { type: 'Num' }, '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ { type: 'Num' }, '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ { type: 'Num' }, '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ { type: 'Num' }, '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ { type: 'Num' }, '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ { type: 'Num' }, '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ '*', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num' }, ')' ] with [ { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ ')', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ ')', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ ')', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [] with [ ')', { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ ')' ] with [ { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ '*', { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ '*', { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ '*', { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ '*', { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ '*', { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ '*', { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ '*', { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ '*', { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ '*', { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num' }, ')' ] with [ { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ ')', { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ ')', { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ ')', { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [] with [ ')', { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ ')' ] with [ { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ { type: 'Num' }, '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ '+', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ '*', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num' }, ')' ] with [ '*', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ ')', '*', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ ')', '*', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ ')', '*', { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [] with [ ')', '*', { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ ')' ] with [ '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ '+', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ '+', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num' }, ')' ] with [ '+', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ '+', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ '+', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ '+', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ '+', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ '+', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ { type: 'Num' }, '+', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ { type: 'Num' }, '+', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ { type: 'Num' }, '+', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ { type: 'Num' }, '+', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ { type: 'Num' }, '+', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ { type: 'Num' }, '+', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ { type: 'Num' }, '+', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ { type: 'Num' }, '+', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ { type: 'Num' }, '+', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ '+', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ '+', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num' }, ')' ] with [ { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ ')', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ ')', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ ')', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [] with [ ')', { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ ')' ] with [ { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ '+', { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ '+', { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ '+', { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ '+', { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ '+', { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ '+', { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ '+', { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ '+', { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ '+', { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num' }, ')' ] with [ { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ ')', { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ ')', { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ ')', { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [] with [ ')', { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ ')' ] with [ { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ { type: 'Num' }, '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ '*', { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num' }, ')' ] with [ { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ ')', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ ')', { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ ')', { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [] with [ ')', { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ ')' ] with [ { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num' }, ')' ] with [ '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ '*', { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ '*', { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ '*', { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ '*', { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ '*', { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ '*', { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ '*', { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ '*', { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ '*', { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num' }, ')' ] with [ { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ ')', { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ ')', { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ ')', { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [] with [ ')', { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ ')' ] with [ { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ { type: 'Num' }, '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ '+', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num' }, ')' ] with [ '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ ')', '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ ')', '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ ')', '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [] with [ ')', '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ ')' ] with [ '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ '+', { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ '+', { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ '+', { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ '+', { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ '+', { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ '+', { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ '+', { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ '+', { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ '+', { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num' }, ')' ] with [ { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ ')', { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ ')', { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ ')', { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [] with [ ')', { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ ')' ] with [ { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ { type: 'Num' }, '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ '*', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num' }, ')' ] with [ { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ ')', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ ')', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ ')', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [] with [ ')', { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ ')' ] with [ { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ '+', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ '+', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num' }, ')' ] with [ '+', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ '+', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ '+', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ '+', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ '+', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ '+', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ '+', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ '+', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ '*', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ '*', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num' }, ')' ] with [ '*', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ ')', '*', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ ')', '*', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ ')', '*', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [] with [ ')', '*', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ ')' ] with [ '*', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ '*', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ '*', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ '*', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ '*', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ '*', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ '*', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ '*', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num' }, ')' ] with [ { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ ')', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ ')', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ ')', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [] with [ ')', { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ ')' ] with [ { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  { type: 'Num' },
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [ { type: 'Num' }, { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [ { type: 'Num' }, { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num' }, ')' ] with [ { type: 'Num' }, { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  ')',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  ')',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  ')',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [] with [
+  ')',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ ')' ] with [ { type: 'Num' }, { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [ { type: 'Num' }, { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  '+',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  '*',
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to type Num with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ '(', { type: 'Num' }, ')' ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'numlit' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '+', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '-', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '*', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' },
+  { type: 'Num' }
+] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ { type: 'Num' }, { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [ { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [ { type: 'Num' } ] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '/', { type: 'Num' } ] with [] left over
+Matching [
+  '(',
+  { type: 'numlit', value: '9' },
+  '+',
+  { type: 'numlit', value: '7' },
+  ')',
+  '*',
+  { type: 'numlit', value: '6' }
+] to [ { type: 'Num', associate: true }, '^', { type: 'Num' } ] with [] left over
+{ error: 'Did not match any pattern in type Num' }

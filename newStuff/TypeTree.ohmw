@@ -1,0 +1,6 @@
+Num = 
+    | '-' Num
+    | Num '+' Num
+    | Num '-' Num
+    | Num '*' Num
+    | Num '/' Num

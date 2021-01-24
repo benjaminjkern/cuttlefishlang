@@ -1,0 +1,6 @@
+ohm = fn:
+    (m, n, k)
+        | m < n -> 0
+        | m > n*k -> 0
+        | n == 1 -> 1
+        | -> sum [m-k..m-1] fn: j -> ohm(j, n-1, k)

@@ -159,3 +159,5 @@ ${statements
 const zip = (...rows) => [...rows[0]].map((_, c) => rows.map((row) => row[c]));
 
 module.exports = generateJS;
+
+for(let i=0;i<100;)console.log((++i%3?'':'fizz')+(i%5?'':'buzz')||i)

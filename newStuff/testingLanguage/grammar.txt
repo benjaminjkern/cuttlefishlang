@@ -1,0 +1,28 @@
+// grammar
+
+object_inerts -> assignment_expression
+              -> assignment_expression ';' runnable_expression
+              -> runnable_expression
+assignment_expression -> assignment (','|'\n') assignment_expression
+assignment -> key {':' object}
+runnable_expression -> runnable_expression (';'|'\n') runnable_expression
+                    -> '{' runnable_expression '}'
+                    -> application_expression
+                    -> definition_expression
+                    -> return_expression
+                    -> def_ret_expression
+application_expression -> function argument
+definition_expression -> variable '=' object
+                      -> variable '(' variable ')' '=' runnable_expression
+                      -> '<' operator '>' '=' function
+def_ret_expression -> function {parameter} '=>' object
+return_expression -> {object} '->' object
+argument -> object
+         -> '(' object ',' argument ')'
+         -> '(' argument ')'
+function -> '[' parameter ']' runnable_expression
+parameter -> variable {':' type} {',' parameter}
+object -> variable
+       -> key
+       -> function
+       -> '{' object_inerts '}'

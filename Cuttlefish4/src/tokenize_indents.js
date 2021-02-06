@@ -33,18 +33,6 @@ const get_indentation = line => {
 
 const stripCarriageReturns = text => text.replace(/(?<!\n)\r(?!\n)/g, '\n').replace(/\r/g, '');
 
-const preparse = source => stripCarriageReturns(tokenize_indents(source));
+module.exports = source => stripCarriageReturns(tokenize_indents(source));
 
-module.exports = preparse;
-
-if (module.parent === null) {
-    if (process.argv.length >= 3) {
-        if (process.argv[2].endsWith(".w")) {
-            console.log(module.exports(fs.readFileSync(`./${process.argv[2]}`, 'utf8')));
-        } else {
-            console.log(module.exports(process.argv.slice(2).join(" ")));
-        }
-    } else {
-        console.log("Please include a script or example text");
-    }
-}
+require('./run_file')(module);

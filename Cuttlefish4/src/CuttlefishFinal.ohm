@@ -22,10 +22,14 @@ Cuttlefish {
         | Assignable binaryOp ~space "=" Expression
     Print = print Expression
     If = if Expression ":" Block<Statement> (newline else ":"? Block<Statement>)?
-    Catch = catch ":"? Block<Pattern>
+    Catch =
+        | catch ":"? Block<Pattern> -- pattern
+        | catch ":"? Block<Statement> -- statement
+    For =
+        | for Expression ":" Block<Pattern> -- pattern
+        | for Expression ":" Block<Statement> -- statement
     While = while Expression ":" Block<Statement>
-    Repeat = repeat ":"? Block<Statement>
-    For = for Expression ":" Block<Pattern>
+    Repeat = repeat (Expression? ":")? Block<Statement>
     Break = break
     Continue = continue
     Return = return Expression
@@ -36,9 +40,9 @@ Cuttlefish {
     if = "if" &sep
     else = "else" &sep
     catch = "catch" &sep
+    for = "for" &sep
     while = "while" &sep
     repeat = "repeat" &sep
-    for = "for" &sep
     break = "break" &sep
     continue = "continue" &sep
     return = "return" &sep
@@ -77,14 +81,13 @@ Cuttlefish {
         | ContinuousRange
         | Tuple
         | Set
-        | Map
         | Function
         | Process
         | String
         | number
         | ref
 
-    binaryOp = "===" | "==" | ">=" | "<=" | ">" | "<" | "*" | "//" | "/"  | "^" | "++" | "!=" | "!==" | "%=" | "|>" | "+" | "-"
+    binaryOp = "===" | "!==" | "==" | "!=" | ">=" | "<=" | ">" | "<" | "*" | "//" | "/"  | "^" | "++" | "%=" | "|>" | "+" | "-" | "%"
     
     reserved = binaryOp | "=" | "." | "," | "(" | ")" | "{" | "}" | "[" | "]" | ":" | ".." | "→" | "←" | "?"
     ref =  ~number ~keyword (~reserved ~space ~newline any)+
@@ -97,7 +100,6 @@ Cuttlefish {
     Tuple = "(" ListOf<Expression, ","> ","? ")"
     List = "[" ListOf<Expression, ","> ","? "]"
     Set = "{" ListOf<Expression, ","> ","? "}"
-    Map = "{" Block<Pattern> "}"
 
     Function =
         | fn ":" Block<Pattern> -- pattern
@@ -118,11 +120,8 @@ Cuttlefish {
         | ~ref Atom -- specific
     patternModifier = "*" | "?" | "+"
     TypeMatch =
-        | Type (#(~space) patternModifier)? ref -- typed
+        | Expression4 (#(~space) patternModifier)? ref -- typed
         | ref -- untyped
-    Type =
-        | "[" Type "]" -- list
-        | ref -- ref
 
     Block<Inside> = Inside -- single
     	| newline "→" newline ListOf<Inside, newline> newline "←" -- indented

@@ -23,19 +23,25 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
         return astNode("Print", exp.ast());
     },
     If(_1, test, _2, ifTrue, _3, _4, _5, ifFalse) {
-        return astNode("If", test.ast(), ifTrue.ast(), ifFalse.ast());
+        return astNode("If", test.ast(), astNode("Program", ifTrue.ast()), astNode("Program", ifFalse.ast().flat()));
     },
-    Catch(_1, _2, patterns) {
-        return astNode("Catch", patterns.ast());
+    Catch_pattern(_1, _2, patterns) {
+        return astNode("Catch", patterns.ast(), astNode("Program", []));
+    },
+    Catch_statement(_1, _2, statements) {
+        return astNode("Catch", [], astNode("Program", statements.ast()));
+    },
+    For_pattern(_1, collection, _2, patterns) {
+        return astNode("For", collection.ast(), patterns.ast(), astNode("Program", []))
+    },
+    For_statement(_1, collection, _2, statements) {
+        return astNode("For", collection.ast(), [], astNode("Program", statements.ast()))
     },
     While(_1, test, _2, statements) {
-        return astNode("While", test.ast(), statements.ast());
+        return astNode("While", test.ast(), astNode("Program", statements.ast()));
     },
-    Repeat(_1, _2, statements) {
-        return astNode("Repeat", statements.ast());
-    },
-    For(_1, collection, _2, patterns) {
-        return astNode("For", collection.ast(), patterns.ast())
+    Repeat(_1, count, _2, statements) {
+        return astNode("Repeat", count.ast().flat()[0], astNode("Program", statements.ast()));
     },
     Break(_) {
         return astNode("Break");
@@ -92,67 +98,58 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
         return astNode("Ref", this.sourceString);
     },
     DiscreteRange(left, start, _1, step, _2, end, right) {
-        return astNode("DiscreteRange", start.ast(), left.sourceString === "[", end.ast(), right.sourceString === "]", step.ast());
+        return astNode("DiscreteRange", start.ast(), left.sourceString === "[", end.ast()[0], right.sourceString === "]", step.ast()[0]);
     },
     ContinuousRange(left, start, _, end, right) {
-        return astNode("ContinuousRange", start.ast(), left.sourceString === "[", end.ast(), right.sourceString === "]");
+        return astNode("ContinuousRange", start.ast(), left.sourceString === "[", end.ast()[0], right.sourceString === "]");
     },
     ElementOf(parent, _, childId) {
         return astNode("ElementOf", parent.ast(), childId.ast());
     },
     Tuple(_1, values, _2, _3) {
-        return astNode("Tuple", values.ast()[0]);
+        return astNode("Tuple", values.ast()[0] || []);
     },
     List(_1, values, _2, _3) {
-        return astNode("List", values.ast()[0]);
+        return astNode("List", values.ast()[0] || []);
     },
     Set(_1, values, _2, _3) {
-        return astNode("Set", values.ast()[0]);
-    },
-    Map(_1, values, _2) {
-        return astNode("Map", values.ast());
+        return astNode("Set", values.ast()[0] || {});
     },
     Function_pattern(_1, _2, patterns) {
-        return astNode("Function", patterns.ast(), []);
+        return astNode("Function", patterns.ast(), astNode("Program", []));
     },
     Function_statement(_1, _2, statements) {
-        return astNode("Function", [], statements.ast());
+        return astNode("Function", [], astNode("Program", statements.ast()));
     },
     Process_pattern(_1, _2, patterns) {
-        return astNode("Process", patterns.ast(), []);
+        return astNode("Process", patterns.ast(), astNode("Program", []));
     },
     Process_statement(_1, _2, statements) {
-        return astNode("Process", [], statements.ast());
+        return astNode("Process", [], astNode("Program", statements.ast()));
     },
     Pattern_guard(input, cases) {
-        return astNode("Pattern", input.ast()[0], cases.ast(), []);
+        return astNode("Pattern", input.ast()[0], cases.ast(), astNode("Program", []));
     },
     Pattern_return(input, output) {
         return astNode("Pattern", input.ast()[0], [], output.ast());
     },
     Guard_guard(_, test, cases) {
-        return astNode("Case", test.ast(), cases.ast(), []);
+        return astNode("Case", test.ast()[0], cases.ast(), astNode("Program", []));
     },
     Guard_return(_, test, output) {
-        return astNode("Case", test.ast(), [], output.ast());
+        return astNode("Case", test.ast()[0], [], output.ast());
     },
     Returnbit(_, statements) {
-        return statements.ast();
+        return astNode("Program", statements.ast());
     },
     PatternElem_anonymous(type, _, def) {
-        return astNode("PatternElem", ...type.ast().flat(), def.ast())
+        return astNode("PatternElem", ...type.ast().flat(), def.ast()[0])
     },
     TypeMatch_typed(type, modifier, id) {
         return [id.sourceString, type.ast(), ["?", "*"].includes(modifier.sourceString), ["+", "*"].includes(modifier.sourceString)]
     },
     TypeMatch_untyped(id) {
         return [id.sourceString, undefined, undefined, undefined];
-    },
-    Type_list(_1, type, _2) {
-        return astNode("ListType", type.ast());
-    },
-    Type_ref(ref) {
-        return ref.ast();
     },
     Block_single(singleton) {
         return [singleton.ast()];
@@ -164,7 +161,8 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
         return s.ast();
     },
     String_expression(_1, inerts, _2) {
-        return astNode("ExpressionString", ...inerts.ast())
+        const inertAST = inerts.ast();
+        return astNode("Concat", inertAST[0].slice(1).reduce((p, c, i) => [...p, c, inertAST[1][i]], [inertAST[0][0]]));
     },
     stringbit(_) {
         return astNode("String", this.sourceString);
@@ -179,9 +177,8 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
         return astNode("String", inerts.sourceString);
     },
     NonemptyListOf(first, sep, rest) {
-        const elems = [first.ast(), ...rest.ast()];
         return [
-            elems, ...sep.ast()
+            [first.ast(), ...rest.ast()], sep.ast()
         ];
     },
     EmptyListOf() {
@@ -197,13 +194,12 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
 
 const ASTNodeFields = require("./ast_nodes");
 const checkSyntax = require("./syntax_checker");
-const fs = require('fs');
 
 const astNode = (type, ...params) => {
     return { ASTType: type, ...ASTNodeFields[type].reduce((p, c, i) => (params[i] !== undefined ? {...p, [c]: params[i] } : p), {}) };
 }
 
-const makeAST = (text) => {
+module.exports = (text) => {
     const match = checkSyntax(text);
     if (!match.succeeded()) {
         throw new Error(`Syntax Error: ${match.message}`);
@@ -211,16 +207,4 @@ const makeAST = (text) => {
     return astGenerator(match).ast();
 }
 
-module.exports = makeAST;
-
-if (module.parent === null) {
-    if (process.argv.length >= 3) {
-        if (process.argv[2].endsWith(".w")) {
-            console.log(require('util').inspect(module.exports(fs.readFileSync(`./${process.argv[2]}`, 'utf8')), false, null, false));
-        } else {
-            console.log(require('util').inspect(module.exports(process.argv.slice(2).join(" ")), false, null, false));
-        }
-    } else {
-        console.log("Please include a script or example text");
-    }
-}
+require('./run_file')(module, res => require('util').inspect(res, false, null, false));

@@ -1,20 +1,52 @@
 const { Types, Ops } = require("./default_types");
 
-const ASTNodeTypeChecks = {
+const ASTNodeTypeanalyzes = {
     Program: (node, scope = {}) => {},
-    Assignment: (node, scope) => {},
-    SingleAssignment: (node, scope) => {},
+    Assignment: (node, scope) => {
+
+    },
+    SingleAssignment: (node, scope) => {
+        const existingType = getType(node.assignee, scope);
+        if (existingType)
+    },
     Reassignment: (node, scope) => {},
-    Print: (node, scope) => {},
-    If: (node, scope) => {},
-    Catch: (node, scope) => {},
-    While: (node, scope) => {},
-    Repeat: (node, scope) => {},
-    For: (node, scope) => {},
-    Put: (node, scope) => {},
-    Return: (node, scope) => {},
-    Break: (node, scope) => {},
-    Continue: (node, scope) => {},
+    Print: (node, scope) => {
+        verifyType(node.value, "String", scope);
+    },
+    If: (node, scope) => {
+        verifyType(node.test, "String", scope);
+        analyzeTypes(node.ifTrue, scope);
+        analyzeTypes(node.ifFalse, scope);
+    },
+    Catch: (node, scope) => {
+        analyzeTypes(node.patterns, scope);
+        analyzeTypes(node.output, scope);
+    },
+    For: (node, scope) => {
+        verifyType(node.collection, "Iterable", scope);
+        analyzeTypes(node.patterns, scope);
+        analyzeTypes(node.output, scope);
+    },
+    While: (node, scope) => {
+        verifyType(node.test, "String", scope);
+        analyzeTypes(node.statements, scope);
+    },
+    Repeat: (node, scope) => {
+        verifyType(node.test, "Int", scope);
+        analyzeTypes(node.statements, scope);
+    },
+    Put: (node, scope) => {
+        // shouldnt have to do anything
+    },
+    Return: (node, scope) => {
+        verifyType(node.value, scope.expectedReturnType, scope);
+    },
+    Break: (node, scope) => {
+        // shouldnt have to do anything
+    },
+    Continue: (node, scope) => {
+        // shouldnt have to do anything
+    },
 
     Ternary: (node, scope) => {
         verifyType(node.test, "Bool", scope);
@@ -23,10 +55,9 @@ const ASTNodeTypeChecks = {
     BinaryOp: (node, scope) => {
         if (!Ops[node.op]) throw `Unrecognized operation: ${node.op}`
         for (const pattern of Ops[node.op]) {
-            try {
-                verifyType(node.left, pattern.left, scope);
-                verifyType(node.right, pattern.right, scope);
-            } catch (e) {}
+            verifyType(node.left, pattern.left, scope);
+            verifyType(node.right, pattern.right, scope);
+            // get assumed types and compare for discrepencies
             return pattern.returns;
         }
         throw "Did not match any patterns";
@@ -46,7 +77,7 @@ const ASTNodeTypeChecks = {
     Pattern: (node, scope) => {},
     Case: (node, scope) => {},
     PatternElem: (node, scope) => {},
-    ListType: (node, scope) => verify(node.type, scope),
+    ListType: (node, scope) => verifyType(node.type, scope),
     Bool: (node, scope) => "Bool",
     Num: (node, scope) => {
         if (node.value === Math.floor(node.value)) return "Int";
@@ -69,7 +100,7 @@ const ASTNodeTypeChecks = {
 const getType = (node, scope) => {
     if (!node) return undefined;
     if (!node.ASTType) throw "cannot verify node without ASTType!";
-    return ASTNodeTypeChecks[node.ASTType](node, scope);
+    return ASTNodeTypeanalyzes[node.ASTType](node, scope);
 }
 
 const verifyType = (node, expected, scope) => {

@@ -22,8 +22,11 @@ const ASTNodeVerifications = {
         return prevScope;
     },
     SingleAssignment: (node, scope) => {
+        const existingType = getType(node.assignee, scope);
+        const newType = getType(node.value, scope);
+        if (!matches(newType, existingType)) throw `Cannot change the type of ${node.assignee.id}`
         return {...verify(node.value, scope),
-            vars: {...scope.vars, [node.assignee.id]: true },
+            vars: {...scope.vars, [node.assignee.id]: newType },
         };
     },
     Reassignment: (node, scope) => {
@@ -40,11 +43,11 @@ const ASTNodeVerifications = {
     },
     Catch: (node, scope) => {
         node.patterns.forEach((pattern) => verify(pattern, scope));
-        verify(node.output, {...scope, hasArgument: true });
+        verify(node.output, scope);
     },
     For: (node, scope) => {
         node.patterns.forEach((pattern) => verify(pattern, {...scope, loopCount: scope.loopCount ? scope.loopCount + 1 : 1 }));
-        verify(node.output, {...scope, loopCount: scope.loopCount ? scope.loopCount + 1 : 1, hasArgument: true });
+        verify(node.output, {...scope, loopCount: scope.loopCount ? scope.loopCount + 1 : 1 });
         return verify(node.collection, scope);
     },
     While: (node, scope) => {
@@ -71,12 +74,16 @@ const ASTNodeVerifications = {
     },
 
     Ternary: (node, scope) => {
+        if (!matches(getType(node.test, scope), "Bool")) throw `Error: Ternary Test must be a boolean, received ${testType}`;
         return [node.test, node.ifTrue, node.ifFalse].reduce((pScope, n) => verify(n, pScope), scope);
     },
     BinaryOp: (node, scope) => {
         return [node.left, node.right].reduce((pScope, n) => verify(n, pScope), scope);
     },
     Application: (node, scope) => {
+        const funcType = getType(node.func, scope);
+        if (!matches(funcType, "Method")) throw "Error: Application must use a method";
+        // check if input matches method input type
         return [node.func, ...node.input].reduce((pScope, n) => verify(n, pScope), scope);
     },
     List: (node, scope) => {
@@ -87,10 +94,6 @@ const ASTNodeVerifications = {
     },
     Set: (node, scope) => {
         return node.values.reduce((pScope, n) => verify(n, pScope), scope);
-    },
-    Map: (node, scope) => {
-        node.patterns.forEach(pattern => verify(pattern, scope));
-        return scope;
     },
     DiscreteRange: (node, scope) => {
         return [node.values, node.end, node.step].reduce((pScope, n) => verify(n, pScope), scope);
@@ -116,8 +119,8 @@ const ASTNodeVerifications = {
     },
     Pattern: (node, scope) => {
         const pscope = node.input.reduce((passScope, patternelem) => verify(patternelem, passScope), scope);
-        node.cases.forEach(pcase => verify(pcase, {...pscope, hasArgument: true }));
-        verify(node.output, {...pscope, hasArgument: true });
+        node.cases.forEach(pcase => verify(pcase, pscope));
+        verify(node.output, pscope);
         return scope;
     },
     Case: (node, scope) => {
@@ -130,7 +133,7 @@ const ASTNodeVerifications = {
         if (node.type) newScope = verify(node.type, scope);
         if (node.default) newScope = verify(node.default, scope);
         return {...newScope,
-            vars: {...scope.vars, [node.id]: true }
+            vars: {...scope.vars, [node.id]: node.type || "Object" }
         }
     },
     ListType: (node, scope) => verify(node.type, scope),
@@ -156,8 +159,7 @@ const ASTNodeVerifications = {
         return scope;
     },
     Ref: (node, scope) => {
-        if ((scope.vars && scope.vars[node.id]) || BASE_SCOPE.vars[node.id]) return scope;
-        if (node.id === "$" && scope.hasArgument) return scope;
+        if ((scope.vars && scope.vars[node.id]) || BASE_SCOPE[node.id]) return scope;
         throw `AST Error: ID ${node.id} not found`;
     }
 }
@@ -168,16 +170,12 @@ const verify = (node, scope) => {
     throw "cannot verify node without ASTType!";
 }
 
+const { matches, getType } = require('./get_type');
+
 const BASE_SCOPE = { vars: require('./default_scope') };
 
 const makeAST = require("./make_AST");
 
-module.exports = input => {
-    if (typeof input === 'string')
-        return verify(makeAST(input), {});
-    if (typeof input === 'object')
-        return verify(input, {});
-    throw "Error: Please only give me a script or an AST";
-}
+module.exports = text => verify(makeAST(text), {});
 
 require('./run_file')(module);

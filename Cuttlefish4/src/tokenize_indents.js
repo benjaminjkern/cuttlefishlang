@@ -1,7 +1,8 @@
 const fs = require('fs');
 
 const tokenize_indents = source => {
-    source = stripCarriageReturns(source);
+    source = stripArrows(stripCarriageReturns(source));
+
     let indents = [0];
     return source.split("\n").map(line => {
         let spaces = get_indentation(line);
@@ -31,6 +32,7 @@ const get_indentation = line => {
     return l[0].length;
 }
 
+const stripArrows = text => text.replace(/→|←/g, '');
 const stripCarriageReturns = text => text.replace(/(?<!\n)\r(?!\n)/g, '\n').replace(/\r/g, '');
 
 module.exports = source => stripCarriageReturns(tokenize_indents(source));

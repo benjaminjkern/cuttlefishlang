@@ -10,6 +10,11 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
     Assignment_single(assignee, _, exp) {
         return astNode("Assignment", [astNode("SingleAssignment", assignee.ast(), exp.ast())]);
     },
+    Assignment_multipletoone(assignees, _, exp) {
+        const assignedAsts = assignees.ast()[0];
+        const expAst = exp.ast();
+        return astNode("Assignment", assignedAsts.map((assignee, i) => astNode("SingleAssignment", assignee, expAst)));
+    },
     Assignment_multiple(assignees, _, exps) {
         const assignedAsts = assignees.ast()[0];
         const expAsts = exps.ast()[0];
@@ -152,9 +157,12 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
         return [id.sourceString, undefined, undefined, undefined];
     },
     Block_single(singleton) {
-        return [singleton.ast()];
+        return singleton.ast()[0];
     },
     Block_indented(_1, _2, _3, body, _4, _5) {
+        return body.ast()[0];
+    },
+    Block_forced(_0, _1, _2, body, _3, _4) {
         return body.ast()[0];
     },
     String(s) {
@@ -162,7 +170,7 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
     },
     String_expression(_1, inerts, _2) {
         const inertAST = inerts.ast();
-        return astNode("Concat", inertAST[0].slice(1).reduce((p, c, i) => [...p, c, inertAST[1][i]], [inertAST[0][0]]));
+        return astNode("Concat", inertAST[0].slice(1).reduce((p, c, i) => [...p, inertAST[1][i], c], [inertAST[0][0]]));
     },
     stringbit(_) {
         return astNode("String", this.sourceString);
@@ -186,6 +194,9 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
     },
     newline(_1, _2, _3) {
         return [];
+    },
+    indentnewline(_) {
+        return this.sourceString;
     },
     _terminal() {
         return this.sourceString;

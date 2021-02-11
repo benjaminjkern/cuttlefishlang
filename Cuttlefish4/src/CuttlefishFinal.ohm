@@ -17,9 +17,10 @@ Cuttlefish {
         
     Assignment =
         | Assignable "=" Expression -- single
+        | NonemptyListOf<Assignable, ","> "=" Expression -- multipletoone
         | NonemptyListOf<Assignable, ","> "=" NonemptyListOf<~Function ~Process Expression, ","> -- multiple
     Reassignment =
-        | Assignable binaryOp ~space "=" Expression
+        | Assignable reassignable ~space "=" Expression
     Print = print Expression
     If = if Expression ":" Block<Statement> (newline else ":"? Block<Statement>)?
     Catch =
@@ -32,7 +33,7 @@ Cuttlefish {
     Repeat = repeat (Expression? ":")? Block<Statement>
     Break = break
     Continue = continue
-    Return = return Expression
+    Return = return Expression?
     Put = put? Expression
     
    	keyword = print | if | else | catch | while | repeat | for | break | continue | return | put | fn | prc
@@ -87,9 +88,11 @@ Cuttlefish {
         | number
         | ref
 
-    binaryOp = "===" | "!==" | "==" | "!=" | ">=" | "<=" | ">" | "<" | "*" | "//" | "/"  | "^" | "++" | "%=" | "|>" | "+" | "-" | "%"
+    reassignable = "*" | "//" | "/"  | "^" | "++" | "+" | "-" | "%"
+
+    binaryOp = "===" | "!==" | "==" | "!=" | ">=" | "<=" | ">" | "<" | "*" | "//" | "/"  | "^" | "++" | "%=" | "||" | "&&" | "|>" | "+" | "-" | "%" | "in"
     
-    reserved = binaryOp | "=" | "." | "," | "(" | ")" | "{" | "}" | "[" | "]" | ":" | ".." | "→" | "←" | "?"
+    reserved = binaryOp | "=" | "." | "," | "(" | ")" | "{" | "}" | "[" | "]" | ":" | ".." | "→" | "←" | "?" | ";" | "\"" | "'" | "`"
     ref =  ~number ~keyword (~reserved ~space ~newline any)+
     
     DiscreteRange = ("[" | "(") Expression ".." (Expression "..")? Expression? (")" | "]")
@@ -114,7 +117,7 @@ Cuttlefish {
     Guard =
         | "|" Expression Block<Guard> -- guard
         | "|" Expression? Returnbit -- return
-    Returnbit = "->" Block<Statement>
+    Returnbit = "->" Block<~Pattern Statement>
 
     PatternElem = TypeMatch ("=" Expression)? -- anonymous
         | ~ref Atom -- specific
@@ -123,19 +126,22 @@ Cuttlefish {
         | Expression4 (#(~space) patternModifier)? ref -- typed
         | ref -- untyped
 
-    Block<Inside> = Inside -- single
+    Block<Inside> = NonemptyListOf<Inside, ";"> -- single
     	| newline "→" newline ListOf<Inside, newline> newline "←" -- indented
+    	| indentnewline? "{" indentnewline? ListOf<Inside, newline> indentnewline? "}" -- forced
+    indentnewline =
+        | newline ("→"|"←") newline -- indented
+        | newline
     String = string<"'"> | string<"\"">
-    	| "`" ListOf<stringbit, StringExp> "`" -- expression
+    	| "`" ListOf<#(stringbit), StringExp> "`" -- expression
 
     stringbit = ("\\`" | "\\{" | ~"`" ~"{" any)*
     StringExp = "{" Expression "}"
-    
     
     number = "-"? digit+ ("." digit+)? (("e" | "E") ("-" | "+")? digit+)?
     string<delim> = delim (escape<delim> | ~delim any)* delim
     escape<delim> = "\\" delim
     comment = "###" (~"###" any)* ("###"|&end) | "#" (~newline any)* (&newline|&end)
-    newline = ("\n" | "\r") (space* ("\n" | "\r"))*
+    newline = ("\n" | "\r" | ";") (space* ("\n" | "\r" | ";"))*
     space := ~newline ("\u0000".." "  | comment)
 }

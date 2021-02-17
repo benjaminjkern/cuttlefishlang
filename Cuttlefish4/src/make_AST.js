@@ -30,17 +30,14 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
     If(_1, test, _2, ifTrue, _3, _4, _5, ifFalse) {
         return astNode("If", test.ast(), astNode("Program", ifTrue.ast()), astNode("Program", ifFalse.ast().flat()));
     },
-    Catch_pattern(_1, _2, patterns) {
-        return astNode("Catch", patterns.ast(), astNode("Program", []));
+    Switch(_1, object, _2, patterns) {
+        return astNode("Switch", object.ast(), patterns.ast());
     },
-    Catch_statement(_1, _2, statements) {
-        return astNode("Catch", [], astNode("Program", statements.ast()));
+    Catch(_1, _2, patterns) {
+        return astNode("Catch", patterns.ast());
     },
-    For_pattern(_1, collection, _2, patterns) {
-        return astNode("For", collection.ast(), patterns.ast(), astNode("Program", []))
-    },
-    For_statement(_1, collection, _2, statements) {
-        return astNode("For", collection.ast(), [], astNode("Program", statements.ast()))
+    For(_1, collection, _2, patterns) {
+        return astNode("For", collection.ast(), patterns.ast())
     },
     While(_1, test, _2, statements) {
         return astNode("While", test.ast(), astNode("Program", statements.ast()));
@@ -75,6 +72,12 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
     Expression1_operator(left, op, right) {
         return astNode("BinaryOp", left.ast(), op.sourceString, right.ast());
     },
+    Expression1_explicitsep(left, _1, op, _2, right) {
+        return astNode("BinaryOp", left.ast(), op.sourceString, right.ast());
+    },
+    Expression1_implicitsep(left, op, _2, right) {
+        return astNode("BinaryOp", left.ast(), op.sourceString, right.ast());
+    },
     Expression2(exp) {
         return exp.ast();
     },
@@ -89,6 +92,9 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
     },
     Expression3_nospaceapplication(func, _, input) {
         return astNode("Application", func.ast(), [input.ast()]);
+    },
+    Expression4_operator(op, exp) {
+        return astNode("UnaryOp", op.sourceString, exp.ast());
     },
     Expression4(exp) {
         return exp.ast();
@@ -118,31 +124,36 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
         return astNode("List", values.ast()[0] || []);
     },
     Set(_1, values, _2, _3) {
-        return astNode("Set", values.ast()[0] || {});
+        return astNode("Set", values.ast()[0] || []);
     },
-    Function_pattern(_1, _2, patterns) {
-        return astNode("Function", patterns.ast(), astNode("Program", []));
+    Function(_1, _2, patterns) {
+        return astNode("Function", patterns.ast());
     },
-    Function_statement(_1, _2, statements) {
-        return astNode("Function", [], astNode("Program", statements.ast()));
+    Process(_1, _2, patterns) {
+        return astNode("Process", patterns.ast());
     },
-    Process_pattern(_1, _2, patterns) {
-        return astNode("Process", patterns.ast(), astNode("Program", []));
+    PatternBlock_pattern(patterns) {
+        return astNode("PatternBlock", patterns.ast().flat());
     },
-    Process_statement(_1, _2, statements) {
-        return astNode("Process", [], astNode("Program", statements.ast()));
+    PatternBlock_statement(statements) {
+        return astNode("PatternBlock", [astNode("Pattern", [], [], astNode("Program", statements.ast()))]);
     },
     Pattern_guard(input, cases) {
-        return astNode("Pattern", input.ast()[0], cases.ast(), astNode("Program", []));
+        return cases.ast().map(parsedCase => astNode("Pattern", input.ast()[0],
+            ...parsedCase));
     },
     Pattern_return(input, output) {
         return astNode("Pattern", input.ast()[0], [], output.ast());
     },
     Guard_guard(_, test, cases) {
-        return astNode("Case", test.ast()[0], cases.ast(), astNode("Program", []));
+        return cases.ast().map(parsedCase => [
+            [test.ast()[0], ...parsedCase[0]], parsedCase[1]
+        ]);
     },
     Guard_return(_, test, output) {
-        return astNode("Case", test.ast()[0], [], output.ast());
+        return [
+            [test.ast()[0]].filter(x => x), output.ast()
+        ];
     },
     Returnbit(_, statements) {
         return astNode("Program", statements.ast());

@@ -38,13 +38,15 @@ const ASTNodeVerifications = {
         verify(node.ifFalse, scope);
         return verify(node.test, scope);
     },
+    Switch: (node, scope) => {
+        verify(node.patterns, scope);
+        return verify(node.object, scope);
+    },
     Catch: (node, scope) => {
-        node.patterns.forEach((pattern) => verify(pattern, scope));
-        verify(node.output, {...scope, hasArgument: true });
+        verify(node.patterns, scope);
     },
     For: (node, scope) => {
-        node.patterns.forEach((pattern) => verify(pattern, {...scope, loopCount: scope.loopCount ? scope.loopCount + 1 : 1 }));
-        verify(node.output, {...scope, loopCount: scope.loopCount ? scope.loopCount + 1 : 1, hasArgument: true });
+        verify(node.patterns, {...scope, loopCount: scope.loopCount ? scope.loopCount + 1 : 1 });
         return verify(node.collection, scope);
     },
     While: (node, scope) => {
@@ -72,6 +74,9 @@ const ASTNodeVerifications = {
 
     Ternary: (node, scope) => {
         return [node.test, node.ifTrue, node.ifFalse].reduce((pScope, n) => verify(n, pScope), scope);
+    },
+    UnaryOp: (node, scope) => {
+        return verify(node.exp, scope);
     },
     BinaryOp: (node, scope) => {
         return [node.left, node.right].reduce((pScope, n) => verify(n, pScope), scope);
@@ -101,29 +106,24 @@ const ASTNodeVerifications = {
     Function: (node, scope) => {
         return {...scope,
             callback: [...(scope.callback || []), (callbackScope) => {
-                node.patterns.forEach(pattern => verify(pattern, {...callbackScope, inFunction: true, loopCount: 0 }));
-                verify(node.output, {...callbackScope, inFunction: true, loopCount: 0 });
+                verify(node.patterns, {...callbackScope, inFunction: true, loopCount: 0 });
             }]
         }
     },
     Process: (node, scope) => {
         return {...scope,
             callback: [...(scope.callback || []), (callbackScope) => {
-                node.patterns.forEach(pattern => verify(pattern, {...callbackScope, inFunction: true, loopCount: 0 }));
-                verify(node.output, {...callbackScope, inFunction: true, loopCount: 0 });
+                verify(node.patterns, {...callbackScope, inFunction: true, loopCount: 0 });
             }]
         }
     },
+    PatternBlock: (node, scope) => {
+        node.patterns.forEach(pattern => verify(pattern, {...scope, inPattern: true }));
+    },
     Pattern: (node, scope) => {
         const pscope = node.input.reduce((passScope, patternelem) => verify(patternelem, passScope), scope);
-        node.cases.forEach(pcase => verify(pcase, {...pscope, hasArgument: true }));
-        verify(node.output, {...pscope, hasArgument: true });
-        return scope;
-    },
-    Case: (node, scope) => {
-        node.cases.forEach(pcase => verify(pcase, scope));
-        verify(node.output, scope);
-        return verify(node.test, scope);
+        verify(node.output, pscope);
+        return node.tests.reduce((passScope, test) => verify(test, passScope), pscope);
     },
     PatternElem: (node, scope) => {
         let newScope = scope;
@@ -157,13 +157,14 @@ const ASTNodeVerifications = {
     },
     Ref: (node, scope) => {
         if ((scope.vars && scope.vars[node.id]) || BASE_SCOPE.vars[node.id]) return scope;
-        if (node.id === "$" && scope.hasArgument) return scope;
+        if (node.id === "$" && scope.inPattern) return scope;
         throw `AST Error: ID ${node.id} not found`;
     }
 }
 
 const verify = (node, scope) => {
     if (!node) return scope;
+    // console.log(node);
     if (node.ASTType) return ASTNodeVerifications[node.ASTType](node, scope);
     throw "cannot verify node without ASTType!";
 }

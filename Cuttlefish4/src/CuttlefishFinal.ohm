@@ -6,6 +6,7 @@ Cuttlefish {
         | Reassignment
         | Print
         | If
+        | Switch
         | Catch
         | While
         | Repeat
@@ -23,12 +24,9 @@ Cuttlefish {
         | Assignable reassignable ~space "=" Expression
     Print = print Expression
     If = if Expression ":" Block<Statement> (newline else ":"? Block<Statement>)?
-    Catch =
-        | catch ":"? Block<Pattern> -- pattern
-        | catch ":"? Block<Statement> -- statement
-    For =
-        | for Expression ":" Block<Pattern> -- pattern
-        | for Expression ":" Block<Statement> -- statement
+    Switch = switch Expression ":" PatternBlock
+    Catch = catch ":"? PatternBlock
+    For = for Expression ":" PatternBlock
     While = while Expression ":" Block<Statement>
     Repeat = repeat (Expression? ":")? Block<Statement>
     Break = break
@@ -36,10 +34,11 @@ Cuttlefish {
     Return = return Expression?
     Put = put? Expression
     
-   	keyword = print | if | else | catch | while | repeat | for | break | continue | return | put | fn | prc
+   	keyword = print | if | else | catch | while | repeat | for | break | continue | return | put | fn | prc | switch | binaryWord
     print = "print" &sep
     if = "if" &sep
     else = "else" &sep
+    switch = "switch" &sep
     catch = "catch" &sep
     for = "for" &sep
     while = "while" &sep
@@ -59,6 +58,8 @@ Cuttlefish {
         | Expression1
 
     Expression1 =
+        | Expression1 #(space binaryWord &sep) Expression2 -- explicitsep
+        | Expression1 binaryWord &sep Expression2 -- implicitsep
         | Expression1 binaryOp Expression2 -- operator
         | Expression2
         
@@ -72,6 +73,7 @@ Cuttlefish {
         | Expression4
 
     Expression4 =
+        | unaryOp #(~space) Expression4 -- operator
         | ElementOf
         | Atom
 
@@ -88,12 +90,16 @@ Cuttlefish {
         | number
         | ref
 
-    reassignable = "*" | "//" | "/"  | "^" | "++" | "+" | "-" | "%"
+    reassignable = "*" | "//" | "/"  | "^" | "++" | "+" | "-" | "%" | "|" | "&"
 
-    binaryOp = "===" | "!==" | "==" | "!=" | ">=" | "<=" | ">" | "<" | "*" | "//" | "/"  | "^" | "++" | "%=" | "||" | "&&" | "|>" | "+" | "-" | "%" | "in"
+    binaryWord = "in" | "and" | "or"
+
+    binaryOp = "===" | "!==" | "==" | "!=" | ">=" | "<=" | ">" | "<" | "%=" | "||" | "&&" | "|>" | reassignable
     
-    reserved = binaryOp | "=" | "." | "," | "(" | ")" | "{" | "}" | "[" | "]" | ":" | ".." | "→" | "←" | "?" | ";" | "\"" | "'" | "`"
-    ref =  ~number ~keyword (~reserved ~space ~newline any)+
+    unaryOp = "-" | "!"
+
+    reserved = binaryOp | unaryOp | "=" | "." | "," | "(" | ")" | "{" | "}" | "[" | "]" | ":" | ".." | "→" | "←" | "?" | ";" | "\"" | "'" | "`"
+    ref = ~number ~keyword (~reserved ~space ~newline any)+
     
     DiscreteRange = ("[" | "(") Expression ".." (Expression "..")? Expression? (")" | "]")
     ContinuousRange = ("[" | "(") Expression "..." Expression? (")" | "]")
@@ -103,14 +109,15 @@ Cuttlefish {
     Tuple = "(" ListOf<Expression, ","> ","? ")"
     List = "[" ListOf<Expression, ","> ","? "]"
     Set = "{" ListOf<Expression, ","> ","? "}"
+    // MatchSet = "{" Block<PatternElem Guard?> "}"
+    // need to put this in at some point but this requires breaking down guards and patterns
 
-    Function =
-        | fn ":" Block<Pattern> -- pattern
-        | fn ":" Block<Statement> -- statement
-    Process =
-        | prc ":" Block<Pattern> -- pattern
-        | prc ":" Block<Statement> -- statement
+    Function = fn ":" PatternBlock
+    Process = prc ":" PatternBlock
 
+    PatternBlock =
+        | Block<Pattern> -- pattern
+        | Block<Statement> -- statement
     Pattern =
         | NonemptyListOf<PatternElem, ","> Block<Guard> -- guard
         | NonemptyListOf<PatternElem, ","> Returnbit -- return

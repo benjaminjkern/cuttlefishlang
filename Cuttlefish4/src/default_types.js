@@ -1,4 +1,4 @@
-const Types = {
+const TYPES = {
     Object: {
         subtypes: ["Method", "Collection", "Num", "Bool", "Type"]
     },
@@ -29,3 +29,12 @@ const Types = {
         subtypes: ["Int"]
     },
 }
+
+const matchType = (toCheck, type) => {
+    if (!toCheck.ObjectType) throw `${toCheck} does not have a type!`;
+    if (toCheck.ObjectType === type) return true;
+    if (!TYPES[type] || !TYPES[type].subtypes) return false;
+    return TYPES[type].subtypes.some(subtype => matchType(toCheck, subtype));
+}
+
+module.exports = { TYPES, matchType };

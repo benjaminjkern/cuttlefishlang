@@ -2,13 +2,16 @@
 
 const ASTNodeFields = {
     Program: ["statements"],
+    PatternBlock: ["patterns"],
+
     Assignment: ["assignments"],
     SingleAssignment: ["assignee", "value"],
     Reassignment: ["assignee", "op", "value"],
     Print: ["value"],
     If: ["test", "ifTrue", "ifFalse"],
-    Catch: ["patterns", "output"],
-    For: ["collection", "patterns", "output"],
+    Switch: ["object", "patterns"],
+    Catch: ["patterns"],
+    For: ["collection", "patterns"],
     While: ["test", "statements"],
     Repeat: ["count", "statements"],
     Return: ["value"],
@@ -18,6 +21,7 @@ const ASTNodeFields = {
 
     Ternary: ["test", "ifTrue", "ifFalse"],
     BinaryOp: ["left", "op", "right"],
+    UnaryOp: ["op", "exp"],
     Application: ["func", "input"],
 
     List: ["values"],
@@ -26,11 +30,10 @@ const ASTNodeFields = {
     DiscreteRange: ["start", "includeStart", "end", "includeEnd", "step"],
     ContinuousRange: ["start", "includeStart", "end", "includeEnd"],
 
-    Function: ["patterns", "output"],
-    Process: ["patterns", "output"],
+    Function: ["patterns"],
+    Process: ["patterns"],
 
-    Pattern: ["input", "cases", "output"],
-    Case: ["test", "cases", "output"],
+    Pattern: ["input", "tests", "output"],
     PatternElem: ["id", "type", "optional", "multiple", "default"],
 
     Bool: ["value"],

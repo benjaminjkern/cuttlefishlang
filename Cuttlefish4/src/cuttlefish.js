@@ -1,11 +1,14 @@
+require('colors');
+
 const ASTNodeEvals = {
-    Program: (node, scope = {}) => {
-        const vars = scope.vars ? Object.keys(scope.vars) : [];
+    Program: (node, scope = { vars: {} }) => {
+        const vars = Object.keys(scope.vars);
         for (const statement of node.statements) {
             evaluate(statement, scope);
-            if (scope.return || scope.break || scope.continue) break;
+            if (scope.return || scope.break || scope.continue || scope.error) break;
         }
-        // get rid of any new vars
+        // purge any in-scope variables - need to fix
+        // scope.vars = Object.keys(scope.vars).filter(v => vars[v]).reduce((p, c) => ({...p, [c]: vars[c] }), {});
     },
     Assignment: (node, scope) => {
         let prevScope = scope;
@@ -21,56 +24,87 @@ const ASTNodeEvals = {
     },
     Reassignment: (node, scope) => {
         //need to do type check in parser
-        scope.vars = {...scope.vars, [node.assignee.id]: evaluate({ ASTType: "BinaryOp", op: node.op, left: evaluate(node.assignee, scope), right: evaluate(node.value, scope) }, scope) };
+        scope.vars = {...scope.vars, [node.assignee.id]: evaluate({ ASTType: "BinaryOp", op: node.op, left: node.assignee, right: node.value }, scope) };
     },
     Print: (node, scope) => {
         // need to do type check
-        console.log(evaluate(node.value, scope).value);
+        // need to abstract this to a toString method
+        const toPrint = evaluate(node.value, scope);
+        // console.log(toPrint);
+        switch (toPrint.ObjectType) {
+            case 'List':
+                console.log(toPrint.values.map(a => a.value));
+                break;
+            case 'Iterator':
+                process.stdout.write("[ ");
+                while (toPrint.hasNext) {
+                    const item = toPrint.next().current;
+                    if (matchType(item, "Num") || matchType(item, "Bool"))
+                        process.stdout.write((item.value + '').yellow);
+                    else if (matchType(item, "String"))
+                        process.stdout.write(("'" + item.value + "'").green);
+                    else process.stdout.write(item.value + '');
+                    if (toPrint.hasNext) process.stdout.write(", ");
+                }
+                process.stdout.write(" ]\n");
+                break;
+            case 'Set':
+                console.log("{ " + Object.keys(toPrint.values).map(key => {
+                    const item = toPrint.values[key]
+                    if (matchType(item, "Num") || matchType(item, "Bool"))
+                        return (item.value + '').yellow;
+                    if (matchType(item, "String"))
+                        return ("'" + item.value + "'").green;
+                    return item.value + '';
+                }).join(", ") + " }");
+                break;
+            default:
+                if (toPrint.value !== undefined) console.log(toPrint.value);
+                else if (toPrint.ObjectType) console.log(`[ ${toPrint.ObjectType} ]`)
+                else console.log("[ Object ]");
+        }
     },
     If: (node, scope) => {
         // type check
-        if (evaluate(node.test, scope))
+        if (evaluate(node.test, scope).value)
             evaluate(node.ifTrue, scope);
         else evaluate(node.ifFalse, scope);
     },
+    Switch: (node, scope) => {
+
+    },
     Catch: (node, scope) => {
         if (scope.error) {
-            node.patterns.forEach((pattern) => evaluate(pattern, {...scope, vars: {...scope.vars, $: scope.error } }));
+            const oldArg = scope.vars.$;
+            scope.vars.$ = scope.error;
+            evaluate(node.patterns, scope);
+            scope.error = undefined;
+            scope.vars.$ = oldArg;
         }
     },
     For: (node, scope) => {
         // typecheck for iterable
-        const iterator = evaluate(node.collection, scope);
+        let iterator = evaluate(node.collection, scope);
+        if (iterator.ObjectType === "List") iterator = makeIterator(iterator);
+        const oldArg = scope.vars.$;
         while (iterator.hasNext) {
-            scope.vars.$ = iterator.next();
-            const pscope = deepCopy(scope);
-            let matched = false;
-            for (const pattern of node.patterns) {
-                if (evaluate(pattern, pscope)) {
-                    scope = pscope;
-                    matched = true;
-                    break;
-                }
-            }
-            if (!matched) {
-                scope.error = { ObjectType: "PatternMatchException", message: `Argument ${iterator.current} did not match any pattern` };
-                break;
-            }
-            if (scope.break) break;
-            if (scope.return) return scope.put[scope.put.length - 1];
+            scope.vars.$ = deepCopy(iterator.next().current);
+            evaluate(node.patterns, scope);
+            if (scope.break || scope.return || scope.error) break;
         }
+        scope.vars.$ = oldArg;
     },
     While: (node, scope) => {
         while (evaluate(node.test, scope).value) {
             evaluate(node.statements, scope);
-            if (scope.break) break;
-            if (scope.return) return scope.put[scope.put.length - 1];
+            if (scope.break || scope.return || scope.error) break;
         }
     },
     Repeat: (node, scope) => {
         const count = evaluate(node.count, scope);
-        let i = count.value || -1;
-        while (i !== 0) {
+        let i = count.value;
+        // type check int greater than 0
+        while (i > 0) {
             evaluate(node.statements, scope);
             if (scope.break) break;
             if (scope.return) return scope.put[scope.put.length - 1];
@@ -78,10 +112,18 @@ const ASTNodeEvals = {
         }
     },
     Put: (node, scope) => {
-        scope.put.push(evaluate(node.value, scope));
+        const value = evaluate(node.value, scope);
+        if (scope.put)
+            scope.put.push(value);
+        else scope.put = [value];
     },
     Return: (node, scope) => {
-        if (node.value) scope.put.push(evaluate(node.value, scope));
+        if (node.value) {
+            const value = evaluate(node.value, scope);
+            if (scope.put)
+                scope.put.push(value);
+            else scope.put = [value];
+        }
         scope.return = true;
     },
     Break: (node, scope) => {
@@ -96,7 +138,10 @@ const ASTNodeEvals = {
         return evaluate(node.ifFalse, scope);
     },
     BinaryOp: (node, scope) => {
-        return [node.left, node.right].reduce((pScope, n) => verify(n, pScope), scope);
+        return BinaryOpEvals[node.op](evaluate(node.left, scope), evaluate(node.right, scope));
+    },
+    UnaryOp: (node, scope) => {
+        return UnaryOpEvals[node.op](evaluate(node.exp, scope));
     },
     Application: (node, scope) => {
         return [node.func, ...node.input].reduce((pScope, n) => verify(n, pScope), scope);
@@ -109,7 +154,13 @@ const ASTNodeEvals = {
         return { ObjectType: "Tuple", values: node.values.map(value => evaluate(value, scope)) };
     },
     Set: (node, scope) => {
-        return { ObjectType: "Set", values: node.values.reduce((set, value) => ({...set, [hash(value)]: evaluate(value, scope) }), {}) };
+        return {
+            ObjectType: "Set",
+            values: node.values.reduce((set, value) => {
+                const evaluated = evaluate(value, scope);
+                return {...set, [hash(evaluated)]: evaluated }
+            }, {})
+        };
     },
     DiscreteRange: (node, scope) => {
         const start = evaluate(node.start, scope);
@@ -170,26 +221,39 @@ const ASTNodeEvals = {
     Process: (node, scope) => {
         return { ObjectType: "Process", patterns: node.patterns };
     },
-    Pattern: (node, scope) => {
-        const pscope = node.input.reduce((passScope, patternelem) => verify(patternelem, passScope), scope);
-        node.cases.forEach(pcase => verify(pcase, {...pscope, hasArgument: true }));
-        verify(node.output, {...pscope, hasArgument: true });
-        return scope;
+    PatternBlock: (node, scope) => {
+        for (const pattern of node.patterns) {
+            const pscope = deepCopy(scope);
+            if (!pattern.input.length || (evaluate(pattern.input[0], pscope) && pattern.tests.every(test => evaluate(test, pscope).value))) {
+                scope.vars = pscope.vars;
+                evaluate(pattern, scope);
+                return;
+            }
+        }
+        scope.error = { ObjectType: "PatternMatchException", message: `Argument ${inspect(scope.vars.$)} did not match any pattern` };
     },
-    Case: (node, scope) => {
-        node.cases.forEach(pcase => verify(pcase, scope));
-        verify(node.output, scope);
-        return verify(node.test, scope);
+    Pattern: (node, scope) => {
+        // scope = node.input.reduce((passScope, patternelem) => evaluate(patternelem, passScope), scope);
+        // for (const case of node.cases) {
+        //     if (evaluate(case, scope)) {
+        //         scope = pscope;
+        //         break;
+        //     }
+        // }
+        evaluate(node.output, scope);
     },
     PatternElem: (node, scope) => {
-        let newScope = scope;
-        if (node.type) newScope = verify(node.type, scope);
-        if (node.default) newScope = verify(node.default, scope);
-        return {...newScope,
-            vars: {...scope.vars, [node.id]: true }
+        // const type = evaluate(node.type, scope);
+        // const default = evaluate(node.default, scope);
+        // TODO: FIX
+        // console.log("$" + scope.vars.$)
+        if (!node.type || scope.vars.$.ObjectType === node.type.id || typeof scope.vars.$ === 'object') {
+            scope.vars[node.id] = scope.vars.$;
+            return true;
         }
+        return false;
     },
-    ListType: (node, scope) => verify(node.type, scope),
+    ListType: (node, scope) => ({ ObjectType: "Type", type: "List", listType: evaluate(node.type, scope) }),
     Bool: (node, scope) => {
         return { ObjectType: "Bool", value: node.value };
     },
@@ -203,7 +267,7 @@ const ASTNodeEvals = {
         return { ObjectType: "String", value: node.strings.reduce((p, string) => p + evaluate(string, scope).value, '') };
     },
     ElementOf: (node, scope) => {
-        //
+        // i have no idea
         verify(node.parent, scope);
         verify(node.childId, scope);
         return scope;
@@ -215,16 +279,17 @@ const ASTNodeEvals = {
     }
 }
 
-const hash = () => {};
-const deepCopy = () => {};
-
+const { hash, deepCopy, makeIterator, inspect } = require('./utils');
 const BASE_SCOPE = { vars: require('./default_scope') };
+const { BinaryOpEvals, UnaryOpEvals } = require('./default_ops');
+const { matchType } = require("./default_types");
 const makeAST = require("./make_AST");
 const verifyScope = require('./verify_scope');
 
 const evaluate = (node, scope) => {
     if (!node) return undefined;
     // console.log(node);
+    // console.log(scope);
     if (node.ASTType) return ASTNodeEvals[node.ASTType](node, scope);
     throw "Was passed a node that either didnt exist or didnt have an ASTType!";
 };
@@ -232,7 +297,10 @@ const evaluate = (node, scope) => {
 module.exports = text => {
     const ast = makeAST(text);
     verifyScope(ast);
-    evaluate(ast);
+    const scope = { vars: {} };
+    evaluate(ast, scope);
+
+    if (scope.error) return scope.error;
     return '';
 }
 

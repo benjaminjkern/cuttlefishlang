@@ -8,10 +8,12 @@ else repeat if "hello":
     break
     while 4 < 5 + 9:
         if false ++ yes:
-            repeat 6: catch: e ->
-                print "hello"
-                break
-                continue
+            repeat 6: catch:
+                e ->
+                    print "hello"
+                    break
+                    continue
+                f -> "lol"
             continue
         else
             print "Whoah"

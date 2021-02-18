@@ -1,3 +1,8 @@
+my,name,jeff,hello,ben,kern,is,very,cool,great,nice,sweet,hi = "Corgi Time"
+# lol I do this so that none of these vars throw errors
+
+# This is a nonsense script to make sure that the indentation works
+
 f = fn:
     my name jeff
     hello
@@ -8,7 +13,7 @@ ben kern is very
       and
         nice
     and cool
-      and sweet
+                       and sweet
 
   hello
   
@@ -17,7 +22,5 @@ ben kern is very
   hello
     #hello
     hello
-      # hello
+        # hello
     hi
-
-### This should all just like not work when it comes to semantics because none of these vars work

@@ -27,6 +27,14 @@ const deepEquals = (A, B) => {
     return Akeys.length === Object.keys(B).length && Akeys.every(key => B[key] !== undefined && deepEquals(A[key], B[key]));
 }
 
+const deepNotEquals = (A, B) => {
+    if (typeof A !== typeof B) return true;
+    if (typeof A !== 'object') return A !== B;
+    if (A.length !== undefined) return B.length === undefined || A.length !== B.length || A.some((v, i) => deepNotEquals(v, B[i]));
+    const Akeys = Object.keys(A);
+    return Akeys.length !== Object.keys(B).length || Akeys.some(key => B[key] === undefined || deepNotEquals(A[key], B[key]));
+}
+
 const deepCopy = (obj) => {
     if (typeof obj !== 'object') return obj;
     if (obj.length) return obj.map(v => deepCopy(v));
@@ -54,4 +62,4 @@ const makeIterator = (list) => ({
 
 const inspect = x => require('util').inspect(x, false, null, false);
 
-module.exports = { hash, deepCopy, deepEquals, contains, makeIterator, inspect }
+module.exports = { hash, deepCopy, deepEquals, deepNotEquals, contains, makeIterator, inspect }

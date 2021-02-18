@@ -18,23 +18,22 @@ Cuttlefish {
         
     Assignment =
         | Assignable "=" Expression -- single
-        | NonemptyListOf<Assignable, ","> "=" Expression -- multipletoone
         | NonemptyListOf<Assignable, ","> "=" NonemptyListOf<~Function ~Process Expression, ","> -- multiple
     Reassignment =
         | Assignable reassignable ~space "=" Expression
     Print = print Expression
-    If = if Expression ":" Block<Statement> (newline else ":"? Block<Statement>)?
-    Switch = switch Expression ":" PatternBlock
+    If = if StmtExp ":" Block<Statement> (newline else ":"? Block<Statement>)?
+    Switch = switch StmtExp ":" PatternBlock
     Catch = catch ":"? PatternBlock
-    For = for Expression ":" PatternBlock
-    While = while Expression ":" Block<Statement>
-    Repeat = repeat (Expression? ":")? Block<Statement>
+    For = for StmtExp ":" PatternBlock
+    While = while StmtExp ":" Block<Statement>
+    Repeat = repeat (StmtExp? ":")? Block<Statement>
     Break = break
     Continue = continue
     Return = return Expression?
     Put = put? Expression
     
-   	keyword = print | if | else | catch | while | repeat | for | break | continue | return | put | fn | prc | switch | binaryWord
+   	keyword = print | if | else | catch | while | repeat | for | break | continue | return | put | fn | prc | switch | opWord
     print = "print" &sep
     if = "if" &sep
     else = "else" &sep
@@ -47,35 +46,16 @@ Cuttlefish {
     continue = "continue" &sep
     return = "return" &sep
     put = "put" &sep
-    fn = "fn" &sep
-    prc = "prc" &sep
-    sep = space | reserved | &end | newline
+    fn = "fn"
+    prc = "prc"
+    sep = space | reserved | &end | newline | ":"
 
-    Assignable = ElementOf | ref
+    Assignable = ElementOf | ref // | string
 
-    Expression = 
-        | Expression1 "?" Expression1 ":" Expression -- ternary
-        | Expression1
-
-    Expression1 =
-        | Expression1 #(space binaryWord &sep) Expression2 -- explicitsep
-        | Expression1 binaryWord &sep Expression2 -- implicitsep
-        | Expression1 binaryOp Expression2 -- operator
-        | Expression2
-        
-    Expression2 =
-        | Expression2 Expression3 -- application
-        | Expression2 Block<Expression> -- block
-        | Expression3
-
-    Expression3 =
-        | Expression4 #(~space &sep) Expression -- nospaceapplication
-        | Expression4
-
-    Expression4 =
-        | unaryOp #(~space) Expression4 -- operator
-        | ElementOf
-        | Atom
+    Expression =  (opWord | ExpBit) ExpBit* Block<Expression>?
+    ExpBit = Atom | #(special)
+    
+    StmtExp = (opWord | ExpBit) (~":" Atom | #(~":" special))*
 
     Atom =
         | "(" Expression ")" -- group
@@ -90,21 +70,24 @@ Cuttlefish {
         | number
         | ref
 
+    // consider getting these from outside scope
+    opWord = ("in" | "and" | "or") &sep
+    op = "===" | "!==" | "==" | "!=" | ">=" | "<=" | ">" | "<" | "%=" | "||" | "&&" | "|>" | "!" | "?" | ":" | reassignable
     reassignable = "*" | "//" | "/"  | "^" | "++" | "+" | "-" | "%" | "|" | "&"
 
-    binaryWord = "in" | "and" | "or"
+    special =
+    	| space opWord -- explicitsep
+    	| &sep opWord -- implicitsep
+    	| &sep space? ~reserved op -- sepop
+    	| ~reserved op -- last
 
-    binaryOp = "===" | "!==" | "==" | "!=" | ">=" | "<=" | ">" | "<" | "%=" | "||" | "&&" | "|>" | reassignable
-    
-    unaryOp = "-" | "!"
-
-    reserved = binaryOp | unaryOp | "=" | "." | "," | "(" | ")" | "{" | "}" | "[" | "]" | ":" | ".." | "→" | "←" | "?" | ";" | "\"" | "'" | "`"
-    ref = ~number ~keyword (~reserved ~space ~newline any)+
+    reserved = "->" | "=" ~"=" | "." | "," | "(" | ")" | "{" | "}" | "[" | "]" | ".." | "→" | "←" | ";" | "\"" | "'" | "`"
+    ref = ~number ~keyword (~reserved ~special ~space ~newline any)+
     
     DiscreteRange = ("[" | "(") Expression ".." (Expression "..")? Expression? (")" | "]")
     ContinuousRange = ("[" | "(") Expression "..." Expression? (")" | "]")
 
-    ElementOf = Expression3 #(~space) "." #(~space) ref
+    ElementOf = Expression #(~space) "." #(~space) ref
 
     Tuple = "(" ListOf<Expression, ","> ","? ")"
     List = "[" ListOf<Expression, ","> ","? "]"
@@ -130,7 +113,7 @@ Cuttlefish {
         | ~ref Atom -- specific
     patternModifier = "*" | "?" | "+"
     TypeMatch =
-        | Expression4 (#(~space) patternModifier)? ref -- typed
+        | Atom (#(~space) patternModifier)? ref -- typed
         | ref -- untyped
 
     Block<Inside> = NonemptyListOf<Inside, ";"> -- single

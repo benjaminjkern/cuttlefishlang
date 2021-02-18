@@ -19,10 +19,7 @@ const ASTNodeFields = {
     Break: [],
     Continue: [],
 
-    Ternary: ["test", "ifTrue", "ifFalse"],
-    BinaryOp: ["left", "op", "right"],
-    UnaryOp: ["op", "exp"],
-    Application: ["func", "input"],
+    UnparsedExp: ["atoms"],
 
     List: ["values"],
     Tuple: ["values"],
@@ -42,7 +39,6 @@ const ASTNodeFields = {
     Concat: ["strings"],
 
     ElementOf: ["parent", "childId"],
-    Ref: ["id"],
 }
 
 module.exports = ASTNodeFields;

@@ -10,14 +10,11 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
     Assignment_single(assignee, _, exp) {
         return astNode("Assignment", [astNode("SingleAssignment", assignee.ast(), exp.ast())]);
     },
-    Assignment_multipletoone(assignees, _, exp) {
-        const assignedAsts = assignees.ast()[0];
-        const expAst = exp.ast();
-        return astNode("Assignment", assignedAsts.map((assignee, i) => astNode("SingleAssignment", assignee, expAst)));
-    },
     Assignment_multiple(assignees, _, exps) {
         const assignedAsts = assignees.ast()[0];
         const expAsts = exps.ast()[0];
+        if (expAsts.length === 1)
+            return astNode("Assignment", assignedAsts.map((assignee, i) => astNode("SingleAssignment", assignee, expAsts[0])));
         if (assignedAsts.length !== expAsts.length) throw "Syntax Error: In multi-assignment, there must be equal amounts on both sides of the =";
         return astNode("Assignment", assignedAsts.map((assignee, i) => astNode("SingleAssignment", assignee, expAsts[i])));
     },
@@ -60,44 +57,15 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
     Assignable(bit) {
         return bit.ast();
     },
-    Expression(exp) {
-        return exp.ast();
+    StmtExp(head, tail) {
+        const atoms = [head.ast(), ...tail.ast()];
+        if (atoms.length > 1) return astNode("UnparsedExp", atoms);
+        return atoms[0];
     },
-    Expression_ternary(test, _1, ifTrue, _2, ifFalse) {
-        return astNode("Ternary", test.ast(), ifTrue.ast(), ifFalse.ast());
-    },
-    Expression1(exp) {
-        return exp.ast();
-    },
-    Expression1_operator(left, op, right) {
-        return astNode("BinaryOp", left.ast(), op.sourceString, right.ast());
-    },
-    Expression1_explicitsep(left, _1, op, _2, right) {
-        return astNode("BinaryOp", left.ast(), op.sourceString, right.ast());
-    },
-    Expression1_implicitsep(left, op, _2, right) {
-        return astNode("BinaryOp", left.ast(), op.sourceString, right.ast());
-    },
-    Expression2(exp) {
-        return exp.ast();
-    },
-    Expression2_application(func, input) {
-        return astNode("Application", func.ast(), [input.ast()]);
-    },
-    Expression2_block(func, input) {
-        return astNode("Application", func.ast(), input.ast());
-    },
-    Expression3(exp) {
-        return exp.ast();
-    },
-    Expression3_nospaceapplication(func, _, input) {
-        return astNode("Application", func.ast(), [input.ast()]);
-    },
-    Expression4_operator(op, exp) {
-        return astNode("UnaryOp", op.sourceString, exp.ast());
-    },
-    Expression4(exp) {
-        return exp.ast();
+    Expression(head, tail, block) {
+        const atoms = [head.ast(), ...tail.ast(), ...block.ast().flat()];
+        if (atoms.length > 1) return astNode("UnparsedExp", atoms);
+        return atoms[0];
     },
     Atom(atom) {
         return atom.ast();
@@ -106,7 +74,10 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
         return exp.ast();
     },
     ref(_) {
-        return astNode("Ref", this.sourceString);
+        return this.sourceString;
+    },
+    opWord(_1, _2) {
+        return this.sourceString;
     },
     DiscreteRange(left, start, _1, step, _2, end, right) {
         return astNode("DiscreteRange", start.ast(), left.sourceString === "[", end.ast()[0], right.sourceString === "]", step.ast()[0]);
@@ -207,6 +178,18 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
         return [];
     },
     indentnewline(_) {
+        return this.sourceString;
+    },
+    special_explicitsep(_, op) {
+        return op.sourceString;
+    },
+    special_implicitsep(_, op) {
+        return op.sourceString;
+    },
+    special_sepop(_1, _2, op) {
+        return op.sourceString;
+    },
+    special_last(_) {
         return this.sourceString;
     },
     _terminal() {

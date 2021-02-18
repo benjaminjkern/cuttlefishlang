@@ -1,5 +1,5 @@
 const ASTNodeVerifications = {
-    Program: (node, scope = {}) => {
+    Program: (node, scope = { vars: {}, patterns: {} }) => {
         let prevScope = scope;
         for (const statement of node.statements) {
             prevScope = verify(statement, prevScope) || prevScope;
@@ -15,15 +15,15 @@ const ASTNodeVerifications = {
         let prevScope = scope;
         let addedVars = {};
         for (const assignment of node.assignments) {
-            if (addedVars[assignment.assignee.id]) throw "Cannot set the same var twice!";
-            addedVars[assignment.assignee.id] = true;
+            if (addedVars[assignment.assignee]) throw "Cannot set the same var twice!";
+            addedVars[assignment.assignee] = true;
             prevScope = verify(assignment, prevScope) || prevScope;
         }
         return prevScope;
     },
     SingleAssignment: (node, scope) => {
         return {...verify(node.value, scope),
-            vars: {...scope.vars, [node.assignee.id]: true },
+            vars: {...scope.vars, [node.assignee]: true },
         };
     },
     Reassignment: (node, scope) => {
@@ -62,7 +62,7 @@ const ASTNodeVerifications = {
         return verify(node.value, scope);
     },
     Return: (node, scope) => {
-        if (!scope.inFunction) throw "AST Error: Can only return from inside of a function or process!";
+        if (!scope.inFunction) throw "AST Error: Can only return from inside of a method!";
         return verify(node.value, scope);
     },
     Break: (node, scope) => {
@@ -72,18 +72,30 @@ const ASTNodeVerifications = {
         if (!scope.loopCount) throw "AST Error: Can only continue from inside of a loop!";
     },
 
-    Ternary: (node, scope) => {
-        return [node.test, node.ifTrue, node.ifFalse].reduce((pScope, n) => verify(n, pScope), scope);
+
+
+    // pattern matching
+    PatternBlock: (node, scope) => {
+        node.patterns.forEach(pattern => verify(pattern, {...scope, inPattern: true }));
     },
-    UnaryOp: (node, scope) => {
-        return verify(node.exp, scope);
+    Pattern: (node, scope) => {
+        const pscope = node.input.reduce((passScope, patternelem) => verify(patternelem, passScope), scope);
+        verify(node.output, pscope);
+        return node.tests.reduce((passScope, test) => verify(test, passScope), pscope);
     },
-    BinaryOp: (node, scope) => {
-        return [node.left, node.right].reduce((pScope, n) => verify(n, pScope), scope);
+    PatternElem: (node, scope) => {
+        let newScope = scope;
+        if (node.type) newScope = verify(node.type, scope);
+        if (node.default) newScope = verify(node.default, scope);
+        return {...newScope,
+            vars: {...scope.vars, [node.id]: true }
+        }
     },
-    Application: (node, scope) => {
-        return [node.func, ...node.input].reduce((pScope, n) => verify(n, pScope), scope);
-    },
+    ListType: (node, scope) => verify(node.type, scope),
+
+
+
+    // pre-defined objects
     List: (node, scope) => {
         return node.values.reduce((pScope, n) => verify(n, pScope), scope);
     },
@@ -92,10 +104,6 @@ const ASTNodeVerifications = {
     },
     Set: (node, scope) => {
         return node.values.reduce((pScope, n) => verify(n, pScope), scope);
-    },
-    Map: (node, scope) => {
-        node.patterns.forEach(pattern => verify(pattern, scope));
-        return scope;
     },
     DiscreteRange: (node, scope) => {
         return [node.values, node.end, node.step].reduce((pScope, n) => verify(n, pScope), scope);
@@ -117,23 +125,6 @@ const ASTNodeVerifications = {
             }]
         }
     },
-    PatternBlock: (node, scope) => {
-        node.patterns.forEach(pattern => verify(pattern, {...scope, inPattern: true }));
-    },
-    Pattern: (node, scope) => {
-        const pscope = node.input.reduce((passScope, patternelem) => verify(patternelem, passScope), scope);
-        verify(node.output, pscope);
-        return node.tests.reduce((passScope, test) => verify(test, passScope), pscope);
-    },
-    PatternElem: (node, scope) => {
-        let newScope = scope;
-        if (node.type) newScope = verify(node.type, scope);
-        if (node.default) newScope = verify(node.default, scope);
-        return {...newScope,
-            vars: {...scope.vars, [node.id]: true }
-        }
-    },
-    ListType: (node, scope) => verify(node.type, scope),
     Bool: (node, scope) => {
         if (![true, false].includes(node.value)) throw "AST Error: Received Number ASTNode with non-Number value";
         return scope;
@@ -155,27 +146,37 @@ const ASTNodeVerifications = {
         verify(node.childId, scope);
         return scope;
     },
-    Ref: (node, scope) => {
-        if ((scope.vars && scope.vars[node.id]) || BASE_SCOPE.vars[node.id]) return scope;
-        if (node.id === "$" && scope.inPattern) return scope;
-        throw `AST Error: ID ${node.id} not found`;
+    UnparsedExp: (node, scope) => {
+        return node.atoms.reduce((pScope, n) => verify(n, pScope), scope);
     }
 }
 
 const verify = (node, scope) => {
     if (!node) return scope;
-    // console.log(node);
     if (node.ASTType) return ASTNodeVerifications[node.ASTType](node, scope);
-    throw "cannot verify node without ASTType!";
+    console.log(node);
+    if (typeof node !== 'string') throw "Received node without ASTType! This shouldn't have happened!";
+
+    if (scope.vars[node] || (scope.inPattern && node === "$") || findVar(scope.patterns, node)) return scope;
+    throw `AST Error: ID ${node} not found`;
 }
 
-const BASE_SCOPE = { vars: require('./default_scope') };
+const BASE_SCOPE = { vars: require('./default_scope'), patterns: require('./default_patterns') };
+
+const findVar = (patterns, id) => {
+    for (const type of Object.keys(patterns)) {
+        for (const pattern of patterns[type]) {
+            if (pattern.pattern.includes(id)) return true;
+        }
+    }
+    return false;
+}
 
 const makeAST = require("./make_AST");
 
 module.exports = input => {
     if (typeof input === 'string')
-        return verify(makeAST(input), {});
+        return verify(makeAST(input), BASE_SCOPE);
     if (typeof input === 'object')
         return verify(input, {});
     throw "Error: Please only give me a script or an AST";

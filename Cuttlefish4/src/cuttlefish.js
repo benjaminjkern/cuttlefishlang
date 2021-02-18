@@ -35,7 +35,7 @@ const ASTNodeEvals = {
             case 'List':
                 console.log(toPrint.values.map(a => a.value));
                 break;
-            case 'Iterator':
+            case 'Iteratable':
                 process.stdout.write("[ ");
                 while (toPrint.hasNext) {
                     const item = toPrint.next().current;
@@ -170,7 +170,7 @@ const ASTNodeEvals = {
         if (end.value === start.value || step.value === 0) throw "UHHHH I CAN PROBABLY MAKE THIS WORK AT SOME POINT";
 
         const iterator = {
-            ObjectType: "Iterator",
+            ObjectType: "Iteratable",
             next() {
                 if (!this.hasNext) {
                     console.log("Does not have a next!");

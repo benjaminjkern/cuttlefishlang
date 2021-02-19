@@ -59,6 +59,6 @@ const makeIterator = (list) => ({
     hasNext: list.values.length > 0
 });
 
-const inspect = x => require('util').inspect(x, false, null, false);
+const inspect = (x, colors = false) => require('util').inspect(x, false, null, colors);
 
 module.exports = { hash, deepCopy, deepEquals, deepNotEquals, contains, makeIterator, inspect }

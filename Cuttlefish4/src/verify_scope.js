@@ -160,7 +160,7 @@ const verify = (node, scope) => {
     throw `AST Error: ID ${node} not found`;
 }
 
-const BASE_SCOPE = { vars: require('./default_scope'), patterns: require('./default_patterns') };
+const BASE_SCOPE = { vars: require('./default_vars'), patterns: require('./default_patterns') };
 
 const findVar = (patterns, id) => {
     for (const type of Object.keys(patterns)) {

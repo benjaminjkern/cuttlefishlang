@@ -279,10 +279,10 @@ const ASTNodeEvals = {
     }
 }
 
+const BASE_SCOPE = { vars: require('./default_vars') };
+
 const { hash, deepCopy, makeIterator, inspect } = require('./utils');
-const BASE_SCOPE = { vars: require('./default_scope') };
-const { BinaryOpEvals, UnaryOpEvals } = require('./default_ops');
-const { matchType } = require("./default_types");
+
 const makeAST = require("./make_AST");
 const verifyScope = require('./verify_scope');
 

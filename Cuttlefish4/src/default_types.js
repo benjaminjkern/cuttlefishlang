@@ -36,20 +36,20 @@ const TYPES = {
     },
 }
 
-const matchType = (toCheck, type, seen = {}) => {
-    if (!toCheck.ObjectType) throw `${toCheck} does not have a type!`;
-    if (toCheck.ObjectType === type) return true;
+const isOfType = (toCheck, type, seen = {}) => {
+    if (!toCheck.type) throw `${toCheck} does not have a type!`;
+    if (toCheck.type === type) return true;
     if (seen[type] || !TYPES[type] || !TYPES[type].subtypes) return false;
     seen[type] = true;
-    return TYPES[type].subtypes.some(subtype => matchType(toCheck, subtype));
+    return TYPES[type].subtypes.some(subtype => isOfType(toCheck, subtype));
 }
 
 const smallestCommonType = (A, B, topType = "Object", seen = {}) => {
-    if (!A.ObjectType) throw `${A} does not have a type!`;
-    if (!B.ObjectType) throw `${B} does not have a type!`;
-    if (A.ObjectType === B.ObjectType) return A.ObjectType;
+    if (!A.type) throw `${A} does not have a type!`;
+    if (!B.type) throw `${B} does not have a type!`;
+    if (A.type === B.type) return A.type;
 
-    if (seen[topType] || !matchType(A, topType) || !matchType(B, topType)) return null;
+    if (seen[topType] || !isOfType(A, topType) || !isOfType(B, topType)) return null;
     seen[topType] = true;
 
     if (!TYPES[topType] || !TYPES[topType].subtypes) return topType;
@@ -61,4 +61,17 @@ const smallestCommonType = (A, B, topType = "Object", seen = {}) => {
     return topType;
 }
 
-module.exports = { TYPES, matchType, smallestCommonType };
+const findSuperTypes = (nodeType) => Object.keys(TYPES).reduce((p, type) => TYPES[type].subtypes && TYPES[type].subtypes.includes(nodeType) ? [...p, type] : p, []);
+
+const readjustNum = (num) => {
+    if (num === Math.floor(num)) return { type: "Int", value: num };
+    return { type: "Real", value: num };
+}
+
+const allSubTypes = (nodeType, seen = {}) => {
+    if (!seen[nodeType]) seen[nodeType] = true;
+    if (TYPES[nodeType] && TYPES[nodeType].subtypes) TYPES[nodeType].subtypes.forEach(subtype => allSubTypes(subtype, seen));
+    return Object.keys(seen);
+};
+
+module.exports = { TYPES, isOfType, smallestCommonType, findSuperTypes, readjustNum };

@@ -1,145 +1,147 @@
 const { deepEquals, deepNotEquals, hash, contains, toString } = require('./utils');
 
-const { matchType, smallestCommonType } = require('./default_types');
+const { smallestCommonType, readjustNum } = require('./default_types');
 
-const PATTERNS = {
+module.exports = {
     Bool: [{
             pattern: [{ type: "Object" }, "===", { type: "Object" }],
-            evaluate: (left, right) => ({ ObjectType: "Bool", value: (left.value !== undefined && right.value !== undefined && left.value === right.value) || (left.pointer !== undefined && right.pointer !== undefined && left.pointer === right.pointer) })
+            evaluate: (left, right) => ({ type: "Bool", value: (left.value !== undefined && right.value !== undefined && left.value === right.value) || (left.pointer !== undefined && right.pointer !== undefined && left.pointer === right.pointer) })
         },
         {
             pattern: [{ type: "Object" }, "==", { type: "Object" }],
-            evaluate: (left, right) => ({ ObjectType: "Bool", value: deepEquals(left, right) }),
+            evaluate: (left, right) => ({ type: "Bool", value: deepEquals(left, right) }),
         },
         {
             pattern: [{ type: "Object" }, "!==", { type: "Object" }],
-            evaluate: (left, right) => ({ ObjectType: "Bool", value: (left.value === undefined || right.value === undefined || left.value !== right.value) && (left.pointer === undefined || right.pointer === undefined || left.pointer !== right.pointer) })
+            evaluate: (left, right) => ({ type: "Bool", value: (left.value === undefined || right.value === undefined || left.value !== right.value) && (left.pointer === undefined || right.pointer === undefined || left.pointer !== right.pointer) })
         },
         {
             pattern: [{ type: "Object" }, "!=", { type: "Object" }],
-            evaluate: (left, right) => ({ ObjectType: "Bool", value: deepNotEquals(left, right) }),
+            evaluate: (left, right) => ({ type: "Bool", value: deepNotEquals(left, right) }),
         },
         {
             pattern: [{ type: "Real" }, ">=", { type: "Real" }],
-            evaluate: (left, right) => ({ ObjectType: "Bool", value: left.value >= right.value })
+            evaluate: (left, right) => ({ type: "Bool", value: left.value >= right.value })
         },
         {
             pattern: [{ type: "Real" }, "<=", { type: "Real" }],
-            evaluate: (left, right) => ({ ObjectType: "Bool", value: left.value <= right.value })
+            evaluate: (left, right) => ({ type: "Bool", value: left.value <= right.value })
         },
         {
             pattern: [{ type: "Real" }, ">", { type: "Real" }],
-            evaluate: (left, right) => ({ ObjectType: "Bool", value: left.value > right.value })
+            evaluate: (left, right) => ({ type: "Bool", value: left.value > right.value })
         },
         {
             pattern: [{ type: "Real" }, "<", { type: "Real" }],
-            evaluate: (left, right) => ({ ObjectType: "Bool", value: left.value < right.value })
+            evaluate: (left, right) => ({ type: "Bool", value: left.value < right.value })
         },
         {
             pattern: [{ type: "Real" }, "%=", { type: "Real" }],
-            evaluate: (left, right) => ({ ObjectType: "Bool", value: left.value % right.value === 0 })
+            evaluate: (left, right) => ({ type: "Bool", value: left.value % right.value === 0 })
         },
         {
             pattern: [{ type: "Real" }, "%!=", { type: "Real" }],
-            evaluate: (left, right) => ({ ObjectType: "Bool", value: left.value % right.value !== 0 })
+            evaluate: (left, right) => ({ type: "Bool", value: left.value % right.value !== 0 })
         },
         {
             pattern: [{ type: "Bool" }, "||", { type: "Bool" }],
-            evaluate: (left, right) => ({ ObjectType: "Bool", value: left.value || right.value })
+            evaluate: (left, right) => ({ type: "Bool", value: left.value || right.value })
         },
         {
             pattern: [{ type: "Bool" }, "or", { type: "Bool" }],
-            evaluate: (left, right) => ({ ObjectType: "Bool", value: left.value || right.value })
+            evaluate: (left, right) => ({ type: "Bool", value: left.value || right.value })
         },
         {
             pattern: [{ type: "Bool" }, "&&", { type: "Bool" }],
-            evaluate: (left, right) => ({ ObjectType: "Bool", value: left.value && right.value })
+            evaluate: (left, right) => ({ type: "Bool", value: left.value && right.value })
         },
         {
             pattern: [{ type: "Bool" }, "and", { type: "Bool" }],
-            evaluate: (left, right) => ({ ObjectType: "Bool", value: left.value && right.value })
+            evaluate: (left, right) => ({ type: "Bool", value: left.value && right.value })
         },
-        { pattern: [{ type: "Object" }, "in", { type: "String" }], evaluate: (left, right) => ({ ObjectType: "Bool", value: right.value.includes(left.value) }) },
-        { pattern: [{ type: "Object" }, "in", { type: "List" }], evaluate: (left, right) => ({ ObjectType: "Bool", value: contains(left, right.values) }) },
+        { pattern: [{ type: "Object" }, "in", { type: "String" }], evaluate: (left, right) => ({ type: "Bool", value: right.value.includes(left.value) }) },
+        { pattern: [{ type: "Object" }, "in", { type: "List" }], evaluate: (left, right) => ({ type: "Bool", value: contains(left, right.values) }) },
         {
             pattern: [{ type: "Object" }, "in", { type: "Iteratable" }],
             evaluate: (left, right) => {
                 while (right.hasNext) {
                     if (deepEquals(left, right.next().current)) {
-                        return { ObjectType: "Bool", value: true };
+                        return { type: "Bool", value: true };
                     }
                 }
-                return { ObjectType: "Bool", value: false };
+                return { type: "Bool", value: false };
             }
         },
-        { pattern: [{ type: "Object" }, "in", { type: "Set" }], evaluate: (left, right) => ({ ObjectType: "Bool", value: !!right.values[hash(left)] }) },
-        { pattern: [{ type: "Object" }, "in", { type: "Testable" }], evaluate: (left, right) => ({ ObjectType: "Bool", value: right.test(left) }) },
-        { returnType: "Bool", pattern: ["!", { type: "Bool" }], evaluate: (val) => ({ ObjectType: "Bool", value: !val.value }) },
+        { pattern: [{ type: "Object" }, "in", { type: "Set" }], evaluate: (left, right) => ({ type: "Bool", value: !!right.values[hash(left)] }) },
+        { pattern: [{ type: "Object" }, "in", { type: "Testable" }], evaluate: (left, right) => ({ type: "Bool", value: right.test(left) }) },
+        { pattern: ["!", { type: "Bool" }], evaluate: (val) => ({ type: "Bool", value: !val.value }) },
     ],
     Num: [
-        { returnType: "Num", pattern: [{ type: "Num" }, "+", { type: "Num" }], evaluate: (left, right) => ({ ObjectType: smallestCommonType(left, right), value: left.value + right.value }) },
-        { returnType: "Num", pattern: [{ type: "Num" }, "-", { type: "Num" }], evaluate: (left, right) => ({ ObjectType: smallestCommonType(left, right), value: left.value - right.value }) },
-        { returnType: "Num", pattern: [{ type: "Num" }, "*", { type: "Num" }], evaluate: (left, right) => ({ ObjectType: smallestCommonType(left, right), value: left.value * right.value }) },
-        { returnType: "Num", pattern: [{ type: "Num" }, "%", { type: "Num" }], evaluate: (left, right) => ({ ObjectType: smallestCommonType(left, right), value: left.value % right.value }) },
-        { returnType: "Num", pattern: [{ type: "Num" }, "/", { type: "Num" }], evaluate: (left, right) => ({ ObjectType: smallestCommonType(left, right), value: left.value / right.value }) },
-        { returnType: "Num", pattern: [{ type: "Num" }, "^", { type: "Num" }], evaluate: (left, right) => ({ ObjectType: smallestCommonType(left, right), value: left.value ** right.value }) },
-        { returnType: "Num", pattern: [{ type: "Num" }, { type: "Num" }], evaluate: (left, right) => ({ ObjectType: smallestCommonType(left, right), value: left.value * right.value }) },
-        { returnType: "Num", pattern: ["-", { type: "Num" }], evaluate: (val) => ({ ObjectType: val.ObjectType, value: -val.value }) },
+        { pattern: [{ type: "Num" }, "+", { type: "Num" }], evaluate: (left, right) => readjustNum(left.value + right.value) },
+        { pattern: [{ type: "Num" }, "-", { type: "Num" }], evaluate: (left, right) => readjustNum(left.value - right.value) },
+        { pattern: [{ type: "Num" }, "*", { type: "Num" }], evaluate: (left, right) => readjustNum(left.value * right.value) },
+        { pattern: [{ type: "Num" }, "/", { type: "Num" }], evaluate: (left, right) => readjustNum(left.value / right.value) },
+        { pattern: [{ type: "Num" }, "%", { type: "Num" }], evaluate: (left, right) => readjustNum(left.value % right.value) },
+        { pattern: [{ type: "Num" }, "^", { type: "Num" }], evaluate: (left, right) => readjustNum(left.value ** right.value) },
+        { pattern: ["-", { type: "Num" }], evaluate: (val) => readjustNum(-val.value) }, // might be redundant to do the readjustNum here
+        { pattern: ["+", { type: "Num" }], evaluate: (val) => readjustNum(val.value) },
+        // { pattern: [{ type: "Num" }, { type: "Num" }], evaluate: (left, right) => readjustNum(left.value * right.value) },
     ],
+    Real: [],
     Int: [
-        { returnType: "Int", pattern: [{ type: "Num" }, "//", { type: "Int" }], evaluate: (left, right) => ({ ObjectType: "Int", value: Math.floor(left.value / right.value) }) },
+        { pattern: [{ type: "Num" }, "//", { type: "Int" }], evaluate: (left, right) => ({ type: "Int", value: Math.floor(left.value / right.value) }) },
     ],
     Set: [{
             pattern: [{ type: "Set" }, "|", { type: "Set" }],
-            evaluate: (left, right) => ({ ObjectType: "Set", values: Object.keys(right.values).reduce((p, c) => ({...p, [c]: right.values[c] }), left.values) })
+            evaluate: (left, right) => ({ type: "Set", values: Object.keys(right.values).reduce((p, c) => ({...p, [c]: right.values[c] }), left.values) })
         },
         {
             pattern: [{ type: "Set" }, "|", { type: "Object" }],
-            evaluate: (left, right) => ({ ObjectType: "Set", values: {...left.values, [hash(right)]: right } })
+            evaluate: (left, right) => ({ type: "Set", values: {...left.values, [hash(right)]: right } })
         },
         {
             pattern: [{ type: "Object" }, "|", { type: "Set" }],
-            evaluate: (left, right) => ({ ObjectType: "Set", values: {...right.values, [hash(left)]: left } })
+            evaluate: (left, right) => ({ type: "Set", values: {...right.values, [hash(left)]: left } })
         },
         {
             pattern: [{ type: "Set" }, "&", { type: "Set" }],
             evaluate: (left, right) => ({
-                ObjectType: "Set",
+                type: "Set",
                 values: Object.keys(right.values).reduce((p, c) => left.values[c] ? {...p, [c]: right.values[c] } : p, {})
             })
         },
         {
             pattern: [{ type: "Set" }, "-", { type: "Set" }],
-            evaluate: (left, right) => ({ ObjectType: "Set", values: Object.keys(left.values).reduce((p, c) => right.values[c] ? p : {...p, [c]: left.values[c] }, {}) })
+            evaluate: (left, right) => ({ type: "Set", values: Object.keys(left.values).reduce((p, c) => right.values[c] ? p : {...p, [c]: left.values[c] }, {}) })
         },
         {
             pattern: [{ type: "Set" }, "-", { type: "Object" }],
-            evaluate: (left, right) => ({ ObjectType: "Set", values: Object.keys(left.values).reduce((p, c) => c === hash(right) ? p : {...p, [c]: left.values[c] }, {}) })
+            evaluate: (left, right) => ({ type: "Set", values: Object.keys(left.values).reduce((p, c) => c === hash(right) ? p : {...p, [c]: left.values[c] }, {}) })
         },
     ],
     Testable: [{
             pattern: [{ type: "Testable" }, "|", { type: "Testable" }],
-            evaluate: (left, right) => ({ ObjectType: "Testable", test: (obj) => left.test(obj) || right.test(obj) })
+            evaluate: (left, right) => ({ type: "Testable", test: (obj) => left.test(obj) || right.test(obj) })
         },
         {
             pattern: [{ type: "Testable" }, "&", { type: "Testable" }],
-            evaluate: (left, right) => ({ ObjectType: "Testable", test: (obj) => left.test(obj) && right.test(obj) })
+            evaluate: (left, right) => ({ type: "Testable", test: (obj) => left.test(obj) && right.test(obj) })
         },
         {
             pattern: [{ type: "Testable" }, "-", { type: "Testable" }],
-            evaluate: (left, right) => ({ ObjectType: "Testable", test: (obj) => left.test(obj) && !right.test(obj) })
+            evaluate: (left, right) => ({ type: "Testable", test: (obj) => left.test(obj) && !right.test(obj) })
         },
     ],
     String: [{
         pattern: [{ type: "String" }, "++", { type: "String" }],
         evaluate: (left, right) =>
-            ({ ObjectType: "String", value: toString(left) + toString(right) })
+            ({ type: "String", value: toString(left) + toString(right) })
     }, ],
     List: [{
             pattern: [{ type: "List" }, "++", { type: "List" }],
             evaluate: (left, right) =>
                 ({
-                    ObjectType: "List",
+                    type: "List",
                     values: [...left.values, ...right.values]
                 })
         },
@@ -147,14 +149,14 @@ const PATTERNS = {
             pattern: [{ type: "List" }, "++", { type: "Object" }],
             evaluate: (left, right) =>
                 ({
-                    ObjectType: "List",
+                    type: "List",
                     values: [...left.values, right]
                 })
         }, {
             pattern: [{ type: "Object" }, "++", { type: "List" }],
             evaluate: (left, right) =>
                 ({
-                    ObjectType: "List",
+                    type: "List",
                     values: [left, ...right.values]
                 })
         },
@@ -163,7 +165,7 @@ const PATTERNS = {
             pattern: [{ type: "Iterable" }, "++", { type: "Iterable" }],
             evaluate: (left, right) =>
                 ({
-                    ObjectType: "Iterable",
+                    type: "Iterable",
                     next() {
                         const obj = left.hasNext ? left.next() : right.next();
                         this.current = obj.current;
@@ -178,7 +180,7 @@ const PATTERNS = {
             pattern: [{ type: "Iterable" }, "++", { type: "Object" }],
             evaluate: (left, right) =>
                 ({
-                    ObjectType: "Iterable",
+                    type: "Iterable",
                     next() {
                         const obj = left.hasNext ? left.next() : { current: right, hasNext: false };
                         this.current = obj.current;
@@ -193,7 +195,7 @@ const PATTERNS = {
             pattern: [{ type: "Object" }, "++", { type: "Iterable" }],
             evaluate: (left, right) =>
                 ({
-                    ObjectType: "Iterable",
+                    type: "Iterable",
                     usedUp: false,
                     next() {
                         const obj = this.usedUp ? { current: left, hasNext: right.hasNext } : right.next();
@@ -219,12 +221,6 @@ const PATTERNS = {
         {
             pattern: [{ type: "Bool" }, "?", { type: "Object" }, ":", { type: "Object" }],
             evaluate: (test, ifTrue, ifFalse) => test.value ? ifTrue : ifFalse
-        }
+        },
     ],
 }
-
-const parsePattern = (expression, expectedType) => {
-    // BIG PROJECT
-}
-
-module.exports = PATTERNS;

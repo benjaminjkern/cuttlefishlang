@@ -12,6 +12,9 @@
 3. Expression parsing
 4. Finish Script Running
 5. Capability for passing references to objects explicitly through cuttlefish and not just through js
+
+# Wanted but not needed features
+
 6. Flesh out switch statement
    - Idk if I want to do raw patterns
 7. Flesh out catch statement
@@ -19,8 +22,9 @@
 9. ElementOf is just not working
 10. Ability to dynamically create patterns
     - Ability to store these preparsed patterns in the Compiled AST
+11. Keyword arguments
 
-# Far down line
+# Far down line (NOT NECESSARY FOR MVP)
 
 - Generic type checking
 - AST Optimization and pruning
@@ -35,3 +39,6 @@
 - CLI
 - Real website
 - Patreon
+- Tests
+- Organize Repo
+- Write documentation

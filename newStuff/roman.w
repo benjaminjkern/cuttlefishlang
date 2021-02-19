@@ -15,6 +15,17 @@ roman = fn:
         | n >= 1    -> 'I'  ++ roman (n - 1)
         | -> ''
 
+roman = fn:
+    Int n ->
+        returnValue = ''
+        while n > 0: for romanMap.keys().sort(-1): key ->
+            if n >= key:
+                returnValue ++= romanMap[key]
+                n -= key
+        return returnValue
+
+
+romanMap = {1000: 'M', 900: 'CM', 500: 'D', 400: 'CD', 100: 'C', 90: 'XC', 50: 'L', 40: 'XL', 10: 'X', 9: 'IX', 5: 'V', 4: 'IV', 1: 'I'}
 
 decimal = fn:
     String n
@@ -32,6 +43,7 @@ decimal = fn:
         | n in /IV.*/ -> 4    + decimal n[2..]
         | n in /I.*/  -> 1    + decimal n[1..]
         | -> 0
+
 
 # roman 539
 # 'D' ++ roman 39

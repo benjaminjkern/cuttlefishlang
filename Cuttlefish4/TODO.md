@@ -9,9 +9,12 @@
        - Maybe cache can keep track of all used outside states
    - I'm not sure how to allow for type creation if at all
    - I'm not sure about servers, as of rn they just are out
-3. Expression parsing
-4. Finish Script Running
-5. Capability for passing references to objects explicitly through cuttlefish and not just through js
+3. Finish Script Running
+   - Expression parsing
+     - Numbers being polymorphous types in an elegant way
+     - Operator precedence and associativity
+     - Numbers being able to be put next to each other
+4. Capability for passing references to objects explicitly through cuttlefish and not just through js
 
 # Wanted but not needed features
 
@@ -26,7 +29,7 @@
 
 # Far down line (NOT NECESSARY FOR MVP)
 
-- Generic type checking
+- Generics in type checking
 - AST Optimization and pruning
   - if true / ternary trues and falses
   - add zeros

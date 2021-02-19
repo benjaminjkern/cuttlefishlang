@@ -80,6 +80,7 @@ const PATTERNS = {
         { returnType: "Num", pattern: [{ type: "Num" }, "+", { type: "Num" }], evaluate: (left, right) => ({ ObjectType: smallestCommonType(left, right), value: left.value + right.value }) },
         { returnType: "Num", pattern: [{ type: "Num" }, "-", { type: "Num" }], evaluate: (left, right) => ({ ObjectType: smallestCommonType(left, right), value: left.value - right.value }) },
         { returnType: "Num", pattern: [{ type: "Num" }, "*", { type: "Num" }], evaluate: (left, right) => ({ ObjectType: smallestCommonType(left, right), value: left.value * right.value }) },
+        { returnType: "Num", pattern: [{ type: "Num" }, "%", { type: "Num" }], evaluate: (left, right) => ({ ObjectType: smallestCommonType(left, right), value: left.value % right.value }) },
         { returnType: "Num", pattern: [{ type: "Num" }, "/", { type: "Num" }], evaluate: (left, right) => ({ ObjectType: smallestCommonType(left, right), value: left.value / right.value }) },
         { returnType: "Num", pattern: [{ type: "Num" }, "^", { type: "Num" }], evaluate: (left, right) => ({ ObjectType: smallestCommonType(left, right), value: left.value ** right.value }) },
         { returnType: "Num", pattern: [{ type: "Num" }, { type: "Num" }], evaluate: (left, right) => ({ ObjectType: smallestCommonType(left, right), value: left.value * right.value }) },

@@ -1,22 +1,21 @@
-const hashSalt = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER * 2 - Number.MAX_SAFE_INTEGER);
+const hashSalt = Math.floor(Math.random() * 2147483648 * 2 - 2147483648);
 
 const hash = (obj) => strHash(objHash(obj));
 
 const strHash = (str) => {
     let h = hashSalt;
-    let c = 0;
 
-    while (c < str.length) {
+    for (let c = 0; c < str.length; c++) {
         h = ((h << 5) + h) + str.charCodeAt(c); /* hash * 33 + c */
-        c++;
     }
 
     return h;
 }
+
 const objHash = (obj) => {
-    if (typeof obj !== 'object') return obj + '';
-    if (obj.length !== undefined) return "[" + obj.map(v => hash(v)).join(',') + "]";
-    return "{" + Object.keys(obj).map(v => v + ':' + hash(obj[v])).join(',') + "}";
+    if (typeof obj !== 'object' || obj === null) return obj + '';
+    if (obj.length !== undefined) return '[' + obj.map(v => hash(v)).join(',') + ']';
+    return '{' + Object.keys(obj).map(v => hash(v) + ':' + hash(obj[v])).join(',') + '}';
 };
 
 const deepEquals = (A, B) => {

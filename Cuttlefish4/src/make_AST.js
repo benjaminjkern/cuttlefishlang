@@ -49,7 +49,7 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
         return astNode("Continue");
     },
     Return(_, exp) {
-        return astNode("Return", exp.ast());
+        return astNode("Return", exp.ast()[0]);
     },
     Put(_, exp) {
         return astNode("Put", exp.ast());
@@ -110,20 +110,24 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
         return astNode("PatternBlock", [astNode("Pattern", [], [], astNode("Program", statements.ast()))]);
     },
     Pattern_guard(input, cases) {
-        return cases.ast().map(parsedCase => astNode("Pattern", input.ast()[0],
+        // console.log(inspect(cases.ast()[1]));
+        return cases.ast().reduce((p, c) => [...p, ...(c.length === 2 && c[c.length - 1].length === undefined ? [c] : c)], []).map(parsedCase => astNode("Pattern", input.ast()[0],
             ...parsedCase));
     },
     Pattern_return(input, output) {
         return astNode("Pattern", input.ast()[0], [], output.ast());
     },
     Guard_guard(_, test, cases) {
+        // console.log(inspect(cases.ast()));
+        // console.log(inspect(test.ast()));
         return cases.ast().map(parsedCase => [
-            [test.ast()[0], ...parsedCase[0]], parsedCase[1]
+            [test.ast(), ...parsedCase[0]], parsedCase[1]
         ]);
     },
     Guard_return(_, test, output) {
+        // console.log(output.ast());
         return [
-            [test.ast()[0]].filter(x => x), output.ast()
+            test.ast(), output.ast()
         ];
     },
     Returnbit(_, statements) {
@@ -211,5 +215,7 @@ module.exports = (text) => {
     }
     return astGenerator(match).ast();
 }
+
+const { inspect } = require('./utils');
 
 require('./run_file')(module, res => require('util').inspect(res, false, null, false));

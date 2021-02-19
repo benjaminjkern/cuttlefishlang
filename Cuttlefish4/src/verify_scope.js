@@ -154,7 +154,6 @@ const ASTNodeVerifications = {
 const verify = (node, scope) => {
     if (!node) return scope;
     if (node.ASTType) return ASTNodeVerifications[node.ASTType](node, scope);
-    console.log(node);
     if (typeof node !== 'string') throw "Received node without ASTType! This shouldn't have happened!";
 
     if (scope.vars[node] || (scope.inPattern && node === "$") || findVar(scope.patterns, node)) return scope;

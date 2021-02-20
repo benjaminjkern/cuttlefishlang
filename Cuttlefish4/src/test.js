@@ -9,9 +9,12 @@ let errors = [];
 
 fs.readdirSync('../examples/').forEach(file => {
     try {
-        require('./' + process.argv.slice(2))(fs.readFileSync('../examples/' + file, 'utf8'));
+        console.log(file.green);
+        console.log(require('./' + process.argv.slice(2))(fs.readFileSync('../examples/' + file, 'utf8'), 200));
     } catch (e) {
         errors.push(file + " : " + (e + '').magenta);
+        console.log(("  > Error: " + e).bgRed);
+        console.log();
     }
 });
 

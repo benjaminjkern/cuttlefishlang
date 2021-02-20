@@ -59,13 +59,11 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
     },
     StmtExp(head, tail) {
         const atoms = [head.ast(), ...tail.ast()];
-        if (atoms.length > 1) return astNode("UnparsedExp", atoms);
-        return atoms[0];
+        return astNode("UnparsedExp", atoms);
     },
     Expression(head, tail, block) {
         const atoms = [head.ast(), ...tail.ast(), ...block.ast().flat()];
-        if (atoms.length > 1) return astNode("UnparsedExp", atoms);
-        return atoms[0];
+        return astNode("UnparsedExp", atoms);
     },
     Atom(atom) {
         return atom.ast();

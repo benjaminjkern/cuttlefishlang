@@ -23,11 +23,6 @@ main = prc: j ->
     # print inside
     print before
 
-# print j
-
-while true:
-    print "I'm doing something else here"
-
 
 ### 
 

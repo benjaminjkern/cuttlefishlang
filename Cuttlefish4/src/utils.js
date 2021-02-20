@@ -36,7 +36,7 @@ const deepNotEquals = (A, B) => {
 
 const deepCopy = (obj) => {
     if (typeof obj !== 'object') return obj;
-    if (obj.length) return obj.map(v => deepCopy(v));
+    if (obj.length !== undefined) return obj.map(v => deepCopy(v));
     return Object.keys(obj).reduce((p, c) => ({...p, [c]: deepCopy(obj[c]) }), {});
 };
 

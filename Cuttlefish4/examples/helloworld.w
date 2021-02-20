@@ -8,7 +8,6 @@ x -= 1
 
 repeat x: print "Goodbye, world!"
 
-
 print `I just said goodbye {x} times!`
 
 print "You" ++ "Are" ++ 1 ++ "COol"

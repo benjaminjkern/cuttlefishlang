@@ -1,6 +1,6 @@
 const TYPES = {
     Object: {
-        subtypes: ["Method", "Collection", "Primitive"]
+        subtypes: ["Primitive", "Method", "Collection"]
     },
     Collection: {
         subtypes: ["Testable", "Iterable", "Tuple"]
@@ -73,5 +73,7 @@ const allSubTypes = (nodeType, seen = {}) => {
     if (TYPES[nodeType] && TYPES[nodeType].subtypes) TYPES[nodeType].subtypes.forEach(subtype => allSubTypes(subtype, seen));
     return Object.keys(seen);
 };
+
+Object.keys(TYPES).forEach(type => allSubTypes(type).forEach(subtype => { TYPES[subtype] = TYPES[subtype] || {} }))
 
 module.exports = { TYPES, isOfType, smallestCommonType, findSuperTypes, readjustNum };

@@ -62,7 +62,7 @@ module.exports = {
         { pattern: [{ type: "Object" }, "in", { type: "String" }], evaluate: (left, right) => ({ type: "Bool", value: right.value.includes(left.value) }) },
         { pattern: [{ type: "Object" }, "in", { type: "List" }], evaluate: (left, right) => ({ type: "Bool", value: contains(left, right.values) }) },
         {
-            pattern: [{ type: "Object" }, "in", { type: "Iteratable" }],
+            pattern: [{ type: "Object" }, "in", { type: "Iterable" }],
             evaluate: (left, right) => {
                 while (right.hasNext) {
                     if (deepEquals(left, right.next().current)) {
@@ -93,7 +93,9 @@ module.exports = {
     ],
     Set: [{
             pattern: [{ type: "Set" }, "|", { type: "Set" }],
-            evaluate: (left, right) => ({ type: "Set", values: Object.keys(right.values).reduce((p, c) => ({...p, [c]: right.values[c] }), left.values) })
+            evaluate: (left, right) => {
+                return { type: "Set", values: Object.keys(right.values).reduce((p, c) => ({...p, [c]: right.values[c] }), left.values) }
+            }
         },
         {
             pattern: [{ type: "Set" }, "|", { type: "Object" }],
@@ -135,7 +137,7 @@ module.exports = {
     String: [{
         pattern: [{ type: "String" }, "++", { type: "String" }],
         evaluate: (left, right) =>
-            ({ type: "String", value: toString(left) + toString(right) })
+            ({ type: "String", value: left.value + right.value })
     }, ],
     List: [{
             pattern: [{ type: "List" }, "++", { type: "List" }],
@@ -217,7 +219,7 @@ module.exports = {
     ],
     Object: [
         { pattern: [{ type: "Object" }, "|>", { type: "Method" }] },
-        { pattern: [{ type: "Method" }, { type: "Object" }] },
+        { pattern: [{ type: "Method" }, { type: "Object" }], },
         {
             pattern: [{ type: "Bool" }, "?", { type: "Object" }, ":", { type: "Object" }],
             evaluate: (test, ifTrue, ifFalse) => test.value ? ifTrue : ifFalse

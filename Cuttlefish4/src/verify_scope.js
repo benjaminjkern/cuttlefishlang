@@ -177,7 +177,7 @@ module.exports = input => {
     if (typeof input === 'string')
         return verify(makeAST(input), BASE_SCOPE);
     if (typeof input === 'object')
-        return verify(input, {});
+        return verify(input, BASE_SCOPE);
     throw "Error: Please only give me a script or an AST";
 }
 

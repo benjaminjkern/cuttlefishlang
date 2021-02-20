@@ -1,17 +1,9 @@
-module.exports = {
-    Object: { ObjectType: "Type" },
-    Collection: { ObjectType: "Type" },
-    Iterable: { ObjectType: "Type" },
-    Testable: { ObjectType: "Type" },
-    List: { ObjectType: "Type" },
-    Set: { ObjectType: "Type" },
-    Method: { ObjectType: "Type" },
-    Num: { ObjectType: "Type" },
-    String: { ObjectType: "Type" },
-    Real: { ObjectType: "Type" },
-    Imaginary: { ObjectType: "Type" },
-    Int: { ObjectType: "Type" },
-    Type: { ObjectType: "Type" },
-    true: { ObjectType: "Bool", value: true },
-    false: { ObjectType: "Bool", value: false }
+const VARS = {
+    true: { type: "Bool", value: true },
+    false: { type: "Bool", value: false }
 }
+
+const { TYPES } = require('./default_types');
+Object.keys(TYPES).forEach(type => VARS[type] = { type: "Type" });
+
+module.exports = VARS;

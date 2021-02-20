@@ -1,19 +1,9 @@
-const RULES = require('./default_patterns');
 const { TYPES, findSuperTypes } = require('./default_types');
-const { inspect } = require('./utils');
+const { inspect, hash, deepCopy } = require('./utils');
+
+let RULES;
 
 require('colors');
-
-RULES.Real.push(...RULES.Num);
-RULES.Int.push(...RULES.Num);
-
-Object.keys(TYPES).forEach(type => {
-    if (!TYPES[type].subtypes) return;
-    if (!RULES[type]) RULES[type] = [];
-    TYPES[type].subtypes.forEach(subtype => {
-        RULES[type].push({ pattern: [{ type: subtype }] });
-    });
-})
 
 const matchType = (input, expectedType = "Object", leftover = []) => {
     // return immediately with proper value if passed in a single object that matches type, i dont know if this will ever run honestly
@@ -32,24 +22,26 @@ const matchType = (input, expectedType = "Object", leftover = []) => {
     for (let r in RULES[expectedType]) {
         let rule = RULES[expectedType][r];
         tabs++;
-        // console.log(`${Array(tabs - 1).fill('   ').join('')}Matching ${inspect(input).yellow} to ${inspect(rule.pattern).blue} with ${inspect(leftover).green} left over`);
+        if (DEBUG) console.log(`${Array(tabs - 1).fill('   ').join('')}Matching ${stringExp(input).yellow} to ${stringExp(rule.pattern).blue} with ${stringExp(leftover).green} left over`);
         let match = matchPattern(input, rule.pattern, leftover);
-        // console.log(Array(tabs - 1).fill('   ').join('') + (match.error ? 'X '.red + match.error.magenta : 'O '.green + inspect(match, true)))
+        if (DEBUG) console.log(Array(tabs - 1).fill('   ').join('') + (match.error ? 'X '.red + match.error.magenta : 'O '.green + stringExp(match.output)));
         tabs--;
         if (match.error && leftover.length > 0) continue;
         if (!match.error) {
             let value = {};
 
             if (match.output.length === 1 && !rule.evaluate) {
-                if (match.output[0].value) value = match.output[0].value;
-                else value = match.output[0];
+                // if (match.output[0].value) value = match.output[0].value;
+                // else
+                value = match.output[0];
             } else {
-                if (match.output.length > 0) value = { args: match.output };
-                if (rule.evaluate) value.evaluate = rule.evaluate;
+                value = { unevaluated: { args: match.output, ...(rule.evaluate ? { evaluate: rule.evaluate } : {}) } };
             }
 
-            let out = { type: match.output.length > 1 ? expectedType : match.output[0].type };
-            if (value) out.value = value; // throw out empty array cuz I dont want it
+            let out = {
+                type: match.output.length !== 1 ? expectedType : (match.output[0].type || expectedType),
+                ...value
+            };
             if (match.notConsumed) out.notConsumed = match.notConsumed;
             return out;
         }
@@ -60,7 +52,7 @@ const matchType = (input, expectedType = "Object", leftover = []) => {
         typeof input[0] === "object" &&
         input[0].type === expectedType
     )
-        return { type: expectedType, value: input[0].value, notConsumed: input.slice(1) };
+        return {...input[0], notConsumed: input.slice(1) };
 
     return { error: `Did not match any pattern in type ${expectedType}` };
 };
@@ -124,16 +116,16 @@ const matchPattern = (input, pattern, leftover = []) => {
 
     const terminalPatternCount = {};
     const terminalInputCount = {};
-    fullPattern.forEach((value) => {
-        if (isTerminal(value)) {
-            let newValue = value.type ? "type:" + value.type : value;
+    fullPattern.forEach((token) => {
+        if (isTerminal(token)) {
+            let newValue = token.type ? "type:" + token.type : token;
             if (terminalPatternCount[newValue]) terminalPatternCount[newValue]++;
             else terminalPatternCount[newValue] = 1;
         }
     });
-    input.forEach((value) => {
-        if (isTerminal(value)) {
-            let newValue = value.type ? "type:" + value.type : value;
+    input.forEach((token) => {
+        if (isTerminal(token)) {
+            let newValue = token.type ? "type:" + token.type : token;
             if (terminalInputCount[newValue]) terminalInputCount[newValue]++;
             else terminalInputCount[newValue] = 1;
         }
@@ -167,7 +159,7 @@ const matchPattern = (input, pattern, leftover = []) => {
 const isTerminal = (node) => typeof node !== "object" || !RULES[node.type];
 const matchTerminal = (a, b) =>
     a === b || (a.type && b.type && a.type === b.type);
-const getValue = (node) => (node.value ? [node.value] : []);
+const getValue = (node) => (typeof node === 'object' ? [node] : []);
 const hasSubArray = (master, sub) =>
     master.some((_, idx) => isEqual(master.slice(idx, idx + sub.length), sub));
 const isEqual = (a, b) => {
@@ -187,7 +179,7 @@ const clean = (node) => {
     return newNode;
 };
 
-const parseExpression = (exp, type = "Object", seen = {}) => {
+const parse = (exp, type = "Object") => {
     for (const token of exp) {
         if (token.error) return token;
     }
@@ -204,23 +196,55 @@ const parseExpression = (exp, type = "Object", seen = {}) => {
     //     if (!superMatch.error) return {...superMatch, type };
     // }
 
-    return { error: `Failed to match "${exp.map(v=>v.type?"("+v.type+")":v).join(" ")}" to ${type}!` };
+    return { error: `Failed to match ${stringExp(exp)} to ${type}!` };
 };
 
-module.exports = parseExpression;
-const evaluate = (exp) => {
-    if (exp.value && exp.value.evaluate) {
-        const evaluatedArgs = exp.value.args.map(arg => evaluate(arg));
-        return exp.value.evaluate(...evaluatedArgs)
+const parseExpression = (atoms, scope) => {
+    RULES = deepCopy(scope.patterns);
+
+    // Should be done differently than this but whatever;
+    // console.log(RULES);
+    RULES.Real.push(...RULES.Num);
+    RULES.Int.push(...RULES.Num);
+
+    console.log(scope.vars);
+    // add all variables
+    Object.keys(scope.vars).forEach(variable => {
+        const type = scope.vars[variable].type;
+        // console.log(type);
+        if (!RULES[type]) RULES[type] = [];
+        RULES[type].push({ pattern: [variable], evaluate: () => scope.vars[variable] });
+    })
+
+    // This is pretty good though, add all types to the rules
+    Object.keys(TYPES).forEach(type => {
+        if (!TYPES[type].subtypes) return;
+        if (!RULES[type]) RULES[type] = []; // this should be redundant
+        TYPES[type].subtypes.forEach(subtype => {
+            RULES[type].unshift({ pattern: [{ type: subtype }] });
+        });
+    })
+
+    // console.log(inspect(RULES, true));
+    // console.log(atoms);
+
+
+    return parse(atoms, scope.expectedType);
+};
+
+const evaluateExpression = (exp) => {
+    // console.log(exp);
+    if (exp.unevaluated && exp.unevaluated.args && exp.unevaluated.evaluate) {
+        const evaluatedArgs = exp.unevaluated.args.map(evaluateExpression);
+        return exp.unevaluated.evaluate(...evaluatedArgs);
     }
     return exp;
 }
 
+const stringExp = (exp) => '[ ' + exp.map(v => v.type ? "(" + v.type + (v.value !== undefined ? " : " + v.value : "") + ")" : v).join(" ") + ' ]';
+
 let tabs = 0;
 
-// const Node = parseExpression([], "Real");
-const Node2 = parseExpression([{ type: 'Int', value: 2239 }, "-", { type: "Int", value: 47 }, "^", { type: "Int", value: 9 }], "Int");
+const DEBUG = false;
 
-
-// console.log(inspect(Node2, true));
-console.log(evaluate(Node2));
+module.exports = { evaluateExpression, parseExpression }

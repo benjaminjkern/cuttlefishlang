@@ -85,6 +85,8 @@ module.exports = {
         { pattern: [{ type: "Num" }, "^", { type: "Num" }], evaluate: (left, right) => readjustNum(left.value ** right.value) },
         { pattern: ["-", { type: "Num" }], evaluate: (val) => readjustNum(-val.value) }, // might be redundant to do the readjustNum here
         { pattern: ["+", { type: "Num" }], evaluate: (val) => readjustNum(val.value) },
+        { pattern: ["random"], evaluate: () => ({ type: "Real", value: Math.random() }) },
+        { pattern: ["getTime", { type: "Tuple" }], evaluate: () => ({ type: "Int", value: new Date().getTime() }) }
         // { pattern: [{ type: "Num" }, { type: "Num" }], evaluate: (left, right) => readjustNum(left.value * right.value) },
     ],
     Real: [],

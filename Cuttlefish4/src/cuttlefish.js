@@ -26,8 +26,12 @@ const ASTNodeEvals = {
                 const inputType = "Object";
                 scope.patterns[returnType].push({
                     pattern: [assignment.assignee, { type: inputType }],
-                    evaluate: (func, input) => {
-                        return evaluate(value.patterns, {...scope, vars: {...scope.vars, $: input } });
+                    evaluate: (input) => {
+                        const oldArg = scope.vars.$
+                        scope.vars.$ = input || { type: "Undefined" };
+                        const val = evaluate(value.patterns, scope);
+                        scope.vars.$ = oldArg || { type: "Undefined" };
+                        return val;
                     },
                 })
             }
@@ -46,9 +50,7 @@ const ASTNodeEvals = {
     Print: (node, scope) => {
         // need to do type check
         // need to abstract this to a toString method
-        const toPrint = evaluate(node.value, {...scope,
-            expectedType: "Object"
-        });
+        const toPrint = evaluate(node.value, scope);
         switch (toPrint.type) {
             case 'List':
                 console.log(toPrint.values.map(a => a.value));
@@ -95,10 +97,10 @@ const ASTNodeEvals = {
     Catch: (node, scope) => {
         if (scope.error) {
             const oldArg = scope.vars.$;
-            scope.vars.$ = scope.error;
+            scope.vars.$ = scope.error || { type: "Undefined" };
             evaluate(node.patterns, scope);
             scope.error = undefined;
-            scope.vars.$ = oldArg;
+            scope.vars.$ = oldArg || { type: "Undefined" };
         }
     },
     For: (node, scope) => {
@@ -246,6 +248,8 @@ const ASTNodeEvals = {
             if (!pattern.input.length || (evaluate(pattern.input[0], pscope) && pattern.tests.every(test => evaluate(test, {...pscope, expectedType: "Bool" }).value))) {
                 scope.vars = pscope.vars;
                 evaluate(pattern, scope);
+                if (scope.put.length)
+                    return scope.put.shift();
                 return;
             }
         }

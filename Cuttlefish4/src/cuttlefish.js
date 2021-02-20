@@ -111,6 +111,7 @@ const ASTNodeEvals = {
             evaluate(node.patterns, scope);
             if (scope.break || scope.return || scope.error) break;
         }
+        scope.break = false;
         scope.vars.$ = oldArg || { type: "Undefined" };
     },
     While: (node, scope) => {
@@ -118,6 +119,7 @@ const ASTNodeEvals = {
             evaluate(node.statements, scope);
             if (scope.break || scope.return || scope.error) break;
         }
+        scope.break = false;
     },
     Repeat: (node, scope) => {
         const count = evaluate(node.count, {...scope, expectedType: "Int" }) || { value: -1 };

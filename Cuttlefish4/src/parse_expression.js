@@ -207,7 +207,7 @@ const parseExpression = (atoms, scope) => {
     RULES.Real.push(...RULES.Num);
     RULES.Int.push(...RULES.Num);
 
-    console.log(scope.vars);
+    // console.log(scope.vars);
     // add all variables
     Object.keys(scope.vars).forEach(variable => {
         const type = scope.vars[variable].type;

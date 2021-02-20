@@ -14,6 +14,7 @@
      - Numbers being polymorphous types in an elegant way
      - Operator precedence and associativity
      - Numbers being able to be put next to each other
+     - Functions
 4. Capability for passing references to objects explicitly through cuttlefish and not just through js
 
 # Wanted but not needed features
@@ -21,11 +22,10 @@
 6. Flesh out switch statement
    - Idk if I want to do raw patterns
 7. Flesh out catch statement
-8. Flesh out sub-cases, they dont work as they should at the moment
-9. ElementOf is just not working
-10. Ability to dynamically create patterns
-    - Ability to store these preparsed patterns in the Compiled AST
-11. Keyword arguments
+8. ElementOf is just not working
+9. Ability to dynamically create patterns
+   - Ability to store these preparsed patterns in the Compiled AST
+10. Keyword arguments
 
 # Far down line (NOT NECESSARY FOR MVP)
 

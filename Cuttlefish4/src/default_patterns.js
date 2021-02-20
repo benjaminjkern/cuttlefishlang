@@ -171,7 +171,7 @@ module.exports = {
                     next() {
                         const obj = left.hasNext ? left.next() : right.next();
                         this.current = obj.current;
-                        this.hasNext = obj.hasNext;
+                        this.hasNext = right.hasNext;
                         return obj;
                     },
                     current: left.current,

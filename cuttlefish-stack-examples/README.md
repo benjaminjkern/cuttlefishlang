@@ -1,7 +1,7 @@
 My overall goal with this project is to have an all-in-one framework, written in cuttlefish, that ships as an API backend and webserver.
 
 Cuttlefish is a programming language that is designed to do everything well, including readability, learnability, and enjoyability when coding.
-Some dogma when making cuttlefish:
+# Some dogma when making cuttlefish:
     - There should be several ways to solve a given problem, but one should try to never give the option to solve it poorly.
     - People comfortable with programming (In particular, Javascript ES6) should be able to use it and intuitively assume what is going on underneath the hood without having to see the code. (Although the code should be available to check out just in case)
     - People brand new to programming should be able to learn cuttlefish with relative ease just be reading the code, and continue to be astonished at how much is going on behind the scenes to make it all work
@@ -14,7 +14,7 @@ Some dogma when making cuttlefish:
       - If types ARE written down, then the program will likely run smoother due to failing out at type match errors
 
 
-Some things I like the idea of but havent fully worked out:
+# Some things I like the idea of but havent fully worked out:
     - Parsing is done in such a way that it requires little to no parentheses
       - Uses type inference to assign a type to all possible methods and patterns then parses as such, and throws warnings when there are ambiguous patterns
       - Examples: Given `f = (fn: Num x, Num y -> x + y)`

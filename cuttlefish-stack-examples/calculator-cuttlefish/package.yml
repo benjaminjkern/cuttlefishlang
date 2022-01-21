@@ -1,0 +1,11 @@
+cuttlefish-frontend:
+  version: 1.0
+
+cuttlefish-server:
+  version: 1.0
+
+cuttlefish-test:
+  version: 1.0
+
+Big:
+  version: ^5.2.2

@@ -8,14 +8,15 @@
      - The only concrete difference between them would be laziness of execution and caching of return values, but only if they dont draw from outside sources
        - Maybe cache can keep track of all used outside states
    - I'm not sure how to allow for type creation if at all
-   - I'm not sure about servers, as of rn they just are out
 3. Finish Script Running
    - Expression parsing
      - Numbers being polymorphous types in an elegant way
-     - Operator precedence and associativity
-     - Numbers being able to be put next to each other
+     - Operator precedence and associativity, especially across polymorphous types
+     - Numbers being able to be put next to each other as multiplication
      - Functions
 4. Capability for passing references to objects explicitly through cuttlefish and not just through js
+5. Multiple arity inputs in functions, optional inputs, keyword arguments, default arguments
+6. Think about nondeterministic / deterministic scope
 
 # Wanted but not needed features
 
@@ -45,3 +46,5 @@
 - Tests
 - Organize Repo
 - Write documentation
+
+- Lists of a forced type ?

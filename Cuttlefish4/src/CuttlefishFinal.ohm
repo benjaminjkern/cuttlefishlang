@@ -18,22 +18,25 @@ Cuttlefish {
         
     Assignment =
         | Assignable "=" Expression -- single
+        | Assignable ":=" Expression -- constant
         | NonemptyListOf<Assignable, ","> "=" NonemptyListOf<~Function ~Process Expression, ","> -- multiple
+        | NonemptyListOf<Assignable, ","> ":=" NonemptyListOf<~Function ~Process Expression, ","> -- multiple_constant
     Reassignment =
         | Assignable reassignable ~space "=" Expression
     Print = print Expression
-    If = if StmtExp ":" Block<Statement> (newline else ":"? Block<Statement>)?
-    Switch = switch StmtExp ":" PatternBlock
+    If = if Arg Block<Statement> (newline else ":"? Block<Statement>)?
+    Switch = switch Arg PatternBlock
     Catch = catch ":"? PatternBlock
-    For = for StmtExp ":" PatternBlock
-    While = while StmtExp ":" Block<Statement>
-    Repeat = repeat (StmtExp? ":")? Block<Statement>
+    For = for Arg PatternBlock
+    While = while Arg Block<Statement>
+    Repeat = repeat (":" | Arg)? Block<Statement>
     Break = break
     Continue = continue
     Return = return Expression?
     Put = put? Expression
+    Arg = StmtExp ":"
     
-   	keyword = print | if | else | catch | while | repeat | for | break | continue | return | put | fn | prc | switch | opWord
+   	keyword = print | if | else | catch | while | repeat | for | break | continue | return | put | fn | prc | switch
     print = "print" &sep
     if = "if" &sep
     else = "else" &sep
@@ -52,10 +55,10 @@ Cuttlefish {
 
     Assignable = ElementOf | ref // | string
 
-    Expression =  (opWord | ExpBit) ExpBit* Block<Expression>?
+    Expression =  ExpBit+ Block<Expression>?
     ExpBit = Atom | #(special)
     
-    StmtExp = (opWord | ExpBit) (~":" Atom | #(~":" special))*
+    StmtExp = ExpBit (~":" Atom | #(~":" special))*
 
     Atom =
         | "(" Expression ")" -- group
@@ -70,14 +73,10 @@ Cuttlefish {
         | number
         | ref
 
-    // consider getting these from outside scope
-    opWord = ("in" | "and" | "or") &sep
     op = "===" | "!==" | "==" | "!=" | ">=" | "<=" | ">" | "<" | "%=" | "||" | "&&" | "|>" | "!" | "?" | ":" | reassignable
     reassignable = "*" | "//" | "/"  | "^" | "++" | "+" | "-" | "%" | "|" | "&"
 
     special =
-    	| space opWord -- explicitsep
-    	| &sep opWord -- implicitsep
     	| &sep space? ~reserved op -- sepop
     	| ~reserved op -- last
 
@@ -123,7 +122,7 @@ Cuttlefish {
         | newline ("→"|"←") newline -- indented
         | newline
     String = string<"'"> | string<"\"">
-    	| "`" ListOf<#(stringbit), StringExp> "`" -- expression
+    	| "`" #(stringbit) ListOf<#(stringbit), StringExp> "`" -- expression
 
     stringbit = ("\\`" | "\\{" | ~"`" ~"{" any)*
     StringExp = "{" Expression "}"

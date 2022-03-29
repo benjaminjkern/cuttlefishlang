@@ -5,7 +5,7 @@ const ASTNodeFields = {
     PatternBlock: ["patterns"],
 
     Assignment: ["assignments"],
-    SingleAssignment: ["assignee", "value"],
+    SingleAssignment: ["assignee", "value", "constant"],
     Reassignment: ["assignee", "op", "value"],
     Print: ["value"],
     If: ["test", "ifTrue", "ifFalse"],

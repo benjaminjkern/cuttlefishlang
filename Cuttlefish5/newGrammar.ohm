@@ -1,0 +1,25 @@
+CuttlefishBase {
+    // We use ohm only for grouping indented blocks and 
+    Program = newline? ListOf<Statement, newline> newline?
+
+    Statement = NonemptyListOf<InlineExpression, ";"> (";"| Block)?
+
+    InlineExpression = (String | mumboJumbo)+
+    AvoidingExpression = (String | ~"}" mumboJumbo)*
+
+    Block = newline "→" newline NonemptyListOf<Statement, newline> newline "←"
+
+    String = string<"\"">
+    	| "'" ListOf<#(stringbit), StringExp> "'" -- expression
+    stringbit = ("\\'" | "\\{" | ~"'" ~"{" any)*
+    StringExp = "{" AvoidingExpression "}"
+    string<delim> = delim (escape<delim> | ~delim any)* delim
+    escape<delim> = "\\" delim
+    
+    reserved = ";" | "→" | "←" | "#" | "'" | "\""
+    mumboJumbo = ~reserved ~newline any
+
+    comment = "###" (~"###" any)* ("###"|&end) | "#" (~newline any)* (&newline|&end)
+    newline = ("\n" | "\r") (space* ("\n" | "\r"))*
+    space := ~newline ("\u0000".." "  | comment)
+}

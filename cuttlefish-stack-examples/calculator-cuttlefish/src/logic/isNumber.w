@@ -1,0 +1,1 @@
+export isNumber = fn: item -> /[0-9]+/.test item

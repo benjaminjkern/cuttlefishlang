@@ -2,23 +2,58 @@
 
 # Not implemented but definitely want to add
 
-
 - Generally, as little parentheses as possible
   - No need to show code for this, but the idea is that repeated function calls will be handled by either the pattern-based parsing or through funcitonal operators such as map, filter, reduce.
 - Generally, tab based formatting, but allow for closure based formatting as well so that people can make one-liners
+  - Also: Semicolons only are necessary for separating statements in the same line.
+```yml
+# Everywhere that this is acceptable:
+instantiator:
+    doSomething()
+    doSomethingElse()
+    insideInstantiator:
+        doAThirdThing()
+
+# Can also be written as:
+
+instantiator: doSomething(); doSomethingElse(); insideInstantiator: doAThirdThing()
+
+# But if you want something more complicated also in one line, then you can use curly braces.
+instantiator:
+    doSomething()
+    insideInstantiator:
+        doAThirdThing()
+    doSomethingElse()
+outsideDoSomething()
+outsideInstantiator:
+    doYetAnotherThing()
+
+# Can be written as:
+instantiator: { doSomething(); insideInstantiator: {doAThirdThing()}; doSomethingElse()}; outsideDoSomething(); outsideInstantiator: doYetAnotherThing();
+# The reason it needs to be like this is because semicolons, just like newlines, actually only delimit the inside-most block TODO: Make linter throw warning here
+
+# Basically indent and dedent are equivalent to an open and close curly brace. TODO: FIGURE OUT IF THIS IS CONFUSING DUE TO WANTING SETS AND WHATNOT
+
+# You can also use the curly braces to get away from tabbing over stuff
+instantiator: {
+doSomething()
+insideInstantiator: doAThirdThing()
+}
+```
 - Standard control flow
 ```yml
 if x < 3:
-    print "x < 3!" # Allowed on one line, REQUIRED TO BE TABBED
+    print "x < 3!" # Allowed on one line, REQUIRED TO BE TABBED HERE
 else:
     print "x >= 3!"
 
 
-if james == "Cool":
+if james == "Cool": # Not necessary to use a pass statement! Although I think a code linter should yell at something like this
 else if james == "Not Cool":
     print
 while true:
     print "I love you!"
+    x += 1
     break
 ```
 - Repeat loop, honestly idk how useful this is since we have a nice for loop but its nice to have
@@ -56,6 +91,16 @@ print true || false
 
 # Equality
 print a == b
+```
+- Sets! (And Set operations)
+```yml
+mySet = {1, 2, 3}
+mySet2 = {3, 4, 5}
+
+print mySet | mySet2 # {1, 2, 3, 4, 5}
+print mySet & mySet2 # {3}
+print mySet - mySet2 # {1, 2}
+print mySet ! mySet2 # {1, 2, 4, 5} I want to have this in but ! seems like a weird operator to use
 ```
 - Automatically assumed types of variables
 ```yml

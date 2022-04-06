@@ -157,7 +157,7 @@ const verify = (node, scope) => {
     if (typeof node !== 'string') throw "Received node without ASTType! This shouldn't have happened!";
 
     if (scope.vars[node] || (scope.inPattern && node === "$") || findVar(scope.patterns, node)) return scope;
-    throw `AST Error: ID ${node} not found`;
+    throw `Verification Error: ID ${node} not found`;
 }
 
 const BASE_SCOPE = { vars: require('./default_vars'), patterns: require('./default_patterns') };

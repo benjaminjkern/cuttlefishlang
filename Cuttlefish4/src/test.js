@@ -8,9 +8,10 @@ if (process.argv.length < 3) {
 let errors = [];
 
 fs.readdirSync('../examples/').forEach(file => {
+    if (file.slice(file.length - 2) !== '.w') return;
     try {
         console.log(file.green);
-        console.log(require('./' + process.argv.slice(2))(fs.readFileSync('../examples/' + file, 'utf8'), 200));
+        console.log(require('./' + process.argv.slice(2, 3))(fs.readFileSync('../examples/' + file, 'utf8'), process.argv[3] || 200));
     } catch (e) {
         errors.push(file + " : " + (e + '').magenta);
         console.log(("  > Error: " + e).bgRed);

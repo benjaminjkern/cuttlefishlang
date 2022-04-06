@@ -4,44 +4,47 @@ Text-based TicTacToe written in Cuttlefish
 By Ben Kern
 ###
 
-Piece = type: empty | X | O
+Piece = enum:
+    X
+    O
+    empty ->
+        toString = fn: ' '
 
 other = fn:
     X -> O
     O -> X
-    _ -> empty
 
-toString ++ fn:
-    Piece X -> 'X'
-    Piece O -> 'O'
-    Piece -> 'empty'
+main = fn:
+    board = [empty] ** (3,3)
+    turn = X
+    turnsTaken = 0
 
-main = prc:
-    board = [Piece empty] ** (3,3)
-    turn = Piece X
-    turns_taken = 0
+    while turnsTaken < 9:
+        print '{turn}: Please enter position (X, Y)'
 
-    while turns_taken < 9 prc:
-        print `{turn}: Please enter position (1-9)`
+        validatePlacement = fn:
+            String s ->
+                validatePlacement String.parseAs(s, (Int, Int))
+            (Int, Int) coords ->
+                if coords in board.keys():
+                    if board[coords] == empty:
+                        return coords
+                    print 'Position {placement} is taken!'
+                else:
+                    print '{placement} is not a valid position!'
 
-        placement = fn:
-            if board[$ - 1] is undefined:
-                print `{placement} is not a valid position!`
-                put placement input()
-            if board[$ - 1] not empty:
-                print `Position {placement} is taken!`
-                put placement input()
-            return $
+                validatePlacement input()
 
-        board[placement input()] = turn
-        if win board turn:
-            print `{turn} Wins!`
-            break
+        board[validatePlacement input()] = turn
+        if win(board, turn):
+            print '{turn} Wins!'
+            return
 
         turn = other turn
-        turns_taken += 1
+        turnsTaken += 1
         print board
 
     print 'Tie Game'
 
-win := board, turn -> find board [turn]**3, -1 not null
+win = fn: [Piece] ** (3,3) board, Piece turn ->
+    For 

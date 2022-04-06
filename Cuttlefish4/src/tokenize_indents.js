@@ -1,5 +1,3 @@
-const fs = require('fs');
-
 const tokenize_indents = source => {
     source = stripArrows(stripCarriageReturns(source));
 

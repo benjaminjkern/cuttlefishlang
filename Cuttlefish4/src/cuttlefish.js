@@ -2,12 +2,12 @@ require('colors');
 
 const ASTNodeEvals = {
     Program: (node, scope) => {
-        if (new Date().getTime() > scope.endTime) {
-            scope.error = "Timeout";
-            return;
-        }
         const vars = Object.keys(scope.vars);
         for (const statement of node.statements) {
+            if (new Date().getTime() > scope.endTime) {
+                scope.error = "Timeout";
+                return;
+            }
             evaluate(statement, scope);
             if (scope.return || scope.break || scope.continue || scope.error) break;
         }
@@ -22,12 +22,16 @@ const ASTNodeEvals = {
             const value = evaluate(assignment, prevScope);
             if (!isOfType(value, "Method")) scope.vars = {...scope.vars, [assignment.assignee]: value };
             else {
-                const returnType = "String";
+                const returnType = "Int";
                 const inputType = "Object";
                 scope.patterns[returnType].push({
                     pattern: [assignment.assignee, { type: inputType }],
-                    evaluate: (func, input) => {
-                        return evaluate(value.patterns, {...scope, vars: {...scope.vars, $: input } });
+                    evaluate: (input) => {
+                        const oldArg = scope.vars.$
+                        scope.vars.$ = input || { type: "Undefined" };
+                        const val = evaluate(value.patterns, scope);
+                        scope.vars.$ = oldArg || { type: "Undefined" };
+                        return val;
                     },
                 })
             }
@@ -37,6 +41,7 @@ const ASTNodeEvals = {
         // need to do type check in parser
         // console.log(evaluate(node.value, scope));
 
+        // console.log(node.value);
         return evaluate(node.value, scope);
     },
     Reassignment: (node, scope) => {
@@ -46,41 +51,7 @@ const ASTNodeEvals = {
     Print: (node, scope) => {
         // need to do type check
         // need to abstract this to a toString method
-        const toPrint = evaluate(node.value, {...scope,
-            expectedType: "Object"
-        });
-        switch (toPrint.type) {
-            case 'List':
-                console.log(toPrint.values.map(a => a.value));
-                break;
-            case 'Iterable':
-                process.stdout.write("[ ");
-                while (toPrint.hasNext) {
-                    const item = toPrint.next().current;
-                    if (isOfType(item, "Num") || isOfType(item, "Bool"))
-                        process.stdout.write((item.value + '').yellow);
-                    else if (isOfType(item, "String"))
-                        process.stdout.write(("'" + item.value + "'").green);
-                    else process.stdout.write(item.value + '');
-                    if (toPrint.hasNext) process.stdout.write(", ");
-                }
-                process.stdout.write(" ]\n");
-                break;
-            case 'Set':
-                console.log("{ " + Object.keys(toPrint.values).map(key => {
-                    const item = toPrint.values[key]
-                    if (isOfType(item, "Num") || isOfType(item, "Bool"))
-                        return (item.value + '').yellow;
-                    if (isOfType(item, "String"))
-                        return ("'" + item.value + "'").green;
-                    return item.value + '';
-                }).join(", ") + " }");
-                break;
-            default:
-                if (toPrint.value !== undefined) console.log(toPrint.value);
-                else if (toPrint.type) console.log(`[ ${toPrint.type} ]`)
-                else console.log("[ Object ]");
-        }
+        print(evaluate(node.value, scope));
     },
     If: (node, scope) => {
         // type check
@@ -95,10 +66,10 @@ const ASTNodeEvals = {
     Catch: (node, scope) => {
         if (scope.error) {
             const oldArg = scope.vars.$;
-            scope.vars.$ = scope.error;
+            scope.vars.$ = scope.error || { type: "Undefined" };
             evaluate(node.patterns, scope);
             scope.error = undefined;
-            scope.vars.$ = oldArg;
+            scope.vars.$ = oldArg || { type: "Undefined" };
         }
     },
     For: (node, scope) => {
@@ -243,22 +214,26 @@ const ASTNodeEvals = {
     PatternBlock: (node, scope) => {
         for (const pattern of node.patterns) {
             const pscope = deepCopy(scope);
-            if (!pattern.input.length || (evaluate(pattern.input[0], pscope) && pattern.tests.every(test => evaluate(test, {...pscope, expectedType: "Bool" }).value))) {
+            // console.log(inspect(scope, true));
+            const evaluated = pattern.input.every(input => input.ASTType === 'PatternElem' ?
+                evaluate(input, pscope) :
+                deepEquals(pscope.vars.$, evaluate(input, pscope)));
+            // console.log(scope.vars);
+            if (!pattern.input.length || (evaluated && pattern.tests.every(test => {
+                    const result = evaluate(test, {...pscope, expectedType: "Bool" }).value;
+                    // console.log(test, result);
+                    return result;
+                }))) {
                 scope.vars = pscope.vars;
                 evaluate(pattern, scope);
-                return;
+                if (scope.put && scope.put.length)
+                    return scope.put.shift();
+                return { type: "Undefined" }
             }
         }
         scope.error = { type: "PatternMatchException", message: `Argument ${inspect(scope.vars.$)} did not match any pattern` };
     },
     Pattern: (node, scope) => {
-        // scope = node.input.reduce((passScope, patternelem) => evaluate(patternelem, passScope), scope);
-        // for (const case of node.cases) {
-        //     if (evaluate(case, scope)) {
-        //         scope = pscope;
-        //         break;
-        //     }
-        // }
         evaluate(node.output, scope);
     },
     PatternElem: (node, scope) => {
@@ -266,7 +241,9 @@ const ASTNodeEvals = {
         // const default = evaluate(node.default, scope);
         // TODO: FIX
         // console.log("$" + scope.vars.$)
-        if (!node.type || scope.vars.$.type === node.type.id || typeof scope.vars.$ === 'object') {
+        const type = evaluate(node.type, scope, "Type");
+
+        if (!node.type || isOfType(scope.vars.$, type)) {
             scope.vars[node.id] = scope.vars.$;
             return true;
         }
@@ -276,7 +253,7 @@ const ASTNodeEvals = {
         return { type: "Bool", value: node.value };
     },
     Num: (node, scope) => {
-        return { type: node.value === Math.floor(node.value) ? "Int" : "Real", value: node.value };
+        return readjustNum(node.value);
     },
     String: (node, scope) => {
         return { type: "String", value: node.value };
@@ -294,8 +271,8 @@ const ASTNodeEvals = {
 
 const BASE_SCOPE = { vars: require('./default_vars'), patterns: require('./default_patterns') };
 
-const { isOfType } = require('./default_types');
-const { hash, deepCopy, makeIterator, inspect } = require('./utils');
+const { isOfType, readjustNum } = require('./default_types');
+const { hash, deepCopy, makeIterator, inspect, toString, print, deepEquals } = require('./utils');
 const { parseExpression, evaluateExpression } = require('./parse_expression');
 
 const makeAST = require("./make_AST");

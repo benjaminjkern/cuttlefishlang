@@ -8,7 +8,10 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
         return stmt.ast();
     },
     Assignment_single(assignee, _, exp) {
-        return astNode("Assignment", [astNode("SingleAssignment", assignee.ast(), exp.ast())]);
+        return astNode("SingleAssignment", assignee.ast(), exp.ast());
+    },
+    Assignment_constant(assignee, _, exp) {
+        return astNode("SingleAssignment", assignee.ast(), exp.ast(), true);
     },
     Assignment_multiple(assignees, _, exps) {
         const assignedAsts = assignees.ast()[0];
@@ -18,29 +21,39 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
         if (assignedAsts.length !== expAsts.length) throw "Syntax Error: In multi-assignment, there must be equal amounts on both sides of the =";
         return astNode("Assignment", assignedAsts.map((assignee, i) => astNode("SingleAssignment", assignee, expAsts[i])));
     },
+    Assignment_multiple_constant(assignees, _, exps) {
+        const assignedAsts = assignees.ast()[0];
+        const expAsts = exps.ast()[0];
+        if (expAsts.length === 1)
+            return astNode("Assignment", assignedAsts.map((assignee, i) => astNode("SingleAssignment", assignee, expAsts[0], true)));
+        if (assignedAsts.length !== expAsts.length) throw "Syntax Error: In multi-assignment, there must be equal amounts on both sides of the =";
+        return astNode("Assignment", assignedAsts.map((assignee, i) => astNode("SingleAssignment", assignee, expAsts[i], true)));
+    },
     Reassignment(assignee, op, _, exp) {
         return astNode("Reassignment", assignee.ast(), op.sourceString, exp.ast());
     },
     Print(_, exp) {
         return astNode("Print", exp.ast());
     },
-    If(_1, test, _2, ifTrue, _3, _4, _5, ifFalse) {
+    If(_1, test, ifTrue, _3, _4, _5, ifFalse) {
         return astNode("If", test.ast(), astNode("Program", ifTrue.ast()), astNode("Program", ifFalse.ast().flat()));
     },
-    Switch(_1, object, _2, patterns) {
+    Switch(_1, object, patterns) {
         return astNode("Switch", object.ast(), patterns.ast());
     },
     Catch(_1, _2, patterns) {
         return astNode("Catch", patterns.ast());
     },
-    For(_1, collection, _2, patterns) {
+    For(_1, collection, patterns) {
         return astNode("For", collection.ast(), patterns.ast())
     },
-    While(_1, test, _2, statements) {
+    While(_1, test, statements) {
         return astNode("While", test.ast(), astNode("Program", statements.ast()));
     },
-    Repeat(_1, count, _2, statements) {
-        return astNode("Repeat", count.ast().flat()[0], astNode("Program", statements.ast()));
+    Repeat(_1, count, statements) {
+        let makeCount = count.ast().flat()[0];
+        if (typeof makeCount === 'string') makeCount = undefined;
+        return astNode("Repeat", makeCount, astNode("Program", statements.ast()));
     },
     Break(_) {
         return astNode("Break");
@@ -54,6 +67,9 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
     Put(_, exp) {
         return astNode("Put", exp.ast());
     },
+    Arg(exp, _) {
+        return exp.ast();
+    },
     Assignable(bit) {
         return bit.ast();
     },
@@ -61,8 +77,8 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
         const atoms = [head.ast(), ...tail.ast()];
         return astNode("UnparsedExp", atoms);
     },
-    Expression(head, tail, block) {
-        const atoms = [head.ast(), ...tail.ast(), ...block.ast().flat()];
+    Expression(expbits, block) {
+        const atoms = [...expbits.ast(), ...block.ast().flat()];
         return astNode("UnparsedExp", atoms);
     },
     Atom(atom) {
@@ -72,11 +88,13 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
         return exp.ast();
     },
     ref(_) {
+        if (this.sourceString.toLowerCase() === 'true') return astNode("Bool", true);
+        if (this.sourceString.toLowerCase() === 'false') return astNode("Bool", true);
         return this.sourceString;
     },
-    opWord(_1, _2) {
-        return this.sourceString;
-    },
+    // opWord(_1, _2) {
+    //     return this.sourceString;
+    // },
     DiscreteRange(left, start, _1, step, _2, end, right) {
         return astNode("DiscreteRange", start.ast(), left.sourceString === "[", end.ast()[0], right.sourceString === "]", step.ast()[0]);
     },
@@ -135,7 +153,7 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
         return astNode("PatternElem", ...type.ast().flat(), def.ast()[0])
     },
     TypeMatch_typed(type, modifier, id) {
-        return [id.sourceString, type.ast(), ["?", "*"].includes(modifier.sourceString), ["+", "*"].includes(modifier.sourceString)]
+        return [id.sourceString, astNode("UnparsedExp", [type.ast()]), ["?", "*"].includes(modifier.sourceString), ["+", "*"].includes(modifier.sourceString)]
     },
     TypeMatch_untyped(id) {
         return [id.sourceString, undefined, undefined, undefined];
@@ -152,9 +170,9 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
     String(s) {
         return s.ast();
     },
-    String_expression(_1, inerts, _2) {
+    String_expression(_1, start, inerts, _2) {
         const inertAST = inerts.ast();
-        return astNode("Concat", inertAST[0].slice(1).reduce((p, c, i) => [...p, inertAST[1][i], c], [inertAST[0][0]]));
+        return astNode("Concat", inertAST[0].slice(1).reduce((p, c, i) => [...p, inertAST[1][i], c], [start.ast()]));
     },
     stringbit(_) {
         return astNode("String", this.sourceString);
@@ -182,12 +200,12 @@ const astGenerator = grammar.createSemantics().addOperation('ast', {
     indentnewline(_) {
         return this.sourceString;
     },
-    special_explicitsep(_, op) {
-        return op.sourceString;
-    },
-    special_implicitsep(_, op) {
-        return op.sourceString;
-    },
+    // special_explicitsep(_, op) {
+    //     return op.sourceString;
+    // },
+    // special_implicitsep(_, op) {
+    //     return op.sourceString;
+    // },
     special_sepop(_1, _2, op) {
         return op.sourceString;
     },

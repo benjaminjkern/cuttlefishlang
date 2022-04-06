@@ -3,7 +3,9 @@
 
 # displays subcases
 
-factor = fn: Int n, Int m
+# THIS DOES NOT WORK YET BECAUSE MULTIPLE INPUTS DOESNT WORK YET
+
+factor = fn: Int n, Int m = 1
     | n == 1 -> []
     | m * m <= n
         | n %= m -> m ++ factor (n // m) m

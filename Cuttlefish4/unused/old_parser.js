@@ -6,6 +6,7 @@ let RULES;
 require('colors');
 
 const matchType = (input, expectedType = "Object", leftover = []) => {
+    // console.log(`Trying to match ${stringExp(input)} to type ${expectedType}`);
     // return immediately with proper value if passed in a single object that matches type, i dont know if this will ever run honestly
     // if (
     //     input.length === 1 &&
@@ -19,32 +20,34 @@ const matchType = (input, expectedType = "Object", leftover = []) => {
     if (!RULES[expectedType])
         return { error: `Did not match leaf type ${expectedType}` };
 
-    for (let r in RULES[expectedType]) {
-        let rule = RULES[expectedType][r];
+    for (const rule of RULES[expectedType]) {
+
         tabs++;
         if (DEBUG) console.log(`${Array(tabs - 1).fill('   ').join('')}Matching ${stringExp(input).yellow} to ${stringExp(rule.pattern).blue} with ${stringExp(leftover).green} left over`);
         let match = matchPattern(input, rule.pattern, leftover);
         if (DEBUG) console.log(Array(tabs - 1).fill('   ').join('') + (match.error ? 'X '.red + match.error.magenta : 'O '.green + stringExp(match.output)));
         tabs--;
+
+        if (rule.condition && match.output && !rule.condition(...match.output)) continue;
         if (match.error && leftover.length > 0) continue;
-        if (!match.error) {
-            let value = {};
+        if (match.error) continue;
 
-            if (match.output.length === 1 && !rule.evaluate) {
-                // if (match.output[0].value) value = match.output[0].value;
-                // else
-                value = match.output[0];
-            } else {
-                value = { unevaluated: { args: match.output, ...(rule.evaluate ? { evaluate: rule.evaluate } : {}) } };
-            }
+        let value = {};
 
-            let out = {
-                type: match.output.length !== 1 ? expectedType : (match.output[0].type || expectedType),
-                ...value
-            };
-            if (match.notConsumed) out.notConsumed = match.notConsumed;
-            return out;
+        if (match.output.length === 1 && !rule.evaluate) {
+            // if (match.output[0].value) value = match.output[0].value;
+            // else
+            value = match.output[0];
+        } else {
+            value = { unevaluated: { args: match.output, hardEval: rule.hardEval, ...(rule.evaluate ? { evaluate: rule.evaluate } : {}) } };
         }
+
+        let out = {
+            type: match.output.length !== 1 ? expectedType : (match.output[0].type || expectedType),
+            ...value
+        };
+        if (match.notConsumed) out.notConsumed = match.notConsumed;
+        return out;
     }
 
     if (
@@ -91,6 +94,8 @@ const matchPattern = (input, pattern, leftover = []) => {
     // now the pattern must look like [{type}, ..., {type}]. It is possible there is nothing in between.
     // find all terminal patterns and make sure they exist within input at least once.
 
+    // combine consecutive terminals of the pattern, since they must also exist as consecutive in the input
+
     const fullPattern = [...pattern, ...leftover];
 
     const terminalPattern = fullPattern
@@ -104,16 +109,27 @@ const matchPattern = (input, pattern, leftover = []) => {
             ]
         )
         .filter((v) => v.length > 0);
-    for (let p in terminalPattern) {
-        let checkPattern = terminalPattern[p];
+    for (const checkPattern of terminalPattern) {
         if (!hasSubArray(input, checkPattern))
             return {
                 error: `Could not find "${checkPattern.join("")}" in source string`,
             };
     }
 
-    // count how many times terminal nodes appear in input and pattern, throw error if the input does not meet the expected number of terminal nodes
+    // check relative order of pattern terminals, all of them must exist in the correct order, doesnt matter how much is in between them
+    // WOW THIS MADE A HUGE DIFFERENCE IN PARSING SPEED HOLY SHIT
+    const relativeTerminals = terminalPattern.flat();
+    for (const token of input) {
+        if (!isTerminal(token)) continue;
+        let newValue = token.type ? "type:" + token.type : token;
+        if (newValue !== relativeTerminals[0]) continue;
+        relativeTerminals.shift();
+    }
+    if (relativeTerminals.length > 0) return { error: "Did not consume all terminals of pattern in correct order" };
 
+    // count how many times terminal nodes appear in input and pattern, throw error if the input does not meet the expected number of terminal nodes
+    // THIS BECAME USELESS CUZ OF THE ORDER CHECKING, every error this would have thrown is also thrown above
+    /*
     const terminalPatternCount = {};
     const terminalInputCount = {};
     fullPattern.forEach((token) => {
@@ -135,7 +151,7 @@ const matchPattern = (input, pattern, leftover = []) => {
             terminalPatternCount[key] > terminalInputCount[key]
         )
             return { error: `More "${key}"'s in pattern than in input` };
-    }
+    }*/
 
     // finally, expand first node
     let matchedType = matchType(input, pattern[0].type, fullPattern.slice(1));
@@ -213,7 +229,7 @@ const parseExpression = (atoms, scope) => {
         const type = scope.vars[variable].type;
         // console.log(type);
         if (!RULES[type]) RULES[type] = [];
-        RULES[type].push({ pattern: [variable], evaluate: () => scope.vars[variable] });
+        RULES[type].push({ pattern: [variable], evaluate: () => scope.vars[variable], hardEval: !scope.vars[variable].constant && !scope.vars[variable].determined });
     })
 
     // This is pretty good though, add all types to the rules
@@ -241,10 +257,21 @@ const evaluateExpression = (exp) => {
     return exp;
 }
 
-const stringExp = (exp) => '[ ' + exp.map(v => v.type ? "(" + v.type + (v.value !== undefined ? " : " + v.value : "") + ")" : v).join(" ") + ' ]';
+const preEvaluateExpression = (exp) => {
+    // console.log("Pre-evaluating " + inspect(exp));
+    if (exp.unevaluated && exp.unevaluated.args && exp.unevaluated.evaluate) {
+        const evaluatedArgs = exp.unevaluated.args.map(preEvaluateExpression);
+        if (!exp.unevaluated.hardEval && evaluatedArgs.every(newArg => !newArg.unevaluated || !newArg.unevaluated.hardEval)) return exp.unevaluated.evaluate(...evaluatedArgs);
+        // console.log("Not doing it since at some point it looks at the freakin scope");
+        return {...exp, unevaluated: { hardEval: true, evaluate: exp.unevaluated.evaluate, args: evaluatedArgs } }
+    }
+    return exp;
+}
+
+const stringExp = (exp) => '[ ' + exp.map(v => v.type ? "(" + v.type + (v.value !== undefined ? " : " + v.value : "") + ")" : inspect(v)).join(" ") + ' ]';
 
 let tabs = 0;
 
 const DEBUG = false;
 
-module.exports = { evaluateExpression, parseExpression }
+module.exports = { evaluateExpression, parseExpression, preEvaluateExpression }

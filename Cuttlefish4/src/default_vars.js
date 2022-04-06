@@ -1,9 +1,9 @@
 const VARS = {
-    true: { type: "Bool", value: true },
-    false: { type: "Bool", value: false }
+    true: { type: "Bool", value: true, constant: true },
+    false: { type: "Bool", value: false, constant: true },
+    in: { type: "None", constant: true },
+    and: { type: "None", constant: true },
+    or: { type: "None", constant: true },
 }
-
-const { TYPES } = require('./default_types');
-Object.keys(TYPES).forEach(type => VARS[type] = { type: "Type" });
 
 module.exports = VARS;

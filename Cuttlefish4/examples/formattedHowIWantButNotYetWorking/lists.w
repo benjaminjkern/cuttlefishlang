@@ -1,4 +1,5 @@
-# print [1..] # Prints infinitely
+# Example showing off ranges (Built in)
+# As well as concatenating iterators + lists
 
 print [1..0.5..100)
 
@@ -6,4 +7,9 @@ print [1..0.5..100)
 
 x = 9
 
-print [x..-1..-2*x] # I need to add unary operators like ! and -
+print [x..-1..- 2 * x]
+
+print [1..10] ++ 8 ++ [10..-1..1] ++ [8, 9, 2, 4, 5] ++ (1..10) ++ "hello"
+
+print [1..] # Prints infinitely
+    

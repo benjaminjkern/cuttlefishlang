@@ -5,7 +5,7 @@ class Program {
     constructor(body) {
         this.body = body;
     }
-    analyze() {
+    verify() {
         const context = new Set();
         this.body.forEach((expression) => expression.analyze(context));
         return this;
@@ -18,17 +18,23 @@ class Program {
 }
 
 class Expression {
+    constructor(expList) {
+        this.expList = expList;
+    }
+}
+
+class UnparsedExpression {
     constructor(sourceString) {
         this.sourceString = sourceString;
     }
     analyze() {
         return this;
     }
-    run() {
-    }
+    run() {}
 }
 
 module.exports = {
     Program,
-    Expression
+    Expression,
+    UnparsedExpression,
 };

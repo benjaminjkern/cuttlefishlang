@@ -27,7 +27,10 @@ const filterLines = (lines) => {
             inComment = true;
         }
         if (!lineToPush.match(/^\s*$/))
-            filteredLines.push({ lineNumber, line: lineToPush });
+            filteredLines.push({
+                lineNumber,
+                line: lineToPush.replace(/\s+$/gm, ""),
+            }); // trim end whitespace
     }
     return filteredLines;
 };
@@ -53,7 +56,7 @@ const createIndentTree = (sourceString) => {
                 `${lineNumber}: Line indented deeper than start of file! (Line: ${indent}, File: ${firstIndent})`
             );
 
-        const realLine = line.substring(indent);
+        const realLine = { lineNumber, line: line.substring(indent) };
         if (indent === currentIndent) {
             currentProgram.statements.push(realLine);
             continue;

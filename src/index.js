@@ -1,10 +1,12 @@
-const fs = require('fs');
+const fs = require("fs");
+const { inspect } = require("./util");
 
-const createIndentTree = require('./parse/createIndentTree');
+const createIndentTree = require("./parse/createIndentTree");
 
-// Cuttlefish command
-const cuttlefish = (...args) => {
+// Cuttlefish command (Deal with arguments);
+const cuttlefish = (node, file, ...args) => {
+    const readfile = fs.readFileSync(args[0], "utf8");
+    console.log(inspect(createIndentTree(readfile)));
+};
 
-}
-
-console.log(module);
+cuttlefish(...process.argv);

@@ -12,7 +12,6 @@ const RULES = [
         spaces: "dont-ignore",
         evaluate: ({ sourcestring }) =>
             sourcestring.substring(0, sourcestring.length - 1),
-        returnType: "String",
     },
     {
         pattern: ["print", type("String")],
@@ -21,7 +20,6 @@ const RULES = [
             console.log(stringValue);
             return stringValue;
         },
-        returnType: "String",
     },
 ];
 

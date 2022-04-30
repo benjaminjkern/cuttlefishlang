@@ -1,4 +1,4 @@
-const { makeSet } = require("../util/sets");
+const { makeSet, union } = require("../util/sets");
 
 const makeHeuristics = (rules) => {
     const heuristics = {};
@@ -13,10 +13,14 @@ const getHeuristics = (token, rules, heuristics) => {
         return {
             minLength: token.length,
             maxLength: token.length,
+            uncountedNonterminals: {},
 
-            startTokens: { [token[0]]: true },
-            endTokens: { [token[token.length - 1]]: true },
-            dict: makeSet(token.split("")),
+            startTokens: { whitelist: { [token[0]]: true }, nonterminals: {} },
+            endTokens: {
+                whitelist: { [token[token.length - 1]]: true },
+                nonterminals: {},
+            },
+            dict: { whitelist: makeSet(token.split("")), nonterminals: {} },
         };
     }
     // if (isSpecialToken(token)) {
@@ -50,31 +54,35 @@ const getHeuristics = (token, rules, heuristics) => {
     //     ruleMaxLength = ruleMinLength = Number.MAX_SAFE_INTEGER;
     //     continue;
     // }
-    return getHeuristicObject(token.type, rules, heuristics);
+    const dict = {[token.type]: true};
+    return {minLength: 0, maxLength: Number.MAX_SAFE_INTEGER, uncountedNonterminals: dicstartTokenst, : {whitelist: {}, nonterminals: dict}};
 };
 
 const combineTokenDicts = (A, B) => {
-    if (A.metaType === "anychar") {
-        if (B.metaType === "anychar")
+    if (A.blacklist) {
+        if (B.blacklist)
             return {
-                metaType: "anychar",
                 blacklist: intersect(A.blacklist, B.blacklist),
+                nonterminals: union(A.nonterminals, B.nonterminals),
             };
-        return { metaType: "anychar", blacklist: intersect(A.blacklist, B) };
+        return { blacklist: subtract(A.blacklist, B.whitelist), nonterminals: union(A.nonterminals, B.nonterminals), };
     }
-    if (B.metaType === "anychar") return combineTokenDicts(B, A);
+    if (B.blacklist) return combineTokenDicts(B, A);
 
-    return { ...A, ...B };
+    return { whitelist: union(A.whitelist, B.whitelist), nonterminals: union(A.nonterminals, B.nonterminals) };
 };
+
 const getPatternHeuristics = (pattern, rules, heuristics) => {
     let doneWithStartTokens = false;
 
     const patternHeuristics = {
         minLength: 0,
         maxLength: 0,
-        dict: {},
-        startTokens: {},
-        endTokens: {},
+        uncountedNonterminals: {},
+
+        dict: {whitelist: {}, nonterminals: {}},
+        startTokens: {whitelist: {}, nonterminals: {}},
+        endTokens: {whitelist: {}, nonterminals: {}},
     };
 
     for (const token of pattern) {
@@ -82,6 +90,7 @@ const getPatternHeuristics = (pattern, rules, heuristics) => {
 
         patternHeuristics.minLength += tokenHeuristics.minLength;
         patternHeuristics.maxLength += tokenHeuristics.maxLength;
+        patternHeuristics.uncountedNonterminals = {...patternHeuristics.uncountedNonterminals, tokenHeuristics.uncountedNonterminals};
 
         if (!doneWithStartTokens) {
             if (tokenHeuristics.minLength !== 0) doneWithStartTokens = true;

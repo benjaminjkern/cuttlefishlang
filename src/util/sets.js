@@ -24,4 +24,8 @@ const subtract = (A, B) => {
     return makeSet(Object.keys(A).filter((key) => !B[key]));
 };
 
-module.exports = { makeSet, union, intersect, subtract };
+const equals = (A, B) => {
+    return Object.keys(intersect(A, B)).length === Object.keys(A).length;
+};
+
+module.exports = { makeSet, union, intersect, subtract, equals };

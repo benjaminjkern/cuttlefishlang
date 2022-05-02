@@ -3,11 +3,11 @@ const { inspect } = require("../util");
 
 const makeHeuristics = (rules) => {
     const heuristics = {};
-    heuristics.minLength = makeHeuristic(getMinLength, rules);
-    heuristics.maxLength = makeHeuristic(getMaxLength, rules);
-    heuristics.dict = makeHeuristic(getDict, rules);
-    heuristics.startDict = makeHeuristic(getStartTokens, rules, heuristics);
-    heuristics.endDict = makeHeuristic(getEndTokens, rules, heuristics);
+    heuristics.minLength = getMinLengths(rules);
+    // heuristics.maxLength = makeHeuristic(getMaxLength, rules);
+    // heuristics.dict = makeHeuristic(getDict, rules);
+    // heuristics.startDict = makeHeuristic(getStartTokens, rules, heuristics);
+    // heuristics.endDict = makeHeuristic(getEndTokens, rules, heuristics);
 
     const perTypeHeuristics = {};
     for (const type in rules) {
@@ -27,27 +27,107 @@ const makeHeuristic = (getFunction, rules, ...args) => {
     return values;
 };
 
-const getMinLength = (type, rules, values) => {
-    if (values[type] !== undefined) return values[type];
-    values[type] = Number.MAX_SAFE_INTEGER;
+/*************************
+ * Min Length functions
+ */
 
-    patterns: for (const { pattern } of rules[type]) {
-        let patternMinLength = 0;
-        for (const token of pattern) {
-            if (isTerminal(token)) {
-                patternMinLength += token.length;
-                continue;
-            }
-            if (token.type === type) {
-                // Ignore this route, there is no way that it can be shorter than another route if it self-recurses
-                continue patterns;
-            }
-            patternMinLength += getMinLength(token.type, rules, values);
-        }
-        values[type] = Math.min(values[type], patternMinLength);
-    }
-    return values[type];
+const objectMap = (object, func) => {
+    return Object.keys(object).reduce(
+        (p, key) => ({ ...p, [key]: func(object[key], key) }),
+        {}
+    );
 };
+
+const addValueToOptions = (A, options) => {
+    if (typeof A === "number")
+        return options.map(({ value, nonterminals }) => ({
+            value: value + A,
+            nonterminals,
+        }));
+    const { value: toAddValue, nonterminals: toAddNonterminals } = A;
+    return options.map(({ value, nonterminals }) => ({
+        value: value + toAddValue,
+        nonterminals: objectMap(
+            nonterminals,
+            (count, key) => count + toAddNonterminals[key]
+        ),
+    }));
+};
+
+const multiplyOptions = (A, options) => {
+    return options.map(({ value, nonterminals }) => ({
+        value: value * A,
+        nonterminals: objectMap(nonterminals, (x) => x * A),
+    }));
+};
+
+const replaceValues = (options, typeToReplace, replaceValue) => {
+    return options.flatMap((option) => {
+        const { value, nonterminals } = option;
+        if (!nonterminals[typeToReplace]) return option;
+        const { [typeToReplace]: count, ...rest } = nonterminals;
+        if (typeof replaceValue === "number")
+            return { value: value + count * replaceValue, nonterminals: rest };
+        return addValueToOptions(
+            { value, nonterminals: rest },
+            multiplyOptions(count, replaceValue)
+        );
+    });
+};
+
+const getMinLengths = (rules) => {
+    const minLengths = {};
+    for (const type in rules) {
+        const options = getRuleListMinLength(
+            rules[type].map(({ pattern }) => pattern)
+        );
+    }
+};
+
+const getRuleListMinLength = (patterns) => {
+    let options = [];
+    for (const pattern of patterns) {
+        const patternMinLength = getPatternMinLength(pattern);
+        if (typeof patternMinLength === "number")
+            minLength = Math.min(
+                minLength,
+                getPatternMinLength(pattern, rules, values)
+            );
+    }
+    return minLength;
+};
+
+const getPatternMinLength = (pattern, rules, values) => {
+    let patternMinLength = 0;
+    for (const token of pattern) {
+        patternMinLength += getTokenMinLength(token, rules, values);
+        if (patternMinLength >= Number.MAX_SAFE_INTEGER)
+            return Number.MAX_SAFE_INTEGER;
+    }
+    return patternMinLength;
+};
+
+const getTokenMinLength = (token, rules, values) => {
+    if (isTerminal(token)) return token.length;
+    switch (token.metaType) {
+        case "anychar":
+            return 1;
+        case "negativelookahead":
+        case "positivelookahead":
+            return 0;
+        case "or":
+            return getRuleListMinLength(token.patterns, rules, values);
+        case "multi":
+            return (
+                getPatternMinLength(token.pattern, rules, values) * token.min
+            );
+    }
+    return getMinLength(token.type, rules, values);
+};
+
+/*********
+ * Max length
+ */
 
 const getMaxLength = (type, rules, values) => {
     if (values[type] !== undefined) return values[type];
@@ -187,6 +267,16 @@ const RULES = {
         {
             pattern: [],
         },
+    ],
+    B: [
+        // { pattern: [] },
+        { pattern: ["123", { type: "A" }, { type: "A" }] },
+        { pattern: ["123", { type: "A" }, { type: "B" }] },
+        { pattern: ["8000"] },
+    ],
+    A: [
+        { pattern: ["0", { type: "A" }, "1"] },
+        { pattern: ["123", { type: "B" }, { type: "B" }] },
     ],
 };
 

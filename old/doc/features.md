@@ -197,4 +197,16 @@ print f 8 # 15
 print f f 8 # 
 ```
 
+- Names of functions and attributes and types should make sense
+  - includes, in, contains
+  - add, append, push (list)
+  - pop, remove, delete (anything)
+  - length, size, len (Size could maybe mean memory size and length could be virtual size, not sure how useful it is)
+  - some / oneof / any
+  - every / allof / all
+
+- Relation of attributes to object should make sense
+  - Size / length of object should be a property (list.length, set.size)
+  - Array methods (map, filter, some, every) Are not properties of the original array and therefor should be an outside operator (Or a syntactic sugar operator)
+
 # Shot in the dark features (Not sure if I want to add at all but good to consider)

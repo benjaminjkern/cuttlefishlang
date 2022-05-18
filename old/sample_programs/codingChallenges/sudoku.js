@@ -54,7 +54,7 @@ const newBoard = (board, [newX, newY], value) => {
     return nextBoard;
 };
 
-const printBoard = (board) => {
+const printBoard = (board = BOARD) => {
     process.stdout.cursorTo(0, 0);
     process.stdout.clearScreenDown();
     for (const [y, row] of board.entries()) {
@@ -77,6 +77,7 @@ const printBoard = (board) => {
                 .join("")
         );
     }
+    console.log(logs.join("\n"));
 
     process.stdin.setRawMode(true);
     process.stdin.resume();
@@ -90,6 +91,23 @@ const addToBoard = (board, newBoard) => {
             board[y][x] = value;
         }
     }
+};
+
+const shuffle = (list) => {
+    const newList = [...list];
+    for (let i = 0; i < list.length; i++) {
+        const r = Math.floor(Math.random() * list.length);
+        [newList[i], newList[r]] = [newList[r], newList[i]];
+    }
+    return newList;
+};
+
+const randomNums = (size) => {
+    return shuffle(
+        Array(size)
+            .fill()
+            .map((_, i) => i + 1)
+    );
 };
 
 const boxSize = 3;
@@ -111,34 +129,68 @@ const CONSTRAINTS = Array(boxSize * boxSize)
     ]);
 
 const solve = (board) => {
+    const solutions = [];
     const stack = [board];
     while (stack.length) {
         const current = stack.pop();
         if (!testConstraints(current)) continue;
-        if (checkFullBoard(current)) return current;
+        if (checkFullBoard(current)) {
+            solutions.push(current);
+            if (solutions.length > 1) {
+                logs.unshift("More than 1 solution!");
+                return solutions;
+            }
+            continue;
+        }
         const nextCoords = getNextEmptyCoords(current);
         stack.push(
-            ...Array(boxSize * boxSize)
-                .fill()
-                .map((_, i) => newBoard(current, nextCoords, i + 1))
+            ...randomNums(boxSize * boxSize).map((n) =>
+                newBoard(current, nextCoords, n)
+            )
         );
     }
-    throw "Impossible!";
+    // logs.unshift(`${solutions.length} solutions!`);
+    return solutions;
 };
 
-// addToBoard(BOARD, [
-//     [0, 0, 0, 7, 0, 5, 8, 6, 0],
-//     [0, 9, 0, 0, 0, 0, 0, 0, 3],
-//     [5, 0, 0, 3, 6, 0, 0, 0, 0],
-//     [2, 0, 5, 6, 1, 0, 4, 9, 8],
-//     [4, 0, 3, 2, 7, 9, 6, 0, 5],
-//     [9, 0, 1, 0, 0, 8, 0, 0, 0],
-//     [6, 0, 0, 0, 0, 7, 0, 0, 0],
-//     [8, 2, 0, 0, 0, 0, 1, 0, 6],
-//     [0, 5, 0, 0, 2, 0, 9, 3, 0],
-// ]);
-// process.stdout.write("Something to be replaced");
-// while (true);
+const makePuzzle = (board) => {
+    let solution = solve(board)[0];
+    if (!solution) throw "Impossible!";
+
+    const allCoords = Array(boxSize * boxSize)
+        .fill()
+        .reduce(
+            (p, _, i) => [
+                ...p,
+                ...Array(boxSize * boxSize)
+                    .fill()
+                    .map((_, j) => [i, j]),
+            ],
+            []
+        );
+
+    let newAllCoords = [];
+    while (allCoords.length) {
+        console.log(allCoords.length);
+        const blankCoords = allCoords.splice(
+            Math.floor(Math.random() * allCoords.length),
+            1
+        )[0];
+        const removedBlankBoard = newBoard(solution, blankCoords, undefined);
+        const newSolutions = solve(removedBlankBoard);
+        if (newSolutions.length === 1) {
+            solution = removedBlankBoard;
+            allCoords.push(...newAllCoords);
+            newAllCoords = [];
+            continue;
+        }
+
+        newAllCoords.push(blankCoords);
+    }
+    return solution;
+};
+
+let logs = [];
 const cursor = { x: 0, y: 0 };
 printBoard(BOARD);
 
@@ -197,8 +249,10 @@ process.stdin.on("keypress", function (ch, key) {
     }
     printBoard(BOARD);
     if (key && key.name === "return") {
-        printBoard(solve(BOARD));
         process.stdin.pause();
+        // console.log("Making puzzle...");
+        logs = [];
+        printBoard(solve(BOARD));
     }
     if (key && key.ctrl && key.name == "c") {
         process.stdin.pause();

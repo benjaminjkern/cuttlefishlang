@@ -1,0 +1,23 @@
+{
+  "name": "cuttlefishlang",
+  "version": "1.0.0",
+  "description": "![cuttlefish](etc/cuttlefish.png \"Cuttlefish!\")",
+  "main": "src/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benjaminjkern/cuttlefishlang.git"
+  },
+  "author": "Ben Kern",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/benjaminjkern/cuttlefishlang/issues"
+  },
+  "homepage": "https://github.com/benjaminjkern/cuttlefishlang#readme"
+}

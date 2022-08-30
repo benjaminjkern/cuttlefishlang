@@ -1,23 +1,22 @@
 score_dealer = fn:
     {Card} cards -> # this one is a little weird but its doable probably
 
-win = fn:
-    (player, dealer) | player > 21 or player < dealer -> -1
-                     | player == dealer               ->  0
-                     | dealer > 21 or player > dealer ->  1
+win = fn: player, dealer
+    | player > 21 or player < dealer -> -1
+    | player == dealer               ->  0
+    | dealer > 21 or player > dealer ->  1
 
-score = fn:
-    {Card} cards ->
-        values = map cards fn:
-            card | card.value < 14 -> min(card.value, 10)
-            card -> 11
+score = fn: cards ->
+    values = map cards fn:
+        card | card.value < 14 -> min(card.value, 10)
+        card -> 11
 
-        mySum = sum values
-        while mySum > 21:
-            if 11 not in cards: put mySum
-            mySum -= 10
+    mySum = sum values
+    while mySum > 21:
+        if 11 not in cards: put mySum
+        mySum -= 10
 
-        put mySum
+    put mySum
 
 
 Q = fn:

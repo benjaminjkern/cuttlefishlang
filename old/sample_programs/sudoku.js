@@ -137,7 +137,7 @@ const solve = (board) => {
         if (checkFullBoard(current)) {
             solutions.push(current);
             if (solutions.length > 1) {
-                logs.unshift("More than 1 solution!");
+                // logs.unshift("More than 1 solution!");
                 return solutions;
             }
             continue;
@@ -153,7 +153,7 @@ const solve = (board) => {
     return solutions;
 };
 
-const makePuzzle = (board) => {
+const makePuzzle = (board, numPossiblyRedundant = 0) => {
     let solution = solve(board)[0];
     if (!solution) throw "Impossible!";
 
@@ -170,7 +170,7 @@ const makePuzzle = (board) => {
         );
 
     let newAllCoords = [];
-    while (allCoords.length) {
+    while (allCoords.length > numPossiblyRedundant) {
         console.log(allCoords.length);
         const blankCoords = allCoords.splice(
             Math.floor(Math.random() * allCoords.length),
@@ -250,9 +250,8 @@ process.stdin.on("keypress", function (ch, key) {
     printBoard(BOARD);
     if (key && key.name === "return") {
         process.stdin.pause();
-        // console.log("Making puzzle...");
         logs = [];
-        printBoard(solve(BOARD));
+        printBoard(makePuzzle(BOARD));
     }
     if (key && key.ctrl && key.name == "c") {
         process.stdin.pause();

@@ -15,12 +15,19 @@ const HEURISTICS = {
 
 const generateHeuristics = () => {
     const toAddHeuristics = {};
-    toAddHeuristics.minLength = getMinLengths(RULES);
 
+    toAddHeuristics.minLength = getMinLengths(RULES);
     HEURISTICS.typeHeuristics.minLength = (type, expression) =>
         expression.length < HEURISTICS.types[type].minLength && {
             error: `"${expression}" is shorter than the minimum possible length (${HEURISTICS.types[type].minLength}) for type: ${type}!"`,
         };
+
+    toAddHeuristics.maxLength = getMaxLengths(RULES);
+    HEURISTICS.typeHeuristics.maxLength = (type, expression) =>
+        expression.length > HEURISTICS.types[type].maxLength && {
+            error: `"${expression}" is longer than the maximum possible length (${HEURISTICS.types[type].maxLength}) for type: ${type}!"`,
+        };
+
     // heuristics.maxLength = makeHeuristic(getMaxLength, rules);
     // heuristics.dict = makeHeuristic(getDict, rules);
     // heuristics.startDict = makeHeuristic(getStartTokens, rules, heuristics);
@@ -38,7 +45,7 @@ const generateHeuristics = () => {
 
 /*************************
  * Min Length functions
- */
+ *************************/
 
 const getMinLengths = () => {
     const minLengths = {};
@@ -76,9 +83,56 @@ const getTypeMinLength = (type, parentCalls = {}, cache = {}) => {
             }
         }
         min = Math.min(min, currentLength);
+        if (min === 0) break;
     }
     cache[type] = min;
     return min;
+};
+
+/*************************
+ * Max Length functions
+ *************************/
+
+const getMaxLengths = () => {
+    const maxLengths = {};
+    for (const type in RULES) {
+        maxLengths[type] = getTypeMaxLength(type);
+    }
+    return maxLengths;
+};
+
+const getTypeMaxLength = (type, parentCalls = {}, cache = {}) => {
+    if (cache[type] !== undefined) return cache[type];
+    if (parentCalls[type]) {
+        cache[type] = Number.MAX_SAFE_INTEGER;
+        return cache[type];
+    }
+    parentCalls[type] = true;
+    let max = 0;
+    for (const { pattern } of RULES[type]) {
+        let currentLength = 0;
+        for (const token of pattern) {
+            if (isTerminal(token)) {
+                currentLength += token.length;
+                continue;
+            }
+            const length = getTypeMaxLength(
+                token.type,
+                { ...parentCalls },
+                cache
+            );
+
+            currentLength += length;
+            if (currentLength >= Number.MAX_SAFE_INTEGER) {
+                currentLength = Number.MAX_SAFE_INTEGER;
+                break;
+            }
+        }
+        max = Math.max(max, currentLength);
+        if (max === Number.MAX_SAFE_INTEGER) break;
+    }
+    cache[type] = max;
+    return max;
 };
 
 // const objectMap = (object, func) => {
@@ -244,11 +298,6 @@ const getTypeMinLength = (type, parentCalls = {}, cache = {}) => {
 
 // console.log(inspect(makeHeuristics(RULES)));
 
-// if (expression.length < heuristics.maxLength)
-//     return {
-//         error: `"${expression}" is shorter than the maximum possible length (${heuristics.maxLength}) for type: ${type}!"`,
-//     };
-
 // if (!heuristics.startTokens[forceTerminal(expression[0])])
 //     return {
 //         error: `'${expression[0]}' is not in the set of start tokens for type: ${type}!"`,
@@ -269,3 +318,5 @@ const getTypeMinLength = (type, parentCalls = {}, cache = {}) => {
 
 generateHeuristics();
 module.exports = HEURISTICS;
+
+console.log(HEURISTICS);

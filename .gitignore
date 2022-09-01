@@ -1,5 +1,5 @@
 .DS_Store
-node_modules/*
-coverage/*
-logs/*
+node_modules/
+coverage/
+logs/
 .vscode/

@@ -1,330 +1,271 @@
-const { makeSet, union, intersect, subtract, equals } = require("../util/sets");
-const { inspect } = require("../util");
+const { isTerminal } = require("../util/parsingUtils");
 
-const makeHeuristics = (rules) => {
-    const savedHeuristics = {};
-    let heuristics = {};
-    for (const type in rules) {
-        savedHeuristics[type] = getHeuristicObject(type, rules, heuristics);
-    }
-    heuristics = savedHeuristics;
+const RULES = require("../expressions");
 
-    // let madeChange = true;
-    // while (madeChange) {
-    //     madeChange = pass(heuristics);
-    // }
-    // for (type in heuristics) {
-    //     delete heuristics[type].uncountedPatterns;
-    //     delete heuristics[type].startTokens.nonterminals;
-    //     delete heuristics[type].endTokens.nonterminals;
-    //     delete heuristics[type].dict.nonterminals;
-    // }
-    return heuristics;
+const HEURISTICS = {
+    types: {
+        // [type]: {
+        //     [typeHeuristic]: value,
+        // },
+    },
+    typeHeuristics: {
+        // [typeHeuristic]: (type, expression) => boolean,
+    },
 };
 
-const getHeuristics = (token, rules, heuristics) => {
-    if (isTerminal(token)) {
-        let dicts;
-        if (token.length) {
-            dicts = {
-                startTokens: {
-                    whitelist: { [token[0]]: true },
-                    nonterminals: {},
-                },
-                endTokens: {
-                    whitelist: { [token[token.length - 1]]: true },
-                    nonterminals: {},
-                },
-                dict: { whitelist: makeSet(token.split("")), nonterminals: {} },
-            };
-        } else {
-            dicts = {
-                startTokens: { whitelist: {}, nonterminals: {} },
-                endTokens: { whitelist: {}, nonterminals: {} },
-                dict: { whitelist: {}, nonterminals: {} },
-            };
-        }
-        return {
-            minLength: token.length,
-            maxLength: token.length,
-            uncountedNonterminals: {},
-            ...dicts,
+const generateHeuristics = () => {
+    const toAddHeuristics = {};
+    toAddHeuristics.minLength = getMinLengths(RULES);
+
+    HEURISTICS.typeHeuristics.minLength = (type, expression) =>
+        expression.length < HEURISTICS.types[type].minLength && {
+            error: `"${expression}" is shorter than the minimum possible length (${HEURISTICS.types[type].minLength}) for type: ${type}!"`,
         };
+    // heuristics.maxLength = makeHeuristic(getMaxLength, rules);
+    // heuristics.dict = makeHeuristic(getDict, rules);
+    // heuristics.startDict = makeHeuristic(getStartTokens, rules, heuristics);
+    // heuristics.endDict = makeHeuristic(getEndTokens, rules, heuristics);
+
+    // Attach each heuristic
+    for (const type in RULES) {
+        HEURISTICS.types[type] = {};
+        for (const heuristic in HEURISTICS.typeHeuristics) {
+            HEURISTICS.types[type][heuristic] =
+                toAddHeuristics[heuristic][type];
+        }
     }
-    // if (isSpecialToken(token)) {
-    //     switch (token.metaType) {
-    //         case "anychar":
-    //             return {
-    //                 minLength: 1,
-    //                 maxLength: 1,
-
-    //                 startTokens: token,
-    //                 startTokens: token,
-    //                 dict: token,
-    //             };
-    //         case "multi":
-    //             const patternHeuristics = getPatternHeuristics(
-    //                 token.pattern,
-    //                 rules,
-    //                 pattern
-    //             );
-    //             const { minLength, maxLength } = patternHeuristics;
-    //             return {
-    //                 ...patternHeuristics,
-    //                 minLength: minLength * token.min,
-    //                 maxLength: maxLength * token.max,
-    //             };
-    //     }
-    // }
-
-    // if (token.type === type) {
-    //     // Its not actually the ruleMinLength, but it needs to know that this rule will not be the minimum so it should ignore it
-    //     ruleMaxLength = ruleMinLength = Number.MAX_SAFE_INTEGER;
-    //     continue;
-    // }
-    return {
-        minLength: 0,
-        maxLength: 0,
-        uncountedNonterminals: { [token.type]: true },
-        dict: { whitelist: {}, nonterminals: { [token.type]: true } },
-        startTokens: { whitelist: {}, nonterminals: { [token.type]: true } },
-        endTokens: { whitelist: {}, nonterminals: { [token.type]: true } },
-    };
 };
 
-const combineTokenDicts = (A, B) => {
-    let madeChange = false;
+/*************************
+ * Min Length functions
+ */
 
-    const newNonTerminals = union(A.nonterminals, B.nonterminals);
-    madeChange ||= !equals(newNonTerminals, A.nonterminals);
-    A.nonterminals = newNonTerminals;
-
-    if (A.blacklist) {
-        if (B.blacklist) {
-            const newBlacklist = intersect(A.blacklist, B.blacklist);
-            madeChange ||= !equals(newBlacklist, A.blacklist);
-            A.blacklist = newBlacklist;
-            return madeChange;
-        }
-        const newBlacklist = subtract(A.blacklist, B.whitelist);
-        madeChange ||= !equals(newBlacklist, A.blacklist);
-        A.blacklist = newBlacklist;
-        return madeChange;
+const getMinLengths = () => {
+    const minLengths = {};
+    for (const type in RULES) {
+        minLengths[type] = getTypeMinLength(type);
     }
-    if (B.blacklist) {
-        A.blacklist = subtract(B.blacklist, A.whitelist);
-        delete A.whitelist;
-        return true;
-    }
-
-    const newWhitelist = union(A.whitelist, B.whitelist);
-    madeChange ||= !equals(newWhitelist, A.whitelist);
-    A.whitelist = newWhitelist;
-
-    return madeChange;
+    return minLengths;
 };
 
-const getPatternHeuristics = (pattern, rules, heuristics) => {
-    let doneWithStartTokens = false;
-
-    const patternHeuristics = {
-        minLength: 0,
-        maxLength: 0,
-        uncountedNonterminals: {},
-
-        dict: { whitelist: {}, nonterminals: {} },
-        startTokens: { whitelist: {}, nonterminals: {} },
-        endTokens: { whitelist: {}, nonterminals: {} },
-    };
-
-    for (const token of pattern) {
-        const tokenHeuristics = getHeuristics(token, rules, heuristics);
-
-        patternHeuristics.minLength += tokenHeuristics.minLength;
-        patternHeuristics.maxLength += tokenHeuristics.maxLength;
-        patternHeuristics.uncountedNonterminals = {
-            ...patternHeuristics.uncountedNonterminals,
-            ...tokenHeuristics.uncountedNonterminals,
-        };
-
-        if (!doneWithStartTokens) {
-            if (tokenHeuristics.minLength !== 0) doneWithStartTokens = true;
-
-            combineTokenDicts(
-                patternHeuristics.startTokens,
-                tokenHeuristics.startTokens
-            );
-        }
-
-        if (tokenHeuristics.minLength === 0) {
-            combineTokenDicts(
-                patternHeuristics.endTokens,
-                tokenHeuristics.endTokens
-            );
-        } else {
-            patternHeuristics.endTokens = tokenHeuristics.endTokens;
-        }
-
-        combineTokenDicts(patternHeuristics.dict, tokenHeuristics.dict);
+const getTypeMinLength = (type, parentCalls = {}, cache = {}) => {
+    if (cache[type] !== undefined) return cache[type];
+    if (parentCalls[type]) {
+        cache[type] = Number.MAX_SAFE_INTEGER;
+        return cache[type];
     }
-    return patternHeuristics;
-};
-
-const getHeuristicObject = (type, rules, heuristics) => {
-    if (heuristics[type]) return heuristics[type];
-    const typeHeuristics = {
-        minLength: Number.MAX_SAFE_INTEGER,
-        maxLength: 0,
-        uncountedPatterns: [],
-
-        startTokens: { whitelist: {}, nonterminals: {} },
-        endTokens: { whitelist: {}, nonterminals: {} },
-        dict: { whitelist: {}, nonterminals: {} },
-    };
-
-    for (const rule of rules[type]) {
-        const patternHeuristics = getPatternHeuristics(
-            rule.pattern,
-            rules,
-            heuristics
-        );
-
-        if (Object.keys(patternHeuristics.uncountedNonterminals).length) {
-            const { minLength, maxLength, uncountedNonterminals } =
-                patternHeuristics;
-            typeHeuristics.uncountedPatterns.push({
-                minLength,
-                maxLength,
-                uncountedNonterminals,
-            });
-        } else {
-            typeHeuristics.minLength = Math.min(
-                typeHeuristics.minLength,
-                patternHeuristics.minLength
-            );
-            typeHeuristics.maxLength = Math.max(
-                typeHeuristics.maxLength,
-                patternHeuristics.maxLength
-            );
-        }
-
-        combineTokenDicts(
-            typeHeuristics.startTokens,
-            patternHeuristics.startTokens
-        );
-        combineTokenDicts(
-            typeHeuristics.endTokens,
-            patternHeuristics.endTokens
-        );
-        combineTokenDicts(typeHeuristics.dict, patternHeuristics.dict);
-    }
-    return typeHeuristics;
-};
-
-const pass = (heuristics) => {
-    let madeChange = false;
-    for (const type in heuristics) {
-        const typeHeuristics = heuristics[type];
-
-        const newPatterns = [];
-        while (typeHeuristics.uncountedPatterns.length) {
-            const uncountedPattern = typeHeuristics.uncountedPatterns.pop();
-            const { minLength, maxLength, uncountedNonterminals } =
-                uncountedPattern;
-            if (Object.keys(uncountedNonterminals).includes(type)) {
-                typeHeuristics.maxLength = Number.MAX_SAFE_INTEGER;
-                madeChange = true;
+    parentCalls[type] = true;
+    let min = Number.MAX_SAFE_INTEGER;
+    for (const { pattern } of RULES[type]) {
+        let currentLength = 0;
+        for (const token of pattern) {
+            if (isTerminal(token)) {
+                currentLength += token.length;
                 continue;
             }
-            const newMinLength =
-                minLength +
-                Object.keys(uncountedNonterminals).reduce(
-                    (p, c) => p + heuristics[c].minLength,
-                    0
-                );
-            const newMaxLength =
-                maxLength +
-                Object.keys(uncountedNonterminals).reduce(
-                    (p, c) => p + heuristics[c].maxLength,
-                    0
-                );
-            if (newMinLength < typeHeuristics.minLength) {
-                typeHeuristics.minLength = newMinLength;
-                madeChange = true;
+            const length = getTypeMinLength(
+                token.type,
+                { ...parentCalls },
+                cache
+            );
+
+            currentLength += length;
+            if (currentLength >= Number.MAX_SAFE_INTEGER) {
+                currentLength = Number.MAX_SAFE_INTEGER;
+                break;
             }
-            if (
-                typeHeuristics.maxLength < Number.MAX_SAFE_INTEGER &&
-                newMaxLength > typeHeuristics.maxLength
-            ) {
-                typeHeuristics.maxLength = newMaxLength;
-                madeChange = true;
-            }
-            newPatterns.push(uncountedPattern);
         }
-
-        madeChange ||= tokenDictPass(
-            type,
-            typeHeuristics,
-            "startTokens",
-            heuristics
-        );
-        madeChange ||= tokenDictPass(
-            type,
-            typeHeuristics,
-            "endTokens",
-            heuristics
-        );
-        madeChange ||= tokenDictPass(type, typeHeuristics, "dict", heuristics);
+        min = Math.min(min, currentLength);
     }
-    return madeChange;
+    cache[type] = min;
+    return min;
 };
 
-const tokenDictPass = (originalType, heuristicObject, dictName, heuristics) => {
-    let madeChange = false;
-    let dict = heuristicObject[dictName];
-    for (const type in dict.nonterminals) {
-        if (type === originalType) continue;
-        madeChange ||= combineTokenDicts(dict, heuristics[type][dictName]);
-    }
-    return madeChange;
-};
+// const objectMap = (object, func) => {
+//     return Object.keys(object).reduce(
+//         (p, key) => ({ ...p, [key]: func(object[key], key) }),
+//         {}
+//     );
+// };
 
-const isTerminal = (token) =>
-    typeof token !== "object" || !token.type || !RULES[token.type];
+// const addValueToOptions = (A, options) => {
+//     if (typeof A === "number")
+//         return options.map(({ value, nonterminals }) => ({
+//             value: value + A,
+//             nonterminals,
+//         }));
+//     const { value: toAddValue, nonterminals: toAddNonterminals } = A;
+//     return options.map(({ value, nonterminals }) => ({
+//         value: value + toAddValue,
+//         nonterminals: objectMap(
+//             nonterminals,
+//             (count, key) => count + toAddNonterminals[key]
+//         ),
+//     }));
+// };
 
-const RULES = {
-    N: [
-        {
-            pattern: [{ type: "N" }, "-", { type: "N" }],
-        },
-        {
-            pattern: [{ type: "N" }, { type: "N" }],
-        },
-        {
-            pattern: ["-", { type: "N" }],
-        },
-        {
-            pattern: ["n"],
-        },
-    ],
-    String: [
-        {
-            pattern: ['"', { type: "Stringinnerts" }, '"'],
-        },
-        {
-            pattern: ["print", { type: "String" }],
-        },
-    ],
-    Stringinnerts: [
-        {
-            pattern: ["a", { type: "Stringinnerts" }],
-        },
-        {
-            pattern: [],
-        },
-    ],
-};
+// const multiplyOptions = (A, options) => {
+//     return options.map(({ value, nonterminals }) => ({
+//         value: value * A,
+//         nonterminals: objectMap(nonterminals, (x) => x * A),
+//     }));
+// };
 
-console.log(inspect(makeHeuristics(RULES)));
+// const replaceValues = (options, typeToReplace, replaceValue) => {
+//     return options.flatMap((option) => {
+//         const { value, nonterminals } = option;
+//         if (!nonterminals[typeToReplace]) return option;
+//         const { [typeToReplace]: count, ...rest } = nonterminals;
+//         if (typeof replaceValue === "number")
+//             return { value: value + count * replaceValue, nonterminals: rest };
+//         return addValueToOptions(
+//             { value, nonterminals: rest },
+//             multiplyOptions(count, replaceValue)
+//         );
+//     });
+// };
 
-module.exports = makeHeuristics;
+// /*********
+//  * Max length
+//  */
+
+// const makeHeuristic = (getFunction, rules, ...args) => {
+//     const values = {};
+//     for (const type in rules) {
+//         values[type] = getFunction(type, rules, values, ...args);
+//     }
+//     return values;
+// };
+
+// const getMaxLength = (type, rules, values) => {
+//     if (values[type] !== undefined) return values[type];
+//     values[type] = 0;
+
+//     for (const { pattern } of rules[type]) {
+//         let patternMaxLength = 0;
+//         for (const token of pattern) {
+//             if (isTerminal(token)) {
+//                 patternMaxLength += token.length;
+//                 continue;
+//             }
+//             if (token.type === type) {
+//                 values[type] = Number.MAX_SAFE_INTEGER;
+//                 return values[type];
+//             }
+//             patternMaxLength += getMaxLength(token.type, rules, values);
+//             if (patternMaxLength >= Number.MAX_SAFE_INTEGER) {
+//                 values[type] = Number.MAX_SAFE_INTEGER;
+//                 return values[type];
+//             }
+//         }
+//         values[type] = Math.max(values[type], patternMaxLength);
+//     }
+//     return values[type];
+// };
+
+// const getDict = (type, rules, values) => {
+//     if (values[type] !== undefined) return values[type];
+//     values[type] = { whitelist: {} };
+//     for (const { pattern } of rules[type]) {
+//         for (const token of pattern) {
+//             if (isTerminal(token)) {
+//                 values[type] = combineTokenDicts(values[type], {
+//                     whitelist: makeSet(token.split("")),
+//                 });
+//                 continue;
+//             }
+//             if (token.type === type) continue;
+//             values[type] = combineTokenDicts(
+//                 values[type],
+//                 getDict(token.type, rules, values)
+//             );
+//         }
+//     }
+//     return values[type];
+// };
+
+// const getStartTokens = (type, rules, values, heuristics) => {
+//     if (values[type] !== undefined) return values[type];
+//     values[type] = { whitelist: {} };
+//     for (const { pattern } of rules[type]) {
+//         for (const token of pattern) {
+//             if (isTerminal(token)) {
+//                 values[type] = combineTokenDicts(values[type], {
+//                     whitelist: makeSet([token[0]]),
+//                 });
+//                 if (token.length) break;
+//                 continue;
+//             }
+//             if (token.type !== type)
+//                 values[type] = combineTokenDicts(
+//                     values[type],
+//                     getStartTokens(token.type, rules, values, heuristics)
+//                 );
+
+//             if (heuristics.minLength[token.type]) break;
+//         }
+//     }
+//     return values[type];
+// };
+
+// const getEndTokens = (type, rules, values, heuristics) => {
+//     if (values[type] !== undefined) return values[type];
+//     values[type] = { whitelist: {} };
+//     for (const { pattern } of rules[type]) {
+//         const reversedPatterns = [...pattern].reverse();
+//         for (const token of reversedPatterns) {
+//             if (isTerminal(token)) {
+//                 values[type] = combineTokenDicts(values[type], {
+//                     whitelist: makeSet([token[token.length - 1]]),
+//                 });
+//                 if (token.length) break;
+//                 continue;
+//             }
+//             if (token.type !== type)
+//                 values[type] = combineTokenDicts(
+//                     values[type],
+//                     getEndTokens(token.type, rules, values, heuristics)
+//                 );
+//             if (heuristics.minLength[token.type]) break;
+//         }
+//     }
+//     return values[type];
+// };
+
+// const combineTokenDicts = (A, B) => {
+//     if (A.blacklist) {
+//         if (B.blacklist)
+//             return { blacklist: intersect(A.blacklist, B.blacklist) };
+//         return { blacklist: subtract(A.blacklist, B.whitelist) };
+//     }
+//     if (B.blacklist) return { blacklist: subtract(B.blacklist, A.whitelist) };
+//     return { whitelist: union(A.whitelist, B.whitelist) };
+// };
+
+// console.log(inspect(makeHeuristics(RULES)));
+
+// if (expression.length < heuristics.maxLength)
+//     return {
+//         error: `"${expression}" is shorter than the maximum possible length (${heuristics.maxLength}) for type: ${type}!"`,
+//     };
+
+// if (!heuristics.startTokens[forceTerminal(expression[0])])
+//     return {
+//         error: `'${expression[0]}' is not in the set of start tokens for type: ${type}!"`,
+//     };
+// if (!heuristics.endTokens[forceTerminal(expression[expression.length - 1])])
+//     return {
+//         error: `'${
+//             expression[expression.length - 1]
+//         }' is not in the set of end tokens for type: ${type}!"`,
+//     };
+
+// for (const token of expression) {
+//     if (heuristics.dict[forceTerminal(token)])
+//         return {
+//             error: `'${token}' is not in the set of allowed tokens for type: ${type}!"`,
+//         };
+// }
+
+generateHeuristics();
+module.exports = HEURISTICS;

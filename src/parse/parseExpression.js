@@ -1,27 +1,14 @@
-const RULES = {
-    N: [
-        {
-            pattern: [{ type: "N" }, "-", { type: "N" }],
-        },
-        {
-            pattern: [{ type: "N" }, { type: "N" }],
-        },
-        {
-            pattern: ["-", { type: "N" }],
-        },
-        {
-            pattern: ["n"],
-        },
-    ],
-};
+const HEURISTICS = require("./heuristics");
+const RULES = require("../expressions");
 
-const parseType = (type, expression) => {
-    // Optimization
+const { isTerminal } = require("../util/parsingUtils");
+
+const parseExpressionAsType = (type, expression) => {
     const typeHeuristics = checkTypeHeuristics(type, expression);
     if (typeHeuristics.error) return typeHeuristics;
 
     for (const rule of RULES[type]) {
-        const parse = parseExpression(rule.pattern, expression);
+        const parse = parseExpressionAsPattern(rule.pattern, expression);
         if (parse.error) continue;
         return parse;
     }
@@ -30,40 +17,7 @@ const parseType = (type, expression) => {
     };
 };
 
-const checkTypeHeuristics = (type, expression) => {
-    const heuristics = HEURISTICS[type];
-
-    if (expression.length < heuristics.minLength)
-        return {
-            error: `"${expression}" is shorter than the minimum possible length (${heuristics.minLength}) for type: ${type}!"`,
-        };
-    if (expression.length < heuristics.maxLength)
-        return {
-            error: `"${expression}" is shorter than the maximum possible length (${heuristics.maxLength}) for type: ${type}!"`,
-        };
-
-    if (!heuristics.startTokens[forceTerminal(expression[0])])
-        return {
-            error: `'${expression[0]}' is not in the set of start tokens for type: ${type}!"`,
-        };
-    if (!heuristics.endTokens[forceTerminal(expression[expression.length - 1])])
-        return {
-            error: `'${
-                expression[expression.length - 1]
-            }' is not in the set of end tokens for type: ${type}!"`,
-        };
-
-    for (const token of expression) {
-        if (heuristics.dict[forceTerminal(token)])
-            return {
-                error: `'${token}' is not in the set of allowed tokens for type: ${type}!"`,
-            };
-    }
-
-    return {};
-};
-
-const parseExpression = (pattern, expression) => {
+const parseExpressionAsPattern = (pattern, expression) => {
     const possibleMatches = getPossibleMatches(pattern, expression);
     if (possibleMatches.length === 0)
         return {
@@ -77,11 +31,17 @@ const parseExpression = (pattern, expression) => {
                 breakpointList[i - 1] || 0,
                 breakpointList[i]
             );
+
+            // This should be redundant
             if (isTerminal(patternToken)) {
                 if (patternToken !== subExpression) continue nextBreakPoint;
                 continue;
             }
-            const parse = parseType(patternToken.type, subExpression);
+
+            const parse = parseExpressionAsType(
+                patternToken.type,
+                subExpression
+            );
             if (parse.error) continue nextBreakPoint;
             match.push(parse);
         }
@@ -93,27 +53,27 @@ const parseExpression = (pattern, expression) => {
     };
 };
 
+const checkTypeHeuristics = (type, expression) => {
+    for (const heuristic in HEURISTICS.typeHeuristics) {
+        const heuristicCheck = HEURISTICS.typeHeuristics[heuristic](
+            type,
+            expression
+        );
+        if (heuristicCheck.error) return heuristicCheck;
+    }
+
+    return {};
+};
+
 const patternMinLength = (pattern) => {
     return pattern.reduce(
         (p, token) =>
             p +
             (isTerminal(token)
                 ? token.length
-                : HEURISTICS[token.type].minLength),
+                : HEURISTICS.types[token.type].minLength),
         0
     );
-};
-
-// This is different so that it can break out when it sees the max value
-const patternMaxLength = (pattern) => {
-    let runningTotal = 0;
-    for (const token of pattern) {
-        if (isTerminal(token)) runningTotal += token.length;
-        else if (HEURISTICS[token.type].maxLength >= Number.MAX_SAFE_INTEGER)
-            return Number.MAX_SAFE_INTEGER;
-        else runningTotal += HEURISTICS[token.type].maxLength;
-    }
-    return runningTotal;
 };
 
 const getPossibleMatches = (pattern, expression) => {
@@ -121,10 +81,13 @@ const getPossibleMatches = (pattern, expression) => {
     if (pattern.length === 0) return expression.length === 0 ? [[]] : [];
 
     if (expression.length < patternMinLength(pattern)) return [];
-    if (expression.length > patternMaxLength(pattern)) return [];
 
     const firstPatternToken = pattern[0];
-    if (isTerminal(firstPatternToken))
+    if (isTerminal(firstPatternToken)) {
+        // This is checked again later but it at least saves us on some memory and time
+        if (expression.slice(0, firstPatternToken.length) !== firstPatternToken)
+            return [];
+
         return getPossibleMatches(
             pattern.slice(1),
             expression.slice(firstPatternToken.length)
@@ -132,6 +95,7 @@ const getPossibleMatches = (pattern, expression) => {
             firstPatternToken.length,
             ...match.map((len) => len + firstPatternToken.length),
         ]);
+    }
 
     const matches = [];
     for (let i = 0; i <= expression.length; i++) {
@@ -150,5 +114,6 @@ const getPossibleMatches = (pattern, expression) => {
     return matches;
 };
 
-const isTerminal = (token) =>
-    typeof token !== "object" || !token.type || !RULES[token.type];
+module.exports = parseExpressionAsType;
+
+console.log(parseExpressionAsType("N", "n"));

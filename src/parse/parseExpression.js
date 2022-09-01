@@ -120,6 +120,6 @@ module.exports = parseExpressionAsType;
 
 console.log(
     inspect(
-        parseExpressionAsType("N", "---------------------------------------")
+        parseExpressionAsType("N", "----------m-----------------------------")
     )
 );

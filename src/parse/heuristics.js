@@ -1,4 +1,5 @@
 const { isTerminal } = require("../util/parsingUtils");
+const { inspect } = require("../util");
 
 const RULES = require("../expressions");
 
@@ -28,8 +29,16 @@ const generateHeuristics = () => {
             error: `"${expression}" is longer than the maximum possible length (${HEURISTICS.types[type].maxLength}) for type: ${type}!"`,
         };
 
-    // heuristics.maxLength = makeHeuristic(getMaxLength, rules);
-    // heuristics.dict = makeHeuristic(getDict, rules);
+    toAddHeuristics.dict = getDicts(RULES);
+    HEURISTICS.typeHeuristics.dict = (type, expression) => {
+        for (const token of expression) {
+            if (!HEURISTICS.types[type].dict[token])
+                return {
+                    error: `'${token}' is not in the set of allowed tokens for type: ${type}!"`,
+                };
+        }
+        return true;
+    };
     // heuristics.startDict = makeHeuristic(getStartTokens, rules, heuristics);
     // heuristics.endDict = makeHeuristic(getEndTokens, rules, heuristics);
 
@@ -133,6 +142,43 @@ const getTypeMaxLength = (type, parentCalls = {}, cache = {}) => {
     }
     cache[type] = max;
     return max;
+};
+
+/*************************
+ * Dict functions
+ *************************/
+
+const getDicts = () => {
+    const dicts = {};
+    for (const type in RULES) {
+        dicts[type] = getTypeDict(type);
+    }
+    return dicts;
+};
+
+const getTypeDict = (type, parentCalls = {}, cache = {}) => {
+    if (cache[type] !== undefined) return cache[type];
+    if (parentCalls[type]) {
+        cache[type] = {};
+        return cache[type];
+    }
+    parentCalls[type] = true;
+    let dict = {};
+    for (const { pattern } of RULES[type]) {
+        for (const token of pattern) {
+            if (isTerminal(token)) {
+                token
+                    .split("")
+                    .forEach((character) => (dict[character] = true));
+                continue;
+            }
+            const typeDict = getTypeDict(token.type, { ...parentCalls }, cache);
+
+            dict = { ...dict, ...typeDict };
+        }
+    }
+    cache[type] = dict;
+    return dict;
 };
 
 // const objectMap = (object, func) => {
@@ -296,12 +342,6 @@ const getTypeMaxLength = (type, parentCalls = {}, cache = {}) => {
 //     return { whitelist: union(A.whitelist, B.whitelist) };
 // };
 
-// console.log(inspect(makeHeuristics(RULES)));
-
-// if (!heuristics.startTokens[forceTerminal(expression[0])])
-//     return {
-//         error: `'${expression[0]}' is not in the set of start tokens for type: ${type}!"`,
-//     };
 // if (!heuristics.endTokens[forceTerminal(expression[expression.length - 1])])
 //     return {
 //         error: `'${
@@ -309,14 +349,7 @@ const getTypeMaxLength = (type, parentCalls = {}, cache = {}) => {
 //         }' is not in the set of end tokens for type: ${type}!"`,
 //     };
 
-// for (const token of expression) {
-//     if (heuristics.dict[forceTerminal(token)])
-//         return {
-//             error: `'${token}' is not in the set of allowed tokens for type: ${type}!"`,
-//         };
-// }
-
 generateHeuristics();
 module.exports = HEURISTICS;
 
-console.log(HEURISTICS);
+console.log(inspect(HEURISTICS));

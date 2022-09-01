@@ -14,22 +14,25 @@ const HEURISTICS = {
     },
 };
 
-const generateHeuristics = () => {
-    const toAddHeuristics = {};
+// This is so it can be accessed later by the start and end dict function
+let toAddHeuristics;
 
-    toAddHeuristics.minLength = getMinLengths(RULES);
+const generateHeuristics = () => {
+    toAddHeuristics = {};
+
+    toAddHeuristics.minLength = getMinLengths();
     HEURISTICS.typeHeuristics.minLength = (type, expression) =>
         expression.length < HEURISTICS.types[type].minLength && {
             error: `"${expression}" is shorter than the minimum possible length (${HEURISTICS.types[type].minLength}) for type: ${type}!"`,
         };
 
-    toAddHeuristics.maxLength = getMaxLengths(RULES);
+    toAddHeuristics.maxLength = getMaxLengths();
     HEURISTICS.typeHeuristics.maxLength = (type, expression) =>
         expression.length > HEURISTICS.types[type].maxLength && {
             error: `"${expression}" is longer than the maximum possible length (${HEURISTICS.types[type].maxLength}) for type: ${type}!"`,
         };
 
-    toAddHeuristics.dict = getDicts(RULES);
+    toAddHeuristics.dict = getDicts();
     HEURISTICS.typeHeuristics.dict = (type, expression) => {
         for (const token of expression) {
             if (!HEURISTICS.types[type].dict[token])
@@ -39,8 +42,18 @@ const generateHeuristics = () => {
         }
         return true;
     };
-    // heuristics.startDict = makeHeuristic(getStartTokens, rules, heuristics);
-    // heuristics.endDict = makeHeuristic(getEndTokens, rules, heuristics);
+    toAddHeuristics.startDict = getStartDicts();
+    HEURISTICS.typeHeuristics.startDict = (type, expression) =>
+        !HEURISTICS.types[type].startDict[expression[0]] && {
+            error: `'${expression[0]}' is not in the set of start tokens for type: ${type}!"`,
+        };
+    toAddHeuristics.endDict = getEndDicts();
+    HEURISTICS.typeHeuristics.endDict = (type, expression) =>
+        !HEURISTICS.types[type].endDict[expression[expression.length - 1]] && {
+            error: `'${
+                expression[expression.length - 1]
+            }' is not in the set of end tokens for type: ${type}!"`,
+        };
 
     // Attach each heuristic
     for (const type in RULES) {
@@ -179,6 +192,95 @@ const getTypeDict = (type, parentCalls = {}, cache = {}) => {
     }
     cache[type] = dict;
     return dict;
+};
+
+/*************************
+ * Start Dict functions
+ *************************/
+
+const getStartDicts = () => {
+    const dicts = {};
+    for (const type in RULES) {
+        dicts[type] = getTypeStartDict(type);
+    }
+    return dicts;
+};
+
+const getTypeStartDict = (type, parentCalls = {}, cache = {}) => {
+    if (cache[type] !== undefined) return cache[type];
+    if (parentCalls[type]) {
+        cache[type] = {};
+        return cache[type];
+    }
+    parentCalls[type] = true;
+    let startDict = {};
+    for (const { pattern } of RULES[type]) {
+        for (const token of pattern) {
+            if (isTerminal(token)) {
+                if (token.length) {
+                    startDict[token[0]] = true;
+                    break;
+                }
+                continue;
+            }
+            const typeStartDict = getTypeStartDict(
+                token.type,
+                { ...parentCalls },
+                cache
+            );
+
+            startDict = { ...startDict, ...typeStartDict };
+
+            if (toAddHeuristics.minLength[token.type]) break;
+        }
+    }
+    cache[type] = startDict;
+    return startDict;
+};
+
+/*************************
+ * End Dict functions
+ *************************/
+
+const getEndDicts = () => {
+    const dicts = {};
+    for (const type in RULES) {
+        dicts[type] = getTypeEndDict(type);
+    }
+    return dicts;
+};
+
+const getTypeEndDict = (type, parentCalls = {}, cache = {}) => {
+    if (cache[type] !== undefined) return cache[type];
+    if (parentCalls[type]) {
+        cache[type] = {};
+        return cache[type];
+    }
+    parentCalls[type] = true;
+    let endDict = {};
+    for (const { pattern } of RULES[type]) {
+        for (let i = pattern.length - 1; i >= 0; i--) {
+            const token = pattern[i];
+            if (isTerminal(token)) {
+                if (token.length) {
+                    endDict[token[token.length - 1]] = true;
+                    break;
+                }
+                continue;
+            }
+            const typeEndDict = getTypeEndDict(
+                token.type,
+                { ...parentCalls },
+                cache
+            );
+
+            endDict = { ...endDict, ...typeEndDict };
+
+            if (toAddHeuristics.minLength[token.type]) break;
+        }
+    }
+    cache[type] = endDict;
+    return endDict;
 };
 
 // const objectMap = (object, func) => {

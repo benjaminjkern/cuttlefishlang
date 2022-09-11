@@ -1,3 +1,5 @@
+const { MULTI, NOT, type } = require("../ruleUtils");
+
 const RULES = {
     String: [
         {
@@ -17,12 +19,12 @@ const RULES = {
     ],
 };
 
-const attachReturnType = (rulesList, returnType) => {
-    rulesList.forEach((rule, index) => {
-        rulesList[index] = { ...rule, returnType };
-    });
-};
+// const attachReturnType = (rulesList, returnType) => {
+//     rulesList.forEach((rule, index) => {
+//         rulesList[index] = { ...rule, returnType };
+//     });
+// };
 
-attachReturnType(RULES, "String");
+// attachReturnType(RULES, "String");
 
-module.exports = { RULES };
+module.exports = RULES;

@@ -12,7 +12,7 @@ const makeSet = (list) => {
 const setFunc =
     (func) =>
     (...args) => {
-        return func(args.map(makeSet));
+        return func(...args.map(makeSet));
     };
 
 const union = setFunc((A, ...B) => {

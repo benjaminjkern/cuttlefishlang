@@ -1,8 +1,9 @@
-const HEURISTICS = require("./heuristics");
+const { HEURISTICS, getPatternMinLength } = require("./heuristics");
 const RULES = require("../expressions");
 
 const { isTerminal } = require("../util/parsingUtils");
 const { inspect } = require("../util");
+const { isValidToken } = require("./tokenDict");
 
 const parseExpressionAsType = (type, expression) => {
     const typeHeuristics = checkTypeHeuristics(type, expression);
@@ -16,6 +17,45 @@ const parseExpressionAsType = (type, expression) => {
     return {
         error: `"${expression}" did not match any pattern of type: ${type}!`,
     };
+};
+
+const parseExpressionAsMetaType = (metaTypePatternToken, expression) => {
+    // console.log(inspect(metaTypePatternToken), expression);
+    switch (metaTypePatternToken.metaType) {
+        case "or":
+            for (const pattern of metaTypePatternToken.patterns) {
+                const parse = parseExpressionAsPattern(pattern, expression);
+                if (parse.error) continue;
+                return parse;
+            }
+            return {
+                error: `"${expression}" did not match any pattern in list: ${metaTypePatternToken.patterns}!`,
+            };
+        case "multi":
+            if (metaTypePatternToken.min <= 0 && expression === "") return [];
+            if (metaTypePatternToken.max <= 0 && expression !== "")
+                return { error: "Maximum length reached" };
+            const parse = parseExpressionAsPattern(
+                [
+                    ...metaTypePatternToken.pattern,
+                    {
+                        ...metaTypePatternToken,
+                        min: Math.max(metaTypePatternToken.min - 1, 0),
+                        max: Math.max(metaTypePatternToken.max - 1, 0),
+                    },
+                ],
+                expression
+            );
+            if (parse.error) return parse;
+            return parse.flat();
+        case "anychar":
+            if (!isValidToken(metaTypePatternToken.tokenDict, expression))
+                return {
+                    error: `There do not exist any possible matches of "${expression}" on pattern ${metaTypePatternToken}!`,
+                };
+            return expression;
+    }
+    return { error: `Invalid metaType: ${metaTypePatternToken.metaType}` };
 };
 
 const parseExpressionAsPattern = (pattern, expression) => {
@@ -37,6 +77,15 @@ const parseExpressionAsPattern = (pattern, expression) => {
             if (isTerminal(patternToken)) {
                 if (patternToken !== subExpression) continue nextBreakPoint;
                 match.push(patternToken);
+                continue;
+            }
+            if (patternToken.metaType) {
+                const parse = parseExpressionAsMetaType(
+                    patternToken,
+                    subExpression
+                );
+                if (parse.error) continue nextBreakPoint;
+                match.push(parse);
                 continue;
             }
 
@@ -67,7 +116,13 @@ const checkTypeHeuristics = (type, expression) => {
     return {};
 };
 
+const checkMetaTypeHeuristics = (metaType, expression) => {
+    // Might want to do this at some point but honestly I think its fine
+    return true;
+};
+
 const patternMinLength = (pattern) => {
+    return getPatternMinLength(pattern, {}, {});
     return pattern.reduce(
         (p, token) =>
             p +
@@ -101,11 +156,19 @@ const getPossibleMatches = (pattern, expression) => {
 
     const matches = [];
     for (let i = 0; i <= expression.length; i++) {
-        const typeHeuristics = checkTypeHeuristics(
-            firstPatternToken.type,
-            expression.slice(0, i)
-        );
-        if (typeHeuristics.error) continue;
+        if (firstPatternToken.type) {
+            const typeHeuristics = checkTypeHeuristics(
+                firstPatternToken.type,
+                expression.slice(0, i)
+            );
+            if (typeHeuristics.error) continue;
+        } else {
+            const typeHeuristics = checkMetaTypeHeuristics(
+                firstPatternToken,
+                expression.slice(0, i)
+            );
+            if (typeHeuristics.error) continue;
+        }
 
         matches.push(
             ...getPossibleMatches(pattern.slice(1), expression.slice(i)).map(
@@ -119,7 +182,5 @@ const getPossibleMatches = (pattern, expression) => {
 module.exports = parseExpressionAsType;
 
 console.log(
-    inspect(
-        parseExpressionAsType("N", "-----------------n----------------------n")
-    )
+    inspect(parseExpressionAsType("A", "ooo799aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
 );

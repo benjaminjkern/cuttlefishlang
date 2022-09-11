@@ -2,7 +2,12 @@ const { isTerminal } = require("../util/parsingUtils");
 const { inspect } = require("../util");
 
 const RULES = require("../expressions");
-const { newTokenDict, addToTokenDict, addTokenDicts } = require("./tokenDict");
+const {
+    newTokenDict,
+    addToTokenDict,
+    addTokenDicts,
+    isValidToken,
+} = require("./tokenDict");
 
 const HEURISTICS = {
     types: {
@@ -13,12 +18,17 @@ const HEURISTICS = {
     typeHeuristics: {
         // [typeHeuristic]: (type, expression) => boolean,
     },
+    metaTypeHeuristics: {},
 };
 
 // This is so it can be accessed later by the start and end dict function
 let toAddHeuristics;
 
 const generateHeuristics = () => {
+    if (toAddHeuristics) {
+        console.log("Tried generating Heuristics twice!");
+        return;
+    }
     toAddHeuristics = {};
 
     toAddHeuristics.minLength = getMinLengths();
@@ -36,7 +46,7 @@ const generateHeuristics = () => {
     toAddHeuristics.dict = getDicts();
     HEURISTICS.typeHeuristics.dict = (type, expression) => {
         for (const token of expression) {
-            if (!HEURISTICS.types[type].dict[token])
+            if (!isValidToken(HEURISTICS.types[type].dict, token))
                 return {
                     error: `'${token}' is not in the set of allowed tokens for type: ${type}!"`,
                 };
@@ -45,12 +55,15 @@ const generateHeuristics = () => {
     };
     toAddHeuristics.startDict = getStartDicts();
     HEURISTICS.typeHeuristics.startDict = (type, expression) =>
-        !HEURISTICS.types[type].startDict[expression[0]] && {
+        !isValidToken(HEURISTICS.types[type].startDict, expression[0]) && {
             error: `'${expression[0]}' is not in the set of start tokens for type: ${type}!"`,
         };
     toAddHeuristics.endDict = getEndDicts();
     HEURISTICS.typeHeuristics.endDict = (type, expression) =>
-        !HEURISTICS.types[type].endDict[expression[expression.length - 1]] && {
+        !isValidToken(
+            HEURISTICS.types[type].endDict,
+            expression[expression.length - 1]
+        ) && {
             error: `'${
                 expression[expression.length - 1]
             }' is not in the set of end tokens for type: ${type}!"`,
@@ -470,6 +483,6 @@ const getPatternEndDict = (pattern, parentCalls, cache) => {
  *************************/
 
 generateHeuristics();
-module.exports = HEURISTICS;
+module.exports = { HEURISTICS, getPatternMinLength };
 
-console.log(inspect(HEURISTICS));
+// console.log(inspect(HEURISTICS));

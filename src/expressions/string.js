@@ -1,15 +1,15 @@
-const { MULTI, NOT, type } = require("../ruleUtils");
+const { NOTCHAR, MULTI, type } = require("../parse/ruleUtils");
 
 const RULES = {
     String: [
         {
-            pattern: ['"', MULTI(NOT('"')), '"'],
+            pattern: ['"', MULTI(NOTCHAR('"')), '"'],
             spaces: "dont-ignore",
             evaluate: ({ sourcestring }) =>
                 sourcestring.substring(0, sourcestring.length - 1),
         },
         {
-            pattern: ["print", type("String")],
+            pattern: ["print ", type("String")],
             evaluate: ({ tokens: [_, string] }) => {
                 const stringValue = string.evaluate();
                 console.log(stringValue);

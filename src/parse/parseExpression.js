@@ -1,4 +1,4 @@
-const { HEURISTICS, getPatternMinLength } = require("./heuristics");
+const HEURISTICS = require("./heuristics");
 const RULES = require("../expressions");
 
 const { isTerminal } = require("../util/parsingUtils");
@@ -6,6 +6,7 @@ const { inspect } = require("../util");
 const { isValidToken } = require("./tokenDict");
 
 const parseExpressionAsType = (type, expression) => {
+    if (!RULES[type]) return { error: `Invalid type: ${type}` };
     const typeHeuristics = checkTypeHeuristics(type, expression);
     if (typeHeuristics.error) return typeHeuristics;
 
@@ -118,7 +119,10 @@ const checkTypeHeuristics = (type, expression) => {
 
 const checkMetaTypeHeuristics = (metaTypePatternToken, expression) => {
     if (metaTypePatternToken.metaType === "anychar") {
-        if (!isValidToken(metaTypePatternToken.tokenDict, expression))
+        if (
+            expression.length !== 1 ||
+            !isValidToken(metaTypePatternToken.tokenDict, expression)
+        )
             return {
                 error: `There do not exist any possible matches of "${expression}" on pattern ${metaTypePatternToken}!`,
             };
@@ -144,6 +148,8 @@ const getPossibleMatches = (pattern, expression) => {
     if (pattern.length === 0) return expression.length === 0 ? [[]] : [];
 
     if (expression.length < patternMinLength(pattern)) return [];
+
+    // console.log(pattern, expression);
 
     const firstPatternToken = pattern[0];
     if (isTerminal(firstPatternToken)) {
@@ -188,7 +194,5 @@ const getPossibleMatches = (pattern, expression) => {
 module.exports = parseExpressionAsType;
 
 console.log(
-    inspect(
-        parseExpressionAsType("A", "ooo799aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-    )
+    inspect(parseExpressionAsType("A", "oo799aaaaaaaaaaaaaaaaaaaaaaa"))
 );

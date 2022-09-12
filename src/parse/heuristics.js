@@ -1,5 +1,4 @@
 const { isTerminal } = require("../util/parsingUtils");
-const { inspect } = require("../util");
 
 const RULES = require("../expressions");
 const {
@@ -247,6 +246,10 @@ const getMinLengths = () => {
     const minLengths = {};
     for (const type in RULES) {
         minLengths[type] = getTypeMinLength(type);
+        if (minLengths[type] >= Number.MAX_SAFE_INTEGER)
+            console.warn(
+                `Warning: Type "${type}" has a minimum length of ${minLengths[type]} (Probably an unclosed rule loop)`
+            );
     }
     return minLengths;
 };
@@ -643,6 +646,6 @@ const getPatternEndDict = (pattern, parentCalls, cache) => {
  *************************/
 
 generateHeuristics();
-module.exports = { HEURISTICS, getPatternMinLength };
+module.exports = HEURISTICS;
 
 // console.log(inspect(HEURISTICS));

@@ -1,6 +1,9 @@
-const { MULTI, OR, NOTCHAR, type, OPTIONAL } = require("../parse/ruleUtils");
+const String = require("./String");
+
+const { OPTIONAL, MULTI, NOTCHAR, OR, type } = require("../parse/ruleUtils");
 
 module.exports = {
+    ...String,
     // N: [
     //     {
     //         pattern: [{ type: "N" }, "-", { type: "N" }],
@@ -60,7 +63,7 @@ module.exports = {
                         NOTCHAR("258102595932858467890d")
                     )
                 ),
-                MULTI("a", 0, 10),
+                MULTI("a", 0, 9),
             ],
         },
     ],

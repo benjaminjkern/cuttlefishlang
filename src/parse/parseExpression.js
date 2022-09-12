@@ -193,6 +193,4 @@ const getPossibleMatches = (pattern, expression) => {
 
 module.exports = parseExpressionAsType;
 
-console.log(
-    inspect(parseExpressionAsType("A", "oo799aaaaaaaaaaaaaaaaaaaaaaa"))
-);
+console.log(inspect(parseExpressionAsType("Number", "8*9+3")));

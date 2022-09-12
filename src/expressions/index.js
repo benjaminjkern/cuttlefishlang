@@ -1,9 +1,11 @@
 const String = require("./String");
+const Number = require("./Number");
 
 const { OPTIONAL, MULTI, NOTCHAR, OR, type } = require("../parse/ruleUtils");
 
 module.exports = {
     ...String,
+    ...Number,
     // N: [
     //     {
     //         pattern: [{ type: "N" }, "-", { type: "N" }],
@@ -51,20 +53,20 @@ module.exports = {
     //     },
     // ],
     // D: [{ pattern: ["214585591519"] }, { pattern: [] }],
-    A: [
-        {
-            pattern: [
-                "o",
-                OPTIONAL(
-                    OR(
-                        type("A"),
-                        MULTI("02", 2, 9),
-                        "799",
-                        NOTCHAR("258102595932858467890d")
-                    )
-                ),
-                MULTI("a", 0, 9),
-            ],
-        },
-    ],
+    // A: [
+    //     {
+    //         pattern: [
+    //             "o",
+    //             OPTIONAL(
+    //                 OR(
+    //                     type("A"),
+    //                     MULTI("02", 2, 9),
+    //                     "799",
+    //                     NOTCHAR("258102595932858467890d")
+    //                 )
+    //             ),
+    //             MULTI("a", 0, 9),
+    //         ],
+    //     },
+    // ],
 };

@@ -44,7 +44,7 @@ const MULTI = (pattern, min = 0, max = Number.MAX_SAFE_INTEGER) => {
     };
 };
 
-const OPTIONAL = (x) => MULTI(x, 0, 1);
+const OPTIONAL = (...x) => MULTI(x, 0, 1);
 
 const isList = (object) =>
     typeof object === "object" && object.length !== undefined;

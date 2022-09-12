@@ -116,21 +116,27 @@ const checkTypeHeuristics = (type, expression) => {
     return {};
 };
 
-const checkMetaTypeHeuristics = (metaType, expression) => {
-    // Might want to do this at some point but honestly I think its fine
-    return true;
+const checkMetaTypeHeuristics = (metaTypePatternToken, expression) => {
+    if (metaTypePatternToken.metaType === "anychar") {
+        if (!isValidToken(metaTypePatternToken.tokenDict, expression))
+            return {
+                error: `There do not exist any possible matches of "${expression}" on pattern ${metaTypePatternToken}!`,
+            };
+        return {};
+    }
+
+    // for (const heuristic in HEURISTICS.metaTypeHeuristics) {
+    //     const heuristicCheck = HEURISTICS.metaTypeHeuristics[heuristic](
+    //         metaTypePatternToken,
+    //         expression
+    //     );
+    //     if (heuristicCheck.error) return heuristicCheck;
+    // }
+    return {};
 };
 
 const patternMinLength = (pattern) => {
-    return getPatternMinLength(pattern, {}, {});
-    return pattern.reduce(
-        (p, token) =>
-            p +
-            (isTerminal(token)
-                ? token.length
-                : HEURISTICS.types[token.type].minLength),
-        0
-    );
+    return HEURISTICS.patternHeuristics.minLength(pattern);
 };
 
 const getPossibleMatches = (pattern, expression) => {
@@ -182,5 +188,7 @@ const getPossibleMatches = (pattern, expression) => {
 module.exports = parseExpressionAsType;
 
 console.log(
-    inspect(parseExpressionAsType("A", "ooo799aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
+    inspect(
+        parseExpressionAsType("A", "ooo799aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+    )
 );

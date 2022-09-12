@@ -12,13 +12,18 @@ const {
 const HEURISTICS = {
     types: {
         // [type]: {
-        //     [typeHeuristic]: value,
+        //     [heuristic]: value,
         // },
     },
     typeHeuristics: {
-        // [typeHeuristic]: (type, expression) => boolean,
+        // [heuristic]: (type, expression) => boolean,
     },
-    metaTypeHeuristics: {},
+    metaTypeHeuristics: {
+        // [heuristic]: (metaType, expression) => boolean,
+    },
+    patternHeuristics: {
+        // [heuristic]: (pattern) => value,
+    },
 };
 
 // This is so it can be accessed later by the start and end dict function
@@ -36,12 +41,74 @@ const generateHeuristics = () => {
         expression.length < HEURISTICS.types[type].minLength && {
             error: `"${expression}" is shorter than the minimum possible length (${HEURISTICS.types[type].minLength}) for type: ${type}!"`,
         };
+    HEURISTICS.metaTypeHeuristics.minLength = (metaTypeToken, expression) => {
+        let minLength;
+        switch (metaTypeToken.metaType) {
+            case "or":
+                minLength = getPatternListMinLength(
+                    metaTypeToken.patterns,
+                    {},
+                    toAddHeuristics.minLength
+                );
+                break;
+            case "multi":
+                minLength =
+                    metaTypeToken.min *
+                    getPatternMinLength(
+                        metaTypeToken.pattern,
+                        {},
+                        toAddHeuristics.minLength
+                    );
+                break;
+            default:
+                return {
+                    error: `Invalid meta-type: ${metaTypeToken.metaType}`,
+                };
+        }
+        if (expression.length < minLength)
+            return {
+                error: `"${expression}" is shorter than the minimum possible length (${minLength}) for meta-type: ${metaTypeToken}!"`,
+            };
+        return true;
+    };
+    HEURISTICS.patternHeuristics.minLength = (pattern) =>
+        getPatternMinLength(pattern, {}, toAddHeuristics.minLength);
 
     toAddHeuristics.maxLength = getMaxLengths();
     HEURISTICS.typeHeuristics.maxLength = (type, expression) =>
         expression.length > HEURISTICS.types[type].maxLength && {
             error: `"${expression}" is longer than the maximum possible length (${HEURISTICS.types[type].maxLength}) for type: ${type}!"`,
         };
+    HEURISTICS.metaTypeHeuristics.maxLength = (metaTypeToken, expression) => {
+        let maxLength;
+        switch (metaTypeToken.metaType) {
+            case "or":
+                minLength = getPatternListMaxLength(
+                    metaTypeToken.patterns,
+                    {},
+                    toAddHeuristics.maxLength
+                );
+                break;
+            case "multi":
+                minLength =
+                    metaTypeToken.max *
+                    getPatternMinLength(
+                        metaTypeToken.pattern,
+                        {},
+                        toAddHeuristics.maxLength
+                    );
+                break;
+            default:
+                return {
+                    error: `Invalid meta-type: ${metaTypeToken.metaType}`,
+                };
+        }
+        if (expression.length > maxLength)
+            return {
+                error: `"${expression}" is longer than the maximum possible length (${minLength}) for meta-type: ${metaTypeToken}!"`,
+            };
+        return true;
+    };
 
     toAddHeuristics.dict = getDicts();
     HEURISTICS.typeHeuristics.dict = (type, expression) => {
@@ -53,11 +120,73 @@ const generateHeuristics = () => {
         }
         return true;
     };
+    HEURISTICS.metaTypeHeuristics.dict = (metaTypeToken, expression) => {
+        if (!expression.length) return true;
+        let dict;
+        switch (metaTypeToken.metaType) {
+            case "or":
+                dict = getPatternListDict(
+                    metaTypeToken.patterns,
+                    {},
+                    toAddHeuristics.dict
+                );
+                break;
+            case "multi":
+                dict = getPatternDict(
+                    metaTypeToken.pattern,
+                    {},
+                    toAddHeuristics.dict
+                );
+                break;
+            default:
+                return {
+                    error: `Invalid meta-type: ${metaTypeToken.metaType}`,
+                };
+        }
+        for (const token of expression) {
+            if (!isValidToken(dict, token))
+                return {
+                    error: `'${token}' is not in the set of allowed tokens for meta-type: ${metaTypeToken}!"`,
+                };
+        }
+        return true;
+    };
+
     toAddHeuristics.startDict = getStartDicts();
     HEURISTICS.typeHeuristics.startDict = (type, expression) =>
         !isValidToken(HEURISTICS.types[type].startDict, expression[0]) && {
             error: `'${expression[0]}' is not in the set of start tokens for type: ${type}!"`,
         };
+    HEURISTICS.metaTypeHeuristics.startDict = (metaTypeToken, expression) => {
+        if (!expression.length) return true;
+        let startDict;
+        switch (metaTypeToken.metaType) {
+            case "or":
+                startDict = getPatternListStartDict(
+                    metaTypeToken.patterns,
+                    {},
+                    toAddHeuristics.startDict
+                );
+                break;
+            case "multi":
+                startDict = getPatternStartDict(
+                    metaTypeToken.pattern,
+                    {},
+                    toAddHeuristics.startDict
+                );
+                break;
+            default:
+                return {
+                    error: `Invalid meta-type: ${metaTypeToken.metaType}`,
+                };
+        }
+        return (
+            !isValidToken(startDict, expression[0]) && {
+                error: `'${expression[0]}' is not in the set of start tokens for meta-type: ${metaTypeToken}!"`,
+            }
+        );
+    };
+
     toAddHeuristics.endDict = getEndDicts();
     HEURISTICS.typeHeuristics.endDict = (type, expression) =>
         !isValidToken(
@@ -68,6 +197,37 @@ const generateHeuristics = () => {
                 expression[expression.length - 1]
             }' is not in the set of end tokens for type: ${type}!"`,
         };
+    HEURISTICS.metaTypeHeuristics.endDict = (metaTypeToken, expression) => {
+        if (!expression.length) return true;
+        let endDict;
+        switch (metaTypeToken.metaType) {
+            case "or":
+                endDict = getPatternListEndDict(
+                    metaTypeToken.patterns,
+                    {},
+                    toAddHeuristics.endDict
+                );
+                break;
+            case "multi":
+                endDict = getPatternEndDict(
+                    metaTypeToken.pattern,
+                    {},
+                    toAddHeuristics.endDict
+                );
+                break;
+            default:
+                return {
+                    error: `Invalid meta-type: ${metaTypeToken.metaType}`,
+                };
+        }
+        return (
+            !isValidToken(endDict, expression[expression.length - 1]) && {
+                error: `'${
+                    expression[expression.length - 1]
+                }' is not in the set of end tokens for meta-type: ${metaTypeToken}!"`,
+            }
+        );
+    };
 
     // Attach each heuristic
     for (const type in RULES) {

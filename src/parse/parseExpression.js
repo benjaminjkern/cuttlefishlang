@@ -11,7 +11,7 @@ const parseExpressionAsType = (type, expression) => {
     if (typeHeuristics.error) return typeHeuristics;
 
     for (const rule of RULES[type]) {
-        const parse = parseExpressionAsPattern(rule.pattern, expression);
+        const parse = parseExpressionAsPattern(rule.pattern, expression, rule);
         if (parse.error) continue;
         return {
             type,
@@ -63,12 +63,14 @@ const parseExpressionAsMetaType = (metaTypePatternToken, expression) => {
     return { error: `Invalid metaType: ${metaTypePatternToken.metaType}` };
 };
 
-const parseExpressionAsPattern = (pattern, expression) => {
+const parseExpressionAsPattern = (pattern, expression, rule) => {
     const possibleMatches = getPossibleMatches(pattern, expression);
     if (possibleMatches.length === 0)
         return {
             error: `There do not exist any possible matches of "${expression}" on pattern ${pattern}!`,
         };
+
+    if (rule && rule.associativityReverseSearchOrder) possibleMatches.reverse();
 
     nextBreakPoint: for (const breakpointList of possibleMatches) {
         const match = [];

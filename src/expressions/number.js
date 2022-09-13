@@ -5,21 +5,25 @@ module.exports = {
     Number: [
         {
             pattern: [type("Number"), "+", type("Number")],
+            associativityReverseSearchOrder: true,
             evaluate: ({ tokens: [a, _, b] }) =>
                 evaluateExpression(a) + evaluateExpression(b),
         },
         {
             pattern: [type("Number"), "-", type("Number")],
+            associativityReverseSearchOrder: true,
             evaluate: ({ tokens: [a, _, b] }) =>
                 evaluateExpression(a) - evaluateExpression(b),
         },
         {
             pattern: [type("Number"), "*", type("Number")],
+            associativityReverseSearchOrder: true,
             evaluate: ({ tokens: [a, _, b] }) =>
                 evaluateExpression(a) * evaluateExpression(b),
         },
         {
             pattern: [type("Number"), "/", type("Number")],
+            associativityReverseSearchOrder: true,
             evaluate: ({ tokens: [a, _, b] }) =>
                 evaluateExpression(a) / evaluateExpression(b),
         },
@@ -47,5 +51,4 @@ module.exports = {
         },
     ],
     endbit: [{ pattern: [OR("e", "E"), MULTI(type("digit"), 1)] }],
-    digit: [{ pattern: [ANYCHAR("0123456789")] }],
 };

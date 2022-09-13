@@ -9,8 +9,11 @@ const evaluateExpression = require("./parse/evaluateExpression");
 const cuttlefish = (node, file, ...args) => {
     // const readfile = fs.readFileSync(args[0], "utf8");
     // console.log(inspect(createIndentTree(readfile)));
-    const tree = parseExpressionAsType("Number", "8 *  4- 7/  9 - 3");
-    console.log(inspect(tree));
+    const tree = parseExpressionAsType(
+        "Number",
+        "8 * 4 / 9 * 3 - 2 - 4 + 8 * 7 / 3 / 2 - 4 + 2 * 3 - 1"
+    );
+    // console.log(inspect(tree));
     console.log(evaluateExpression(tree));
 };
 

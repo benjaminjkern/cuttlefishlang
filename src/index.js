@@ -11,7 +11,7 @@ const cuttlefish = (node, file, ...args) => {
     // console.log(inspect(createIndentTree(readfile)));
     const tree = parseExpressionAsType("Statement", readfile);
     // console.log(inspect(tree));
-    console.log(evaluateExpression(tree));
+    evaluateExpression(tree);
 };
 
 cuttlefish(...process.argv);

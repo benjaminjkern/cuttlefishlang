@@ -1,5 +1,6 @@
-const String = require("./String");
-const Number = require("./Number");
+const String = require("./string");
+const Number = require("./number");
+const Boolean = require("./boolean");
 const Statement = require("./statement");
 
 const { ANYCHAR } = require("../parse/ruleUtils");
@@ -10,6 +11,7 @@ const RULES = cleanRuleSet({
     digit: [{ pattern: [ANYCHAR("0123456789")] }],
     ...Statement,
     ...String,
+    ...Boolean,
     ...Number,
 });
 

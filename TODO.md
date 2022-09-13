@@ -1,9 +1,11 @@
 # Important
 
-1. Evaluate a full AST
+1. Add inherited rules
+    1. i.e. All objects have a rule of A -> '(' A ')'
+2. Evaluate a full AST
     1. Static initial parsing
-2. Instantiator parsing to build the full AST
-3. Good tests for all steps of the process
+3. Instantiator parsing to build the full AST
+4. Good tests for all steps of the process
 
 # Less Important
 

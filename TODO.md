@@ -1,5 +1,8 @@
 1. Instantiator parsing to build the full AST
 2. Evaluate a full AST
+    1. Static initial parsing
+3. Different types of errors
+    4. Parse errors (Rule errors, heuristic errors)
 3. Add Space ignoring rules
 4. Add check for ambiguous parse
     1. Literally just check if there is a second parse

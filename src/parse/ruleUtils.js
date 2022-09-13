@@ -51,14 +51,4 @@ const isList = (object) =>
 
 const type = (typeName) => ({ type: typeName });
 
-/**
- * Spaces:
- * - ignore (default):
- *      Assume there can be an optional space (or many) in between every token. (Not on the outsides)
- * - dont-ignore:
- *      You must specify in the pattern itself if you want spaces to be included in the pattern.
- * - require:
- *      Assume there will always be at least one space between every token. (Not on the outsides)
- */
-
 module.exports = { ANYCHAR, NOTCHAR, OR, MULTI, OPTIONAL, type };

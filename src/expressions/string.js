@@ -4,7 +4,7 @@ const RULES = {
     String: [
         {
             pattern: ['"', MULTI(NOTCHAR('"')), '"'],
-            spaces: "dont-ignore",
+            spaces: "specify",
             evaluate: ({ sourcestring }) =>
                 sourcestring.substring(0, sourcestring.length - 1),
         },

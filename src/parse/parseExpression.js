@@ -1,5 +1,5 @@
 const HEURISTICS = require("./heuristics");
-const RULES = require("../expressions");
+const { RULES, TYPES } = require("../expressions");
 
 const { isTerminal } = require("../util/parsingUtils");
 const { inspect } = require("../util");
@@ -13,7 +13,8 @@ const parseExpressionAsType = (type, expression) => {
     for (const rule of RULES[type]) {
         const parse = parseExpressionAsPattern(rule.pattern, expression);
         if (parse.error) continue;
-        return { type, children: parse };
+        if (TYPES[type]) return { type, children: parse };
+        return parse.flat();
     }
     return {
         error: `"${expression}" did not match any pattern of type: ${type}!`,
@@ -193,4 +194,4 @@ const getPossibleMatches = (pattern, expression) => {
 
 module.exports = parseExpressionAsType;
 
-console.log(inspect(parseExpressionAsType("Number", "8*9+3")));
+console.log(inspect(parseExpressionAsType("Number", "8 *     9 + 3")));

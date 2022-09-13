@@ -1,6 +1,6 @@
 const { isTerminal } = require("../util/parsingUtils");
 
-const RULES = require("../expressions");
+const { RULES } = require("../expressions");
 const {
     newTokenDict,
     addToTokenDict,

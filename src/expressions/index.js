@@ -2,8 +2,10 @@ const String = require("./String");
 const Number = require("./Number");
 
 const { OPTIONAL, MULTI, NOTCHAR, OR, type } = require("../parse/ruleUtils");
+const { inspect } = require("../util");
 
-module.exports = {
+const RULES = {
+    space: [{ pattern: [" "] }],
     ...String,
     ...Number,
     // N: [
@@ -70,3 +72,52 @@ module.exports = {
     //     },
     // ],
 };
+
+/**
+ * Spaces:
+ * - ignore (default):
+ *      Assume there can be an optional space (or many) in between every token. (Not on the outsides)
+ * - specify:
+ *      You must specify in the pattern itself if you want spaces to be included in the pattern.
+ * - require:
+ *      Assume there will always be at least one space between every token. (Not on the outsides)
+ */
+
+Object.keys(RULES).forEach((typeName) => {
+    const ruleSet = RULES[typeName];
+    ruleSet.forEach((rule) => {
+        // Force spaces and evaluate
+        const {
+            spaces = "ignore",
+            evaluate = () => {},
+            staticEvaluate = () => {},
+        } = rule;
+        switch (spaces) {
+            default:
+                console.warn(
+                    `Warning: invalid spaces configuration: ${spaces}, defaulting to default (ignore)`
+                );
+            case "require":
+            case "ignore":
+                rule.pattern = rule.pattern.flatMap((token, i) =>
+                    i === rule.pattern.length - 1
+                        ? token
+                        : [
+                              token,
+                              MULTI(
+                                  type("space"),
+                                  spaces === "require" ? 1 : 0
+                              ),
+                          ]
+                );
+            case "specify":
+                break;
+        }
+    });
+});
+
+console.log(inspect(RULES));
+
+const TYPES = { String, Number };
+
+module.exports = { RULES, TYPES };

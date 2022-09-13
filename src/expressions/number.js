@@ -1,32 +1,51 @@
-const { ANYCHAR, MULTI, OPTIONAL, type } = require("../parse/ruleUtils");
+const evaluateExpression = require("../parse/evaluateExpression");
+const { ANYCHAR, MULTI, OPTIONAL, type, OR } = require("../parse/ruleUtils");
 
 module.exports = {
     Number: [
         {
-            pattern: [type("Number"), "-", type("Number")],
-            evaluate: ({ tokens: [a, _, b] }) => a.evaluate() - b.evaluate(),
-        },
-        {
             pattern: [type("Number"), "+", type("Number")],
-            evaluate: ({ tokens: [a, _, b] }) => a.evaluate() + b.evaluate(),
+            evaluate: ({ tokens: [a, _, b] }) =>
+                evaluateExpression(a) + evaluateExpression(b),
         },
         {
-            pattern: [type("Number"), "/", type("Number")],
-            evaluate: ({ tokens: [a, _, b] }) => a.evaluate() + b.evaluate(),
+            pattern: [type("Number"), "-", type("Number")],
+            evaluate: ({ tokens: [a, _, b] }) =>
+                evaluateExpression(a) - evaluateExpression(b),
         },
         {
             pattern: [type("Number"), "*", type("Number")],
-            evaluate: ({ tokens: [a, _, b] }) => a.evaluate() + b.evaluate(),
+            evaluate: ({ tokens: [a, _, b] }) =>
+                evaluateExpression(a) * evaluateExpression(b),
+        },
+        {
+            pattern: [type("Number"), "/", type("Number")],
+            evaluate: ({ tokens: [a, _, b] }) =>
+                evaluateExpression(a) / evaluateExpression(b),
         },
         {
             pattern: [type("numlit")],
-            spaces: "specify", // This actually shouldnt matter
-            evaluate: ({ sourcestring }) => +sourcestring,
+            evaluate: ({ sourceString }) => +sourceString,
         },
     ],
     numlit: [
-        { pattern: [MULTI(type("digit"), 1)] },
-        { pattern: [MULTI(type("digit")), ".", MULTI(type("digit"), 1)] },
+        {
+            pattern: [
+                MULTI(type("digit"), 1),
+                OPTIONAL(".", OPTIONAL(type("endbit"))),
+            ],
+            spaces: "specify",
+        },
+        {
+            pattern: [
+                MULTI(type("digit")),
+                ".",
+                MULTI(type("digit"), 1),
+                OPTIONAL(type("endbit")),
+            ],
+            spaces: "specify",
+        },
     ],
+    endbit: [{ pattern: [OR("e", "E"), MULTI(type("digit"), 1)] }],
     digit: [{ pattern: [ANYCHAR("0123456789")] }],
 };

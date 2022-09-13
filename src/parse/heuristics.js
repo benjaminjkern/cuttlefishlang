@@ -30,7 +30,7 @@ let toAddHeuristics;
 
 const generateHeuristics = () => {
     if (toAddHeuristics) {
-        console.log("Tried generating Heuristics twice!");
+        console.warning("Warning: Tried generating Heuristics twice!");
         return;
     }
     toAddHeuristics = {};
@@ -647,5 +647,3 @@ const getPatternEndDict = (pattern, parentCalls, cache) => {
 
 generateHeuristics();
 module.exports = HEURISTICS;
-
-// console.log(inspect(HEURISTICS));

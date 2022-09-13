@@ -13,8 +13,12 @@ const parseExpressionAsType = (type, expression) => {
     for (const rule of RULES[type]) {
         const parse = parseExpressionAsPattern(rule.pattern, expression);
         if (parse.error) continue;
-        if (TYPES[type]) return { type, children: parse };
-        return parse.flat();
+        return {
+            type,
+            children: parse,
+            evaluate: rule.evaluate,
+            sourceString: expression,
+        };
     }
     return {
         error: `"${expression}" did not match any pattern of type: ${type}!`,
@@ -22,7 +26,6 @@ const parseExpressionAsType = (type, expression) => {
 };
 
 const parseExpressionAsMetaType = (metaTypePatternToken, expression) => {
-    // console.log(inspect(metaTypePatternToken), expression);
     switch (metaTypePatternToken.metaType) {
         case "or":
             for (const pattern of metaTypePatternToken.patterns) {
@@ -130,6 +133,7 @@ const checkMetaTypeHeuristics = (metaTypePatternToken, expression) => {
         return {};
     }
 
+    // Omitted since it's slow
     // for (const heuristic in HEURISTICS.metaTypeHeuristics) {
     //     const heuristicCheck = HEURISTICS.metaTypeHeuristics[heuristic](
     //         metaTypePatternToken,
@@ -149,8 +153,6 @@ const getPossibleMatches = (pattern, expression) => {
     if (pattern.length === 0) return expression.length === 0 ? [[]] : [];
 
     if (expression.length < patternMinLength(pattern)) return [];
-
-    // console.log(pattern, expression);
 
     const firstPatternToken = pattern[0];
     if (isTerminal(firstPatternToken)) {
@@ -192,6 +194,8 @@ const getPossibleMatches = (pattern, expression) => {
     return matches;
 };
 
-module.exports = parseExpressionAsType;
-
-console.log(inspect(parseExpressionAsType("Number", "8 *     9 + 3")));
+module.exports = (...args) => {
+    const parse = parseExpressionAsType(...args);
+    if (parse.error) throw parse.error;
+    return parse;
+};

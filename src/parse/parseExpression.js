@@ -1,21 +1,63 @@
 const HEURISTICS = require("./heuristics");
-const RULES = require("../expressions");
+const { RULES, TYPES } = require("../expressions");
 
 const { isTerminal } = require("../util/parsingUtils");
 const { inspect } = require("../util");
+const { isValidToken } = require("./tokenDict");
 
 const parseExpressionAsType = (type, expression) => {
+    if (!RULES[type]) return { error: `Invalid type: ${type}` };
     const typeHeuristics = checkTypeHeuristics(type, expression);
     if (typeHeuristics.error) return typeHeuristics;
 
     for (const rule of RULES[type]) {
         const parse = parseExpressionAsPattern(rule.pattern, expression);
         if (parse.error) continue;
-        return { type, children: parse };
+        if (TYPES[type]) return { type, children: parse };
+        return parse.flat();
     }
     return {
         error: `"${expression}" did not match any pattern of type: ${type}!`,
     };
+};
+
+const parseExpressionAsMetaType = (metaTypePatternToken, expression) => {
+    // console.log(inspect(metaTypePatternToken), expression);
+    switch (metaTypePatternToken.metaType) {
+        case "or":
+            for (const pattern of metaTypePatternToken.patterns) {
+                const parse = parseExpressionAsPattern(pattern, expression);
+                if (parse.error) continue;
+                return parse;
+            }
+            return {
+                error: `"${expression}" did not match any pattern in list: ${metaTypePatternToken.patterns}!`,
+            };
+        case "multi":
+            if (metaTypePatternToken.min <= 0 && expression === "") return [];
+            if (metaTypePatternToken.max <= 0 && expression !== "")
+                return { error: "Maximum length reached" };
+            const parse = parseExpressionAsPattern(
+                [
+                    ...metaTypePatternToken.pattern,
+                    {
+                        ...metaTypePatternToken,
+                        min: Math.max(metaTypePatternToken.min - 1, 0),
+                        max: Math.max(metaTypePatternToken.max - 1, 0),
+                    },
+                ],
+                expression
+            );
+            if (parse.error) return parse;
+            return parse.flat();
+        case "anychar":
+            if (!isValidToken(metaTypePatternToken.tokenDict, expression))
+                return {
+                    error: `There do not exist any possible matches of "${expression}" on pattern ${metaTypePatternToken}!`,
+                };
+            return expression;
+    }
+    return { error: `Invalid metaType: ${metaTypePatternToken.metaType}` };
 };
 
 const parseExpressionAsPattern = (pattern, expression) => {
@@ -37,6 +79,15 @@ const parseExpressionAsPattern = (pattern, expression) => {
             if (isTerminal(patternToken)) {
                 if (patternToken !== subExpression) continue nextBreakPoint;
                 match.push(patternToken);
+                continue;
+            }
+            if (patternToken.metaType) {
+                const parse = parseExpressionAsMetaType(
+                    patternToken,
+                    subExpression
+                );
+                if (parse.error) continue nextBreakPoint;
+                match.push(parse);
                 continue;
             }
 
@@ -67,15 +118,30 @@ const checkTypeHeuristics = (type, expression) => {
     return {};
 };
 
+const checkMetaTypeHeuristics = (metaTypePatternToken, expression) => {
+    if (metaTypePatternToken.metaType === "anychar") {
+        if (
+            expression.length !== 1 ||
+            !isValidToken(metaTypePatternToken.tokenDict, expression)
+        )
+            return {
+                error: `There do not exist any possible matches of "${expression}" on pattern ${metaTypePatternToken}!`,
+            };
+        return {};
+    }
+
+    // for (const heuristic in HEURISTICS.metaTypeHeuristics) {
+    //     const heuristicCheck = HEURISTICS.metaTypeHeuristics[heuristic](
+    //         metaTypePatternToken,
+    //         expression
+    //     );
+    //     if (heuristicCheck.error) return heuristicCheck;
+    // }
+    return {};
+};
+
 const patternMinLength = (pattern) => {
-    return pattern.reduce(
-        (p, token) =>
-            p +
-            (isTerminal(token)
-                ? token.length
-                : HEURISTICS.types[token.type].minLength),
-        0
-    );
+    return HEURISTICS.patternHeuristics.minLength(pattern);
 };
 
 const getPossibleMatches = (pattern, expression) => {
@@ -83,6 +149,8 @@ const getPossibleMatches = (pattern, expression) => {
     if (pattern.length === 0) return expression.length === 0 ? [[]] : [];
 
     if (expression.length < patternMinLength(pattern)) return [];
+
+    // console.log(pattern, expression);
 
     const firstPatternToken = pattern[0];
     if (isTerminal(firstPatternToken)) {
@@ -101,11 +169,19 @@ const getPossibleMatches = (pattern, expression) => {
 
     const matches = [];
     for (let i = 0; i <= expression.length; i++) {
-        const typeHeuristics = checkTypeHeuristics(
-            firstPatternToken.type,
-            expression.slice(0, i)
-        );
-        if (typeHeuristics.error) continue;
+        if (firstPatternToken.type) {
+            const typeHeuristics = checkTypeHeuristics(
+                firstPatternToken.type,
+                expression.slice(0, i)
+            );
+            if (typeHeuristics.error) continue;
+        } else {
+            const typeHeuristics = checkMetaTypeHeuristics(
+                firstPatternToken,
+                expression.slice(0, i)
+            );
+            if (typeHeuristics.error) continue;
+        }
 
         matches.push(
             ...getPossibleMatches(pattern.slice(1), expression.slice(i)).map(
@@ -118,8 +194,4 @@ const getPossibleMatches = (pattern, expression) => {
 
 module.exports = parseExpressionAsType;
 
-console.log(
-    inspect(
-        parseExpressionAsType("N", "-----------------n----------------------n")
-    )
-);
+console.log(inspect(parseExpressionAsType("Number", "8 *     9 + 3")));

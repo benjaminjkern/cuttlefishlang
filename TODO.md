@@ -1,9 +1,9 @@
 # Important
 
-2. Evaluate a full AST
+1. Evaluate a full AST
     1. Static initial parsing
-3. Instantiator parsing to build the full AST
-4. Good tests for all steps of the process
+2. Instantiator parsing to build the full AST
+3. Good tests for all steps of the process
 
 # Less Important
 

@@ -7,12 +7,9 @@ const evaluateExpression = require("./parse/evaluateExpression");
 
 // Cuttlefish command (Deal with arguments);
 const cuttlefish = (node, file, ...args) => {
-    // const readfile = fs.readFileSync(args[0], "utf8");
+    const readfile = fs.readFileSync(args[0], "utf8");
     // console.log(inspect(createIndentTree(readfile)));
-    const tree = parseExpressionAsType(
-        "Number",
-        "8 * 4 / 9 * 3 - 2 - 4 + 8 * 7 / 3 / 2 - 4 + 2 * 3 - 1"
-    );
+    const tree = parseExpressionAsType("Statement", readfile);
     // console.log(inspect(tree));
     console.log(evaluateExpression(tree));
 };

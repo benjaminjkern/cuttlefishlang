@@ -5,12 +5,10 @@ const Statement = require("./statement");
 const Instantiator = require("./instantiator");
 const Object = require("./object");
 
-const { RULES } = require("../parse/ruleUtils");
-
 const { ANYCHAR } = require("../parse/ruleUtils");
 const cleanRuleSet = require("../parse/cleanRuleSet");
 
-cleanRuleSet({
+const RULES = cleanRuleSet({
     space: [{ pattern: [" "] }],
     digit: [{ pattern: [ANYCHAR("0123456789")] }],
     ...Instantiator,
@@ -21,6 +19,10 @@ cleanRuleSet({
     ...Number,
 });
 
+const newRule = (typeName, rule) => {
+    RULES[typeName].push(rule);
+};
+
 const TYPES = { String, Number };
 
-module.exports = { RULES, TYPES };
+module.exports = { RULES, TYPES, newRule };

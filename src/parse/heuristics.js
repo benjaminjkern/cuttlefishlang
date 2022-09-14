@@ -1,6 +1,5 @@
 const { isTerminal } = require("../util/parsingUtils");
 
-const { RULES } = require("./ruleUtils");
 const {
     newTokenDict,
     addToTokenDict,
@@ -9,32 +8,30 @@ const {
 } = require("./tokenDict");
 const { inspect } = require("../util");
 
-const HEURISTICS = {
-    types: {
-        // [type]: {
-        //     [heuristic]: value,
-        // },
-    },
-    typeHeuristics: {
-        // [heuristic]: (type, expression) => boolean,
-    },
-    metaTypeHeuristics: {
-        // [heuristic]: (metaType, expression) => boolean,
-    },
-    patternHeuristics: {
-        // [heuristic]: (pattern) => value,
-    },
-};
-
 // This is so it can be accessed later by the start and end dict function
 let toAddHeuristics;
+let RULES;
 
-const generateHeuristics = () => {
-    if (toAddHeuristics) {
-        console.warning("Warning: Tried generating Heuristics twice!");
-        return;
-    }
+const generateHeuristics = (rules) => {
+    RULES = { ...rules };
     toAddHeuristics = {};
+
+    const HEURISTICS = {
+        types: {
+            // [type]: {
+            //     [heuristic]: value,
+            // },
+        },
+        typeHeuristics: {
+            // [heuristic]: (type, expression) => boolean,
+        },
+        metaTypeHeuristics: {
+            // [heuristic]: (metaType, expression) => boolean,
+        },
+        patternHeuristics: {
+            // [heuristic]: (pattern) => value,
+        },
+    };
 
     toAddHeuristics.minLength = getMinLengths();
     HEURISTICS.typeHeuristics.minLength = (type, expression) =>
@@ -237,6 +234,7 @@ const generateHeuristics = () => {
                 toAddHeuristics[heuristic][type];
         }
     }
+    return HEURISTICS;
 };
 
 /*************************
@@ -646,5 +644,4 @@ const getPatternEndDict = (pattern, parentCalls, cache) => {
  * Final stuff
  *************************/
 
-generateHeuristics();
-module.exports = { generateHeuristics, HEURISTICS };
+module.exports = { generateHeuristics };

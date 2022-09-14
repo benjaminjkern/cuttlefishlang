@@ -1,5 +1,5 @@
 const { CuttlefishError } = require("../util");
-const parseExpression = require("./parseExpression");
+const { parseExpressionAsType } = require("./parseExpression");
 
 const parseIndentTree = ({
     instantiatorStatement,
@@ -10,7 +10,7 @@ const parseIndentTree = ({
     if (statements) {
         const parsedTree = {};
         if (instantiatorStatement) {
-            parsedTree.instantiator = parseExpression(
+            parsedTree.instantiator = parseExpressionAsType(
                 "Instantiator",
                 instantiatorStatement.line
             );
@@ -23,7 +23,7 @@ const parseIndentTree = ({
         parsedTree.children = statements.map(parseIndentTree);
         return parsedTree;
     }
-    const parse = parseExpression("Statement", line);
+    const parse = parseExpressionAsType("Statement", line);
     if (parse.error) throw CuttlefishError(lineNumber, parse.error);
     return parse;
 };

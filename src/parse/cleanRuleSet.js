@@ -1,4 +1,4 @@
-const { MULTI, type, RULES } = require("../parse/ruleUtils");
+const { MULTI, type } = require("../parse/ruleUtils");
 const { evaluateExpression } = require("./evaluate");
 
 /**
@@ -64,8 +64,8 @@ const cleanRuleSet = (rules) => {
                     break;
             }
         });
-        RULES[typeName] = ruleSet;
     });
+    return rules;
 };
 
 module.exports = cleanRuleSet;

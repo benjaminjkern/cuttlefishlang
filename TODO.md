@@ -15,6 +15,7 @@
 2. Figure out a nice way to dynamically scope sub-rules used for types (numlit, endbit)
 3. Switch to es modules instead of commonjs
 4. Add a function to clean a parse tree and turn it into an AST
+5. Make all contexts (Rules, heuristics) work in a modular fashion
 
 # Not Super important
 

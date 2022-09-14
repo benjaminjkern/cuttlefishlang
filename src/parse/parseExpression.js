@@ -1,12 +1,19 @@
-require("../expressions");
-const { RULES } = require("./ruleUtils");
-const { HEURISTICS } = require("./heuristics");
-
-console.log(RULES, HEURISTICS);
-
 const { isTerminal } = require("../util/parsingUtils");
 const { inspect } = require("../util");
 const { isValidToken } = require("./tokenDict");
+const { generateHeuristics } = require("./heuristics");
+
+let HEURISTICS, RULES;
+
+const newRule = (typeName, pattern) => {
+    RULES[typeName].push(pattern);
+    setContext(RULES);
+};
+
+const setContext = (rules) => {
+    RULES = { ...rules };
+    HEURISTICS = generateHeuristics(rules);
+};
 
 const parseExpressionAsType = (type, expression) => {
     if (!RULES[type]) return { error: `Invalid type: ${type}` };
@@ -201,4 +208,4 @@ const getPossibleMatches = (pattern, expression) => {
     return matches;
 };
 
-module.exports = parseExpressionAsType;
+module.exports = { parseExpressionAsType, setContext, newRule };

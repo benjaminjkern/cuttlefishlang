@@ -1,6 +1,6 @@
 const { evaluateExpression } = require("../parse/evaluate");
-const { type, OR, MULTI, ANYCHAR, RULES } = require("../parse/ruleUtils");
-const { generateHeuristics } = require("../parse/heuristics");
+const { newRule } = require("../parse/parseExpression");
+const { type, OR, MULTI, ANYCHAR } = require("../parse/ruleUtils");
 
 module.exports = {
     Statement: [
@@ -17,10 +17,10 @@ module.exports = {
         {
             pattern: [type("varName"), "=", type("Object")],
             onParse: ({ tokens: [id, _, obj] }) => {
-                RULES[obj.tokens[0][0].type].push({
+                newRule(obj.tokens[0][0].type, {
                     pattern: [id.sourceString],
+                    evaluate: () => evaluateExpression(obj),
                 });
-                generateHeuristics();
             },
             evaluate: ({ tokens: [id, _, obj] }) => {
                 // addToContext(id, evaluateExpression(obj));

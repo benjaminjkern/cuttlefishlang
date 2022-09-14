@@ -1,5 +1,5 @@
-const evaluateExpression = require("../parse/evaluateExpression");
-const { ANYCHAR, MULTI, OPTIONAL, type, OR } = require("../parse/ruleUtils");
+const { evaluateExpression } = require("../parse/evaluate");
+const { MULTI, OPTIONAL, type, OR } = require("../parse/ruleUtils");
 
 module.exports = {
     Number: [

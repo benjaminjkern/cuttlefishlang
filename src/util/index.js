@@ -1,7 +1,7 @@
 const inspect = (obj) => require("util").inspect(obj, false, null, true);
 
-const CuttlefishError = (string) => {
-    console.error(string);
+const CuttlefishError = (lineNumber, string) => {
+    console.error(`${lineNumber}: ${string}`);
     process.exit(-1);
 };
 

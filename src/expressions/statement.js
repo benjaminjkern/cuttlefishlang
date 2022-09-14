@@ -1,11 +1,11 @@
-const evaluateExpression = require("../parse/evaluateExpression");
+const { evaluateExpression } = require("../parse/evaluate");
 const { type, OR } = require("../parse/ruleUtils");
 
 module.exports = {
     Statement: [
         {
             pattern: [
-                "print ",
+                "print",
                 OR(type("String"), type("Number"), type("Boolean")),
             ],
             evaluate: ({ tokens: [_, string] }) => {

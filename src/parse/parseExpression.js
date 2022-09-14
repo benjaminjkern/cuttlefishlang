@@ -15,7 +15,7 @@ const parseExpressionAsType = (type, expression) => {
         if (parse.error) continue;
         return {
             type,
-            children: parse,
+            tokens: parse,
             evaluate: rule.evaluate,
             sourceString: expression,
         };
@@ -196,8 +196,4 @@ const getPossibleMatches = (pattern, expression) => {
     return matches;
 };
 
-module.exports = (...args) => {
-    const parse = parseExpressionAsType(...args);
-    if (parse.error) throw parse.error;
-    return parse;
-};
+module.exports = parseExpressionAsType;

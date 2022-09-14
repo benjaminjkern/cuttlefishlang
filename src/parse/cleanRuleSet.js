@@ -1,5 +1,5 @@
 const { MULTI, type } = require("../parse/ruleUtils");
-const evaluateExpression = require("./evaluateExpression");
+const { evaluateExpression } = require("./evaluate");
 
 /**
  * Spaces:

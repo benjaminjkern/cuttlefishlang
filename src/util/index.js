@@ -14,4 +14,14 @@ const scrambleList = (list) => {
     return newList;
 };
 
-module.exports = { inspect, CuttlefishError };
+const deepCopy = (object) => {
+    if (typeof object !== "object") return object;
+    if (object.length !== undefined) return object.map(deepCopy);
+    const newObject = {};
+    for (const key in object) {
+        newObject[key] = deepCopy(object[key]);
+    }
+    return newObject;
+};
+
+module.exports = { inspect, CuttlefishError, deepCopy };

@@ -1,5 +1,5 @@
 const { evaluateExpression } = require("../parse/evaluate");
-const { newRule } = require("../parse/parseExpression");
+const { newVariable } = require("../parse/parseExpression");
 const { type, OR, MULTI, ANYCHAR } = require("../parse/ruleUtils");
 
 module.exports = {
@@ -17,10 +17,9 @@ module.exports = {
         {
             pattern: [type("varName"), "=", type("Object")],
             onParse: ({ tokens: [id, _, obj] }) => {
-                newRule(obj.tokens[0][0].type, {
-                    pattern: [id.sourceString],
-                    evaluate: () => evaluateExpression(obj),
-                });
+                newVariable(obj.tokens[0][0].type, id.sourceString, () =>
+                    evaluateExpression(obj)
+                );
             },
             evaluate: ({ tokens: [id, _, obj] }) => {
                 // addToContext(id, evaluateExpression(obj));

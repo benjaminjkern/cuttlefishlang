@@ -8,6 +8,11 @@
 6. Add the rest of the rules
     1. Add inherited rules
         1. i.e. All objects have a rule of A -> '(' A ')'
+7. Better errors
+```
+print y
+# 1: 'y' is not in the set of end tokens for type: Statement!
+```
 
 # Less Important
 

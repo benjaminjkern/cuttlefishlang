@@ -1,17 +1,28 @@
 const { isTerminal } = require("../util/parsingUtils");
-const { inspect } = require("../util");
+const { inspect, deepCopy } = require("../util");
 const { isValidToken } = require("./tokenDict");
 const { generateHeuristics } = require("./heuristics");
 
-let HEURISTICS, RULES;
+let HEURISTICS, BASE_RULES, RULES, VARS;
 
-const newRule = (typeName, pattern) => {
-    RULES[typeName].push(pattern);
-    setContext(RULES);
+const newVariable = (typeName, varName, evaluate) => {
+    RULES = deepCopy(BASE_RULES);
+    VARS[varName] = { typeName, evaluate };
+    setVars();
+    HEURISTICS = generateHeuristics(RULES);
+};
+
+const setVars = () => {
+    for (const varName in VARS) {
+        const { typeName, evaluate } = VARS[varName];
+        RULES[typeName].push({ pattern: [varName], evaluate });
+    }
 };
 
 const setContext = (rules) => {
+    BASE_RULES = rules;
     RULES = { ...rules };
+    VARS = {};
     HEURISTICS = generateHeuristics(rules);
 };
 
@@ -208,4 +219,4 @@ const getPossibleMatches = (pattern, expression) => {
     return matches;
 };
 
-module.exports = { parseExpressionAsType, setContext, newRule };
+module.exports = { parseExpressionAsType, setContext, newVariable };

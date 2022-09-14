@@ -1,6 +1,5 @@
 const { NOTCHAR, MULTI } = require("../parse/ruleUtils");
-
-const RULES = {
+module.exports = {
     String: [
         {
             pattern: ['"', MULTI(NOTCHAR('"')), '"'],
@@ -10,5 +9,3 @@ const RULES = {
         },
     ],
 };
-
-module.exports = RULES;

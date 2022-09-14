@@ -1,17 +1,20 @@
 # Important
 
-1. Add inherited rules
-    1. i.e. All objects have a rule of A -> '(' A ')'
-2. Evaluate a full AST
+2. Variables
+3. Functions
+4. Evaluate a full AST
     1. Static initial parsing
-3. Instantiator parsing to build the full AST
-4. Good tests for all steps of the process
+5. Good tests for all steps of the process
+6. Add the rest of the rules
+    1. Add inherited rules
+        1. i.e. All objects have a rule of A -> '(' A ')'
 
 # Less Important
 
-1. Figure out a nice way to dynamically scope sub-rules used for types (numlit, endbit)
-2. Switch to es modules instead of commonjs
-3. Add a function to clean a parse tree and turn it into an AST
+1. Instantiators fitting on one line
+2. Figure out a nice way to dynamically scope sub-rules used for types (numlit, endbit)
+3. Switch to es modules instead of commonjs
+4. Add a function to clean a parse tree and turn it into an AST
 
 # Not Super important
 

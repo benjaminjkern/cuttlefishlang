@@ -19,5 +19,15 @@ module.exports = {
                     evaluateStatementList(children);
             },
         },
+        {
+            pattern: ["repeat", type("Number"), ":"],
+            evaluate: ({ tokens: [_, test], children }) => {
+                let i = 0;
+                while (i < evaluateExpression(test)) {
+                    evaluateStatementList(children);
+                    i++;
+                }
+            },
+        },
     ],
 };

@@ -1,4 +1,4 @@
-const RULES = {
+module.exports = {
     A: [
         { pattern: ["0", { type: "A" }, "1"] },
         { pattern: ["123", { type: "B" }, { type: "B" }] },
@@ -33,5 +33,3 @@ const RULES = {
         },
     ],
 };
-
-module.exports = RULES;

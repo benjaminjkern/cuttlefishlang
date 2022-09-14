@@ -1,4 +1,4 @@
-const { MULTI, type } = require("../parse/ruleUtils");
+const { MULTI, type, RULES } = require("../parse/ruleUtils");
 const { evaluateExpression } = require("./evaluate");
 
 /**
@@ -25,6 +25,7 @@ const cleanRuleSet = (rules) => {
                         );
                     return evaluateExpression(tokens[0]);
                 },
+                onParse,
             } = rule;
             rule.evaluate = evaluate;
             switch (spaces) {
@@ -45,6 +46,14 @@ const cleanRuleSet = (rules) => {
                                   ),
                               ]
                     );
+                    if (onParse) {
+                        rule.onParse = ({ tokens, ...args }) => {
+                            return onParse({
+                                tokens: tokens.filter((_, i) => i % 2 === 0),
+                                ...args,
+                            });
+                        };
+                    }
                     rule.evaluate = ({ tokens, ...args }) => {
                         return evaluate({
                             tokens: tokens.filter((_, i) => i % 2 === 0),
@@ -55,8 +64,8 @@ const cleanRuleSet = (rules) => {
                     break;
             }
         });
+        RULES[typeName] = ruleSet;
     });
-    return rules;
 };
 
 module.exports = cleanRuleSet;

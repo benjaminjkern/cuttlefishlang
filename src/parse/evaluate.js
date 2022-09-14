@@ -1,3 +1,5 @@
+const CONTEXT = {};
+
 const evaluateIndentTree = (parsedNode) => {
     const { instantiator, children } = parsedNode;
     if (children) {

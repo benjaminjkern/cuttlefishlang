@@ -1,5 +1,8 @@
-const HEURISTICS = require("./heuristics");
-const { RULES, TYPES } = require("../expressions");
+require("../expressions");
+const { RULES } = require("./ruleUtils");
+const { HEURISTICS } = require("./heuristics");
+
+console.log(RULES, HEURISTICS);
 
 const { isTerminal } = require("../util/parsingUtils");
 const { inspect } = require("../util");
@@ -13,12 +16,14 @@ const parseExpressionAsType = (type, expression) => {
     for (const rule of RULES[type]) {
         const parse = parseExpressionAsPattern(rule.pattern, expression, rule);
         if (parse.error) continue;
-        return {
+        const obj = {
             type,
             tokens: parse,
             evaluate: rule.evaluate,
             sourceString: expression,
         };
+        if (rule.onParse) rule.onParse(obj);
+        return obj;
     }
     return {
         error: `"${expression}" did not match any pattern of type: ${type}!`,

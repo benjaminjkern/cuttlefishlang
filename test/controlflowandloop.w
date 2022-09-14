@@ -4,5 +4,5 @@ if true:
 while false and true:
     print "No Loop!"
 
-while false xor true:
+repeat 8:
     print "Loop!"

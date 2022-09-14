@@ -1,12 +1,13 @@
 const { isTerminal } = require("../util/parsingUtils");
 
-const { RULES } = require("../expressions");
+const { RULES } = require("./ruleUtils");
 const {
     newTokenDict,
     addToTokenDict,
     addTokenDicts,
     isValidToken,
 } = require("./tokenDict");
+const { inspect } = require("../util");
 
 const HEURISTICS = {
     types: {
@@ -38,7 +39,7 @@ const generateHeuristics = () => {
     toAddHeuristics.minLength = getMinLengths();
     HEURISTICS.typeHeuristics.minLength = (type, expression) =>
         expression.length < HEURISTICS.types[type].minLength && {
-            error: `"${expression}" is shorter than the minimum possible length (${HEURISTICS.types[type].minLength}) for type: ${type}!"`,
+            error: `"${expression}" is shorter than the minimum possible length (${HEURISTICS.types[type].minLength}) for type: ${type}!`,
         };
     HEURISTICS.metaTypeHeuristics.minLength = (metaTypeToken, expression) => {
         let minLength;
@@ -76,7 +77,7 @@ const generateHeuristics = () => {
     toAddHeuristics.maxLength = getMaxLengths();
     HEURISTICS.typeHeuristics.maxLength = (type, expression) =>
         expression.length > HEURISTICS.types[type].maxLength && {
-            error: `"${expression}" is longer than the maximum possible length (${HEURISTICS.types[type].maxLength}) for type: ${type}!"`,
+            error: `"${expression}" is longer than the maximum possible length (${HEURISTICS.types[type].maxLength}) for type: ${type}!`,
         };
     HEURISTICS.metaTypeHeuristics.maxLength = (metaTypeToken, expression) => {
         let maxLength;
@@ -104,7 +105,7 @@ const generateHeuristics = () => {
         }
         if (expression.length > maxLength)
             return {
-                error: `"${expression}" is longer than the maximum possible length (${minLength}) for meta-type: ${metaTypeToken}!"`,
+                error: `"${expression}" is longer than the maximum possible length (${minLength}) for meta-type: ${metaTypeToken}!`,
             };
         return true;
     };
@@ -114,7 +115,7 @@ const generateHeuristics = () => {
         for (const token of expression) {
             if (!isValidToken(HEURISTICS.types[type].dict, token))
                 return {
-                    error: `'${token}' is not in the set of allowed tokens for type: ${type}!"`,
+                    error: `'${token}' is not in the set of allowed tokens for type: ${type}!`,
                 };
         }
         return true;
@@ -145,7 +146,7 @@ const generateHeuristics = () => {
         for (const token of expression) {
             if (!isValidToken(dict, token))
                 return {
-                    error: `'${token}' is not in the set of allowed tokens for meta-type: ${metaTypeToken}!"`,
+                    error: `'${token}' is not in the set of allowed tokens for meta-type: ${metaTypeToken}!`,
                 };
         }
         return true;
@@ -154,7 +155,7 @@ const generateHeuristics = () => {
     toAddHeuristics.startDict = getStartDicts();
     HEURISTICS.typeHeuristics.startDict = (type, expression) =>
         !isValidToken(HEURISTICS.types[type].startDict, expression[0]) && {
-            error: `'${expression[0]}' is not in the set of start tokens for type: ${type}!"`,
+            error: `'${expression[0]}' is not in the set of start tokens for type: ${type}!`,
         };
     HEURISTICS.metaTypeHeuristics.startDict = (metaTypeToken, expression) => {
         if (!expression.length) return true;
@@ -181,7 +182,7 @@ const generateHeuristics = () => {
         }
         return (
             !isValidToken(startDict, expression[0]) && {
-                error: `'${expression[0]}' is not in the set of start tokens for meta-type: ${metaTypeToken}!"`,
+                error: `'${expression[0]}' is not in the set of start tokens for meta-type: ${metaTypeToken}!`,
             }
         );
     };
@@ -194,7 +195,7 @@ const generateHeuristics = () => {
         ) && {
             error: `'${
                 expression[expression.length - 1]
-            }' is not in the set of end tokens for type: ${type}!"`,
+            }' is not in the set of end tokens for type: ${type}!`,
         };
     HEURISTICS.metaTypeHeuristics.endDict = (metaTypeToken, expression) => {
         if (!expression.length) return true;
@@ -646,4 +647,4 @@ const getPatternEndDict = (pattern, parentCalls, cache) => {
  *************************/
 
 generateHeuristics();
-module.exports = HEURISTICS;
+module.exports = { generateHeuristics, HEURISTICS };

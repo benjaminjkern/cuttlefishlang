@@ -1,4 +1,5 @@
 const { makeSet } = require("../util/sets");
+const RULES = {};
 
 const ANYCHAR = (whitelist = "") => {
     if (typeof whitelist !== "string" || !whitelist.length)
@@ -51,4 +52,12 @@ const isList = (object) =>
 
 const type = (typeName) => ({ type: typeName });
 
-module.exports = { ANYCHAR, NOTCHAR, OR, MULTI, OPTIONAL, type };
+module.exports = {
+    RULES,
+    ANYCHAR,
+    NOTCHAR,
+    OR,
+    MULTI,
+    OPTIONAL,
+    type,
+};

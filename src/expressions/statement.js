@@ -22,7 +22,9 @@ module.exports = {
                 );
             },
             evaluate: ({ tokens: [id, _, obj] }) => {
-                // addToContext(id, evaluateExpression(obj));
+                // newVariable(obj.tokens[0][0].type, id.sourceString, () =>
+                //     evaluateExpression(obj)
+                // );
             },
         },
     ],

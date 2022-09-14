@@ -7,5 +7,11 @@ module.exports = {
             evaluate: ({ sourceString }) =>
                 sourceString.substring(1, sourceString.length - 1),
         },
+        {
+            pattern: ["'", MULTI(NOTCHAR('"')), "'"],
+            spaces: "specify",
+            evaluate: ({ sourceString }) =>
+                sourceString.substring(1, sourceString.length - 1),
+        },
     ],
 };

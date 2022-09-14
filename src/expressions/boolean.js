@@ -22,6 +22,26 @@ module.exports = {
             pattern: ["not", type("Boolean")],
             evaluate: ({ tokens: [_, a] }) => !evaluateExpression(a),
         },
+        {
+            pattern: [type("Number"), "<", type("Number")],
+            evaluate: ({ tokens: [a, _, b] }) =>
+                evaluateExpression(a) < evaluateExpression(b),
+        },
+        {
+            pattern: [type("Number"), "<=", type("Number")],
+            evaluate: ({ tokens: [a, _, b] }) =>
+                evaluateExpression(a) <= evaluateExpression(b),
+        },
+        {
+            pattern: [type("Number"), ">", type("Number")],
+            evaluate: ({ tokens: [a, _, b] }) =>
+                evaluateExpression(a) > evaluateExpression(b),
+        },
+        {
+            pattern: [type("Number"), ">=", type("Number")],
+            evaluate: ({ tokens: [a, _, b] }) =>
+                evaluateExpression(a) >= evaluateExpression(b),
+        },
         { pattern: [type("boollit")] },
     ],
     boollit: [

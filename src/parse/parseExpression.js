@@ -5,17 +5,23 @@ const { generateHeuristics } = require("./heuristics");
 
 let HEURISTICS, BASE_RULES, RULES, VARS;
 
-const newVariable = (typeName, varName, evaluate) => {
+const setVariable = (varName, value) => {
+    VARS[varName].value = value;
+};
+
+const newVariable = (typeName, varName) => {
     RULES = deepCopy(BASE_RULES);
-    VARS[varName] = { typeName, evaluate };
+    VARS[varName] = { typeName };
     setVars();
     HEURISTICS = generateHeuristics(RULES);
 };
 
 const setVars = () => {
     for (const varName in VARS) {
-        const { typeName, evaluate } = VARS[varName];
-        RULES[typeName].push({ pattern: [varName], evaluate });
+        RULES[VARS[varName].typeName].push({
+            pattern: [varName],
+            evaluate: () => VARS[varName].value,
+        });
     }
 };
 
@@ -219,4 +225,9 @@ const getPossibleMatches = (pattern, expression) => {
     return matches;
 };
 
-module.exports = { parseExpressionAsType, setContext, newVariable };
+module.exports = {
+    parseExpressionAsType,
+    setContext,
+    newVariable,
+    setVariable,
+};

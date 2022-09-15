@@ -1,14 +1,21 @@
 # Important
 
-2. Variables
-3. Functions
-4. Evaluate a full AST
-    1. Static initial parsing
+1. Functions
+2. Static initial parsing & Optimizations
 5. Good tests for all steps of the process
 6. Add the rest of the rules
     1. Add inherited rules
         1. i.e. All objects have a rule of A -> '(' A ')'
-7. Better errors
+7. Random numbers
+8. Object ownership `parent.child`
+9. Selection `parent[child]`
+10. Lists
+11. Control structure
+    1. `break`
+    2. `continue`
+    3. `throw`
+    4. `assert`
+12. Better errors, example of bad one right now:
 ```
 print y
 # 1: 'y' is not in the set of end tokens for type: Statement!

@@ -1,5 +1,9 @@
 const { evaluateExpression } = require("../parse/evaluate");
-const { newVariable, setVariable } = require("../parse/parseExpression");
+const {
+    newVariable,
+    setVariable,
+    setContext,
+} = require("../parse/parseExpression");
 const { type, OR, MULTI, ANYCHAR } = require("../parse/ruleUtils");
 
 module.exports = {

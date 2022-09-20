@@ -9,7 +9,7 @@ const setVariable = (varName, value) => {
     VARS[varName].value = value;
 };
 
-const newVariable = (typeName, varName) => {
+const newParseVariable = (typeName, varName) => {
     RULES = deepCopy(BASE_RULES);
     VARS[varName] = { typeName };
     setVars();
@@ -81,7 +81,7 @@ const parseExpressionAsMetaType = (metaTypePatternToken, expression) => {
                 expression
             );
             if (parse.error) return parse;
-            return parse.flat();
+            return compactifyMulti(metaTypePatternToken.pattern, parse);
         case "anychar":
             if (!isValidToken(metaTypePatternToken.tokenDict, expression))
                 return {
@@ -225,9 +225,19 @@ const getPossibleMatches = (pattern, expression) => {
     return matches;
 };
 
+const compactifyMulti = (pattern, parse) => {
+    if (parse.length === 0) return [];
+    if (parse.length === pattern.length) return parse.map((token) => token);
+    const theseTokens = parse.slice(0, parse.length - 1);
+    const nextTokens = compactifyMulti(pattern, parse[parse.length - 1]);
+    if (nextTokens.length === 0) return theseTokens.map((token) => [token]);
+
+    return pattern.map((token, i) => [theseTokens[i], ...nextTokens[i]]);
+};
+
 module.exports = {
     parseExpressionAsType,
     setContext,
-    newVariable,
+    newParseVariable,
     setVariable,
 };

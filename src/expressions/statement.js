@@ -1,6 +1,6 @@
 const { evaluateExpression } = require("../parse/evaluate");
 const {
-    newVariable,
+    newParseVariable,
     setVariable,
     setContext,
 } = require("../parse/parseExpression");
@@ -19,9 +19,16 @@ module.exports = {
             },
         },
         {
+            pattern: ["print", type("Iterable")],
+            evaluate: ({ tokens: [_, string] }) => {
+                const stringValue = evaluateExpression(string);
+                console.log(stringValue);
+            },
+        },
+        {
             pattern: [type("varName"), "=", type("Object")],
             onParse: ({ tokens: [id, _, obj] }) => {
-                newVariable(obj.tokens[0][0].type, id.sourceString);
+                newParseVariable(obj.tokens[0][0].type, id.sourceString);
             },
             evaluate: ({ tokens: [id, _, obj] }) => {
                 setVariable(id.sourceString, evaluateExpression(obj));

@@ -18,6 +18,11 @@ const NOTCHAR = (blacklist = "") => {
     };
 };
 
+// const LISTOF = (token, separator, canBeEmpty = true) => {
+//     const listOf = [MULTI([token, separator], 1), OPTIONAL(separator)];
+//     return canBeEmpty ? [OPTIONAL(listOf)] : listOf;
+// };
+
 // const NEGATIVELOOKAHEAD = (...pattern) => {
 //     return { metaType: "negativeLookahead", pattern };
 // };

@@ -29,5 +29,13 @@ module.exports = {
                 }
             },
         },
+        {
+            pattern: ["for", type("Iterable")],
+        },
+    ],
+    PatternMatcher: [
+        {
+            pattern: [type("varName"), "->"],
+        },
     ],
 };

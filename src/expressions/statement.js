@@ -3,8 +3,10 @@ const {
     newParseVariable,
     setVariable,
     setContext,
+    getContext,
 } = require("../parse/parseExpression");
 const { type, OR, MULTI, ANYCHAR } = require("../parse/ruleUtils");
+const { CuttlefishError } = require("../util");
 
 module.exports = {
     Statement: [
@@ -32,6 +34,20 @@ module.exports = {
             },
             evaluate: ({ tokens: [id, _, obj] }) => {
                 setVariable(id.sourceString, evaluateExpression(obj));
+            },
+        },
+        {
+            pattern: ["break"],
+            onParse: ({ lineNumber }) => {
+                const inLoop = getContext("inLoop");
+                if (!inLoop || !inLoop.length)
+                    throw CuttlefishError(
+                        lineNumber,
+                        `Cannot use break outside of loop!`
+                    );
+            },
+            evaluate: () => {
+                setContext({ breakingLoop: true });
             },
         },
     ],

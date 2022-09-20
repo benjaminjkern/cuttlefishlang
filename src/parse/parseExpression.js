@@ -3,7 +3,11 @@ const { inspect, deepCopy } = require("../util");
 const { isValidToken } = require("./tokenDict");
 const { generateHeuristics } = require("./heuristics");
 
-let HEURISTICS, BASE_RULES, RULES, VARS;
+let HEURISTICS,
+    BASE_RULES,
+    RULES,
+    VARS,
+    CONTEXT = {};
 
 const setVariable = (varName, value) => {
     VARS[varName].value = value;
@@ -25,26 +29,38 @@ const setVars = () => {
     }
 };
 
-const setContext = (rules) => {
+const setContext = (newContext) => {
+    CONTEXT = { ...CONTEXT, ...newContext };
+};
+
+const getContext = (key) => CONTEXT[key];
+
+const setRules = (rules) => {
     BASE_RULES = rules;
     RULES = { ...rules };
     VARS = {};
     HEURISTICS = generateHeuristics(rules);
 };
 
-const parseExpressionAsType = (type, expression) => {
+const parseExpressionAsType = (type, expression, lineNumber) => {
     if (!RULES[type]) return { error: `Invalid type: ${type}` };
     const typeHeuristics = checkTypeHeuristics(type, expression);
     if (typeHeuristics.error) return typeHeuristics;
 
     for (const rule of RULES[type]) {
-        const parse = parseExpressionAsPattern(rule.pattern, expression, rule);
+        const parse = parseExpressionAsPattern(
+            rule.pattern,
+            expression,
+            rule,
+            lineNumber
+        );
         if (parse.error) continue;
         const obj = {
             type,
             tokens: parse,
             evaluate: rule.evaluate,
             sourceString: expression,
+            lineNumber,
         };
         if (rule.onParse) rule.onParse(obj);
         return obj;
@@ -54,11 +70,20 @@ const parseExpressionAsType = (type, expression) => {
     };
 };
 
-const parseExpressionAsMetaType = (metaTypePatternToken, expression) => {
+const parseExpressionAsMetaType = (
+    metaTypePatternToken,
+    expression,
+    lineNumber
+) => {
     switch (metaTypePatternToken.metaType) {
         case "or":
             for (const pattern of metaTypePatternToken.patterns) {
-                const parse = parseExpressionAsPattern(pattern, expression);
+                const parse = parseExpressionAsPattern(
+                    pattern,
+                    expression,
+                    undefined,
+                    lineNumber
+                );
                 if (parse.error) continue;
                 return parse;
             }
@@ -78,7 +103,8 @@ const parseExpressionAsMetaType = (metaTypePatternToken, expression) => {
                         max: Math.max(metaTypePatternToken.max - 1, 0),
                     },
                 ],
-                expression
+                expression,
+                lineNumber
             );
             if (parse.error) return parse;
             return compactifyMulti(metaTypePatternToken.pattern, parse);
@@ -92,7 +118,7 @@ const parseExpressionAsMetaType = (metaTypePatternToken, expression) => {
     return { error: `Invalid metaType: ${metaTypePatternToken.metaType}` };
 };
 
-const parseExpressionAsPattern = (pattern, expression, rule) => {
+const parseExpressionAsPattern = (pattern, expression, rule, lineNumber) => {
     const possibleMatches = getPossibleMatches(pattern, expression);
     if (possibleMatches.length === 0)
         return {
@@ -118,7 +144,8 @@ const parseExpressionAsPattern = (pattern, expression, rule) => {
             if (patternToken.metaType) {
                 const parse = parseExpressionAsMetaType(
                     patternToken,
-                    subExpression
+                    subExpression,
+                    lineNumber
                 );
                 if (parse.error) continue nextBreakPoint;
                 match.push(parse);
@@ -127,7 +154,8 @@ const parseExpressionAsPattern = (pattern, expression, rule) => {
 
             const parse = parseExpressionAsType(
                 patternToken.type,
-                subExpression
+                subExpression,
+                lineNumber
             );
             if (parse.error) continue nextBreakPoint;
             match.push(parse);
@@ -238,6 +266,8 @@ const compactifyMulti = (pattern, parse) => {
 module.exports = {
     parseExpressionAsType,
     setContext,
+    setRules,
     newParseVariable,
     setVariable,
+    getContext,
 };

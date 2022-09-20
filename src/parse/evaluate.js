@@ -1,21 +1,29 @@
-const CONTEXT = {};
-
 const evaluateIndentTree = (parsedNode) => {
-    const { instantiator, children } = parsedNode;
+    const { instantiator, children, lineNumber } = parsedNode;
     if (children) {
-        if (parsedNode.instantiator)
-            return parsedNode.instantiator.evaluate({
+        if (parsedNode.instantiator) {
+            const evaluation = parsedNode.instantiator.evaluate({
                 tokens: instantiator.tokens,
                 sourceString: instantiator.sourceString,
                 children,
+                lineNumber,
             });
+            if (parsedNode.instantiator.onExitScope) {
+                parsedNode.instantiator.onExitScope({
+                    tokens: instantiator.tokens,
+                    sourceString: instantiator.sourceString,
+                    children,
+                    lineNumber,
+                });
+            }
+            return evaluation;
+        }
         return evaluateStatementList(children);
     }
     return evaluateExpression(parsedNode);
 };
 
 const evaluateStatementList = (expList) => {
-    const context = {};
     expList.forEach(evaluateIndentTree);
 };
 
@@ -27,6 +35,7 @@ const evaluateExpression = (parsedNode) => {
     return parsedNode.evaluate({
         tokens: parsedNode.tokens,
         sourceString: parsedNode.sourceString,
+        lineNumber: parsedNode.lineNumber,
     });
 };
 

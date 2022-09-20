@@ -12,7 +12,8 @@ const parseIndentTree = ({
         if (instantiatorStatement) {
             parsedTree.instantiator = parseExpressionAsType(
                 "Instantiator",
-                instantiatorStatement.line
+                instantiatorStatement.line,
+                lineNumber
             );
             if (parsedTree.instantiator.error)
                 throw CuttlefishError(
@@ -21,11 +22,11 @@ const parseIndentTree = ({
                 );
         }
         parsedTree.children = statements.map(parseIndentTree);
-        return parsedTree;
+        return { ...parsedTree, lineNumber };
     }
-    const parse = parseExpressionAsType("Statement", line);
+    const parse = parseExpressionAsType("Statement", line, lineNumber);
     if (parse.error) throw CuttlefishError(lineNumber, parse.error);
-    return parse;
+    return { ...parse, lineNumber };
 };
 
 module.exports = parseIndentTree;

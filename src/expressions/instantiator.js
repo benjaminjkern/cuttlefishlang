@@ -1,7 +1,9 @@
 const {
     evaluateExpression,
     evaluateStatementList,
+    evaluateIndentTree,
 } = require("../parse/evaluate");
+const { setContext, getContext } = require("../parse/parseExpression");
 const { type, OR } = require("../parse/ruleUtils");
 
 module.exports = {
@@ -14,23 +16,59 @@ module.exports = {
         },
         {
             pattern: ["while", type("Boolean"), ":"],
+            onParse: ({ lineNumber }) => {
+                setContext({
+                    inLoop: [lineNumber, ...(getContext("inLoop") || [])],
+                });
+            },
+            onExitScope: () => {
+                setContext({ inLoop: getContext("inLoop").slice(1) });
+            },
             evaluate: ({ tokens: [_, test], children }) => {
-                while (evaluateExpression(test))
-                    evaluateStatementList(children);
+                bigLoop: while (evaluateExpression(test)) {
+                    for (const child of children) {
+                        evaluateIndentTree(child);
+
+                        if (getContext("breakingLoop")) {
+                            setContext({ breakingLoop: false });
+                            break bigLoop;
+                        }
+                    }
+                }
             },
         },
         {
             pattern: ["repeat", type("Number"), ":"],
+            onParse: ({ lineNumber }) => {
+                setContext({
+                    inLoop: [lineNumber, ...(getContext("inLoop") || [])],
+                });
+            },
+            onExitScope: () => {
+                setContext({ inLoop: getContext("inLoop").slice(1) });
+            },
             evaluate: ({ tokens: [_, test], children }) => {
                 let i = 0;
-                while (i < evaluateExpression(test)) {
-                    evaluateStatementList(children);
+                bigLoop: while (i < evaluateExpression(test)) {
+                    for (const child of children) {
+                        evaluateIndentTree(child);
+
+                        if (getContext("breakingLoop")) {
+                            setContext({ breakingLoop: false });
+                            break bigLoop;
+                        }
+                    }
                     i++;
                 }
             },
         },
         {
-            pattern: ["for", type("Iterable")],
+            pattern: ["for", type("Iterable"), ":"],
+            evaluate: ({ tokens: [_, iterable], children }) => {
+                for (const item of evaluateExpression(iterable)) {
+                    evaluateStatementList(children);
+                }
+            },
         },
     ],
     PatternMatcher: [

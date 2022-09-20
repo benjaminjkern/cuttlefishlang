@@ -1,11 +1,12 @@
+x = 0.5
 
 while true:
-    print 'something'
-    repeat 8:
-        print 'hello'
+    x = 1 * x * (1 - x)
+    if x * 1000 < 3 and x * 1000 > 2:
+        continue
+    
+    print x
+
+    if x * 1000 < 2:
         break
-    repeat 9:
-        print 'ghello'  
-    print 'something'
-    break
-    print 'something'
+

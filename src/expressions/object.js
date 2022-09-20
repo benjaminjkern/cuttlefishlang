@@ -16,5 +16,9 @@ module.exports = {
                 ),
             ],
         },
+        {
+            pattern: [type("Object"), ".", type("varName")],
+            spaces: "specify",
+        },
     ],
 };

@@ -4,7 +4,7 @@ const {
     evaluateIndentTree,
 } = require("../parse/evaluate");
 const { setContext, getContext } = require("../parse/parseExpression");
-const { type, OR } = require("../parse/ruleUtils");
+const { type, OR, OPTIONAL } = require("../parse/ruleUtils");
 
 module.exports = {
     Instantiator: [
@@ -25,20 +25,11 @@ module.exports = {
                 setContext({ inLoop: getContext("inLoop").slice(1) });
             },
             evaluate: ({ tokens: [_, test], children }) => {
-                bigLoop: while (evaluateExpression(test)) {
-                    for (const child of children) {
-                        evaluateIndentTree(child);
-
-                        if (getContext("breakingLoop")) {
-                            setContext({ breakingLoop: false });
-                            break bigLoop;
-                        }
-                    }
-                }
+                loop(() => evaluateExpression(test), children);
             },
         },
         {
-            pattern: ["repeat", type("Number"), ":"],
+            pattern: ["repeat", OPTIONAL(type("Number")), ":"],
             onParse: ({ lineNumber }) => {
                 setContext({
                     inLoop: [lineNumber, ...(getContext("inLoop") || [])],
@@ -49,17 +40,12 @@ module.exports = {
             },
             evaluate: ({ tokens: [_, test], children }) => {
                 let i = 0;
-                bigLoop: while (i < evaluateExpression(test)) {
-                    for (const child of children) {
-                        evaluateIndentTree(child);
 
-                        if (getContext("breakingLoop")) {
-                            setContext({ breakingLoop: false });
-                            break bigLoop;
-                        }
-                    }
+                loop(() => {
                     i++;
-                }
+                    if (test.length) return i < evaluateExpression(test);
+                    return true;
+                }, children);
             },
         },
         {
@@ -76,4 +62,21 @@ module.exports = {
             pattern: [type("varName"), "->"],
         },
     ],
+};
+
+const loop = (testFunc, children) => {
+    bigLoop: while (testFunc()) {
+        for (const child of children) {
+            evaluateIndentTree(child);
+
+            if (getContext("breakingLoop")) {
+                setContext({ breakingLoop: false });
+                break bigLoop;
+            }
+            if (getContext("continuingLoop")) {
+                setContext({ continuingLoop: false });
+                break;
+            }
+        }
+    }
 };

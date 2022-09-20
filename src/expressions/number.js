@@ -4,6 +4,10 @@ const { MULTI, OPTIONAL, type, OR } = require("../parse/ruleUtils");
 module.exports = {
     Number: [
         {
+            pattern: ["(", type("Number"), ")"],
+            evaluate: ({ tokens: [_, a] }) => evaluateExpression(a),
+        },
+        {
             pattern: [type("Number"), "+", type("Number")],
             associativityReverseSearchOrder: true,
             evaluate: ({ tokens: [a, _, b] }) =>

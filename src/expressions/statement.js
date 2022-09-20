@@ -50,6 +50,20 @@ module.exports = {
                 setContext({ breakingLoop: true });
             },
         },
+        {
+            pattern: ["continue"],
+            onParse: ({ lineNumber }) => {
+                const inLoop = getContext("inLoop");
+                if (!inLoop || !inLoop.length)
+                    throw CuttlefishError(
+                        lineNumber,
+                        `Cannot use continue outside of loop!`
+                    );
+            },
+            evaluate: () => {
+                setContext({ continuingLoop: true });
+            },
+        },
     ],
     varName: [
         {

@@ -12,13 +12,16 @@ module.exports = {
                     type("Number"),
                     type("String"),
                     type("Boolean"),
-                    type("Iterable")
+                    type("Iterable"),
+                    type("Dictionary")
                 ),
             ],
         },
         {
-            pattern: [type("Object"), ".", type("varName")],
+            pattern: [type("Dictionary"), ".", type("varName")],
             spaces: "specify",
         },
     ],
+    Dictionary: [{ pattern: [type("dictlit")] }],
+    dictlit: [{ pattern: ["{", "}"] }],
 };

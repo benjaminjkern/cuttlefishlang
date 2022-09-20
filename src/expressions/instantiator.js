@@ -3,7 +3,12 @@ const {
     evaluateStatementList,
     evaluateIndentTree,
 } = require("../parse/evaluate");
-const { setContext, getContext } = require("../parse/parseExpression");
+const {
+    setContext,
+    getContext,
+    setVariable,
+    newParseVariable,
+} = require("../parse/parseExpression");
 const { type, OR, OPTIONAL } = require("../parse/ruleUtils");
 
 module.exports = {
@@ -50,6 +55,12 @@ module.exports = {
         },
         {
             pattern: ["for", type("Iterable"), ":"],
+            onParse: ({ lineNumber }) => {
+                newParseVariable("Object", "$");
+            },
+            onExitScope: () => {
+                removeParseVariable("$");
+            },
             evaluate: ({ tokens: [_, iterable], children }) => {
                 for (const item of evaluateExpression(iterable)) {
                     evaluateStatementList(children);

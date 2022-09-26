@@ -21,6 +21,15 @@ module.exports = {
             pattern: [type("Dictionary"), ".", type("varName")],
             spaces: "specify",
         },
+        {
+            pattern: [type("Dictionary"), "[", type("String"), "]"],
+            spaces: "specify",
+        },
+        {
+            pattern: [type("Iterable"), "[", type("Number"), "]"],
+            evaluate: ({ tokens: [iterable, _, index] }) =>
+                evaluateExpression(iterable)[evaluateExpression(index)],
+        },
     ],
     Dictionary: [{ pattern: [type("dictlit")] }],
     dictlit: [{ pattern: ["{", "}"] }],

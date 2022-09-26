@@ -1,6 +1,8 @@
 # Important
 
-1. Spaces within metatypes
+1. Stuff with inheritance:
+    1. I can't do `'hello' ++ x[0]` because x[0] is returning as an object, which doesnt get turned into a string or a stringlike by default.
+2. Spaces within metatypes
     1. Right now you have to specify the spaces even if the rule's space rule is ignore, which is moderately annoying and messes with that stuff^^^
 2. Evaluation of metatypes
     1. As in, being able to grab evaluated subtokens from within OR's and MULTI's

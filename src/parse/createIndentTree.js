@@ -2,7 +2,7 @@
 // Also included in this: Removal of comments and empty lines
 import { CuttlefishError } from "../util/index.js";
 
-// Remove comments and empty lines
+// Remove comments, empty lines, and end whitespace (Not beginning whitespace because that goes into the indentation)
 const filterLines = (lines) => {
     const filteredLines = [];
     let inComment = false;

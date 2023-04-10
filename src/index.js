@@ -9,8 +9,7 @@ import {
 } from "./parse/parseExpression.js";
 import { evaluateIndentTree } from "./parse/evaluate.js";
 import parseIndentTree from "./parse/parseIndentTree.js";
-
-import { RULES } from "./expressions/index.js";
+import { interpretIndentTree } from "./parse/interpret.js";
 
 // Cuttlefish command (Deal with arguments);
 const cuttlefish = (node, file, ...args) => {
@@ -18,11 +17,10 @@ const cuttlefish = (node, file, ...args) => {
         console.warn("Error: Did not include a cuttlefish file!");
         return;
     }
-    setRules(RULES);
     const readfile = readFileSync(args[0], "utf8");
     const indentTree = createIndentTree(readfile);
-    const parsedTree = parseIndentTree(indentTree);
-    const evaluatedTree = evaluateIndentTree(parsedTree);
+    interpretIndentTree(indentTree);
+    // const evaluatedTree = evaluateIndentTree(parsedTree);
 };
 
 cuttlefish(...process.argv);

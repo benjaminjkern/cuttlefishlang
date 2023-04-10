@@ -1,25 +1,13 @@
-// module.exports = {
-//     // root: true,
-//     // parserOptions: {
-//     //     // ecmaVersion: 2018,
-//     //     sourceType: "module",
-//     // },
-
-//     rules: {
-//         curly: "off",
-//         "react-native/no-inline-styles": "off",
-//         "no-fallthrough": "off",
-//         "prettier/prettier": "off",
-//     },
-// };
-
 {
+    "env": {
+        "node": true
+    },
     "root": true,
     "parserOptions": {
         "sourceType": "module",
         "ecmaVersion": "latest"
     },
-    "extends": "airbnb-base",
+    "extends": "eslint:recommended",
     "rules": {
         "quotes": "off",
         "import/extensions": "off",
@@ -44,17 +32,18 @@
         "default-case-last": "warn",
         "no-shadow": "warn",
         "function-paren-newline": "off",
-        "no-console": ["warn", { "allow": ["warn", "error"] }],
+        // "no-console": ["warn", { "allow": ["warn", "error"] }],
         "prefer-template": "warn",
         "no-continue": "off",
         "prefer-destructuring": "warn",
         "no-use-before-define": ["error", { "variables": false }],
-        "import/prefer-default-export": "warn",
         "operator-linebreak": "off",
         "spaced-comment": "off",
         "one-var": "off",
         "no-throw-literal": "warn",
 
+        "import/prefer-default-export": "off",
+        "no-console": "off",
         "arrow-body-style": "off",
         "no-labels": "off",
         "no-restricted-syntax": "off",

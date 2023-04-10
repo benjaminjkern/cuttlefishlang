@@ -1,15 +1,25 @@
 import { CuttlefishError, deepCopy } from "../util/index.js";
 import { parseExpressionAsType } from "./parseExpression.js";
 
-const parseIndentTree = ({
-    instantiatorStatement,
-    statements,
-    lineNumber,
-    line,
-}) => {
+import RULES from "../expressions/index.js";
+import {
+    evaluateExpression,
+    evaluateIndentTree,
+    evaluateInstantiator,
+    evaluateStatement,
+} from "./evaluate.js";
+
+/**
+ * Parse AND evaluate
+ */
+export const interpretIndentTree = (
+    { instantiatorStatement, statements, lineNumber, line },
+    rules = deepCopy(RULES),
+    context = {}
+) => {
     if (statements) {
-        const parsedTree = {};
         if (instantiatorStatement) {
+            const parsedTree = { lineNumber };
             parsedTree.instantiator = parseExpressionAsType(
                 "Instantiator",
                 instantiatorStatement.line,
@@ -20,13 +30,13 @@ const parseIndentTree = ({
                     instantiatorStatement.lineNumber,
                     parsedTree.instantiator.error
                 );
+            evaluateInstantiator(parsedTree, context);
         }
-        parsedTree.children = statements.map(parseIndentTree);
-        return { ...parsedTree, lineNumber };
+        for (const statementNode of statements) {
+            interpretIndentTree(statementNode, rules, context);
+        }
     }
     const parse = parseExpressionAsType("Statement", line, lineNumber);
     if (parse.error) throw CuttlefishError(lineNumber, parse.error);
-    return { ...parse, lineNumber };
+    evaluateStatement({ ...parse, lineNumber }, context);
 };
-
-export default parseIndentTree;

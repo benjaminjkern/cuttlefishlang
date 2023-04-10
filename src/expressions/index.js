@@ -1,10 +1,9 @@
 import { ANYCHAR } from "../parse/ruleUtils.js";
+import boolean from "./boolean.js";
+import cleanRuleSet from "../parse/cleanRuleSet.js";
 
-export const RULES = {
+export default cleanRuleSet({
     space: [{ pattern: [" "] }],
     digit: [{ pattern: [ANYCHAR("0123456789")] }],
-};
-
-export const newRuleList = (typeName, ruleList) => {
-    RULES[typeName].push(ruleList);
-};
+    ...boolean,
+});

@@ -133,14 +133,16 @@ myString = "Hello Hell"
 myString.findFirst regex # RegexMatch: startIndex = 0; matchString = "Hello"; groups = []
 myString.findLast regex # RegexMatch: startIndex = 6; matchString = "Hell"; groups = []
 # finds all
-myString.find regex # [RegexMatch: startIndex = 0; matchString = "Hello"; groups = [], RegexMatch: startIndex = 6; matchString = "Hell"; groups = []]
+myString.findAll regex # [RegexMatch: startIndex = 0; matchString = "Hello"; groups = [], RegexMatch: startIndex = 6; matchString = "Hell"; groups = []]
 
 myString.replaceFirst regex "Hiiiii" # "Hiiiii Hell"
 myString.replaceLast regex "Hiiiii" # "Hello Hiiiii"
 # replaces all, or replaces conditionally if passed a function
-myString.replace regex "Hiiiii" # "Hiiiii Hiiiii"
+myString.replaceAll regex "Hiiiii" # "Hiiiii Hiiiii"
 # No matches are turned into undefined (TODO FIGURE THAT <---- Out) and just dont get replaced
-myString.replace regex fn: {startIndex, matchString} | startIndex == 0 -> "Hiiiii" # "Hiiiii Hell"
+
+# NOTE: I WANT TO CHANGE HOW THIS FUNCTION STUFF WORKS (NOT SURE WHAT I WAS GOING FOR WITH THE BRACES HERE)
+myString.replaceAll regex fn: {startIndex, matchString} | startIndex == 0 -> "Hiiiii" # "Hiiiii Hell"
 
 # The replace and find methods also work without regexes, it just returns indices
 myString.findFirst "Hell" # 0

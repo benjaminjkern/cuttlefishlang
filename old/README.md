@@ -1,36 +1,27 @@
-# ![logo](etc/logo.png "Cuttlefish") The Cuttlefish Programming Language ![logo](etc/logo.png "Cuttlefish")
+# ![logo](etc/logo.png "Look at how cool this language is!") The Cuttlefish Programming Language ![logo](etc/logo.png "Look at how cool this language is!")
 
 ![cuttlefish](etc/cuttlefish.png "Cuttlefish!")
 
-Cuttlefish is a dynamically typed functional programming language designed to be the epitome of modern programming practices
+Cuttlefish is a strong, statically typed language designed to empower its users to write elegant, safe, and functional code for concurrent systems.
 
-Cuttlefish as a language structurally draws from many aspects of Haskell, Elixir, and JavaScript, as well as stylistically from Python, with indentation based closure.
+Cuttlefish as a language structurally draws from many aspects of Haskell and Elixir, as well as stylistically from Python, with indentation based closure.
 
-[Here is our website! (Click me!) (Please!)](https://benjaminjkern.github.io/cuttlefishlang) (Not up to date)
+Cuttlefish strives to allow its users to have immense power over the style of their code, as long as it is falls into what is considered clean, cohesive, "Cuttly" code.
 
-# Hello world
+Cuttlefish also strives to achieve Alan Kay's ideas of ideal Object Oriented Programming which still being a functional programming language.
 
-```
-print "Hello world!"
-```
+[Here is our website! (Click me!) (Please!)](https://benjaminjkern.github.io/cuttlefishlang)
 
-# Basic variables & control flow
-```
-x = 4
-while x > 0:
-    x -= 1
-    print x
+# Routines
 
-repeat 8:
-    print 'printing this 8 times!'
+There are three types of Routines that Cuttlefish can handle, all equipped with immersive pattern matching and precise functional capabilities.
 
-repeat:
-    print 'printing forever'
-    if x <= 0:
-        break
-
-print "Just kidding"
-```
+| Routine        | Functions `fn:`                                                              | Processes `prc:`                                                                                | Servers `srv:`                                                                                                   |
+| -------------- | ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Description    | Regular functions, lazily evaluated, can be passed around like objects       | Act like generator functions, meant to eagerly run until they are terminated                    | Used for organized distribution and interconnection of processes, eagerly run all child processes asynchronously |
+| Can call       | Functions                                                                    | Functions and Processes                                                                         | Functions, Processes, and Servers                                                                                |
+| Internal state | Any internal state is immediately deleted upon return                        | Have an outbox and store internal state until process is completed                              | Have an inbox and outbox, internal state is stored until server forcefully ended                                 |
+| Scope          | Inherit scope at definition time (for constants and internal function calls) | Inherit scope at creation time, can edit state of anything it knows is in its scope or subscope | Inherit scope similar to processes                                                                               |
 
 # Functions
 
@@ -61,6 +52,8 @@ This could have also been accomplished with the following:
 print (plusSix * plusSix)(7) # still 19
 ```
 
+More on this later.
+
 ## Pattern matching
 
 Pattern matching is fully implemented in all Routines. The compiler tests for patterns in the order defined at compile time, so that the abstract syntax tree does not have to do any pattern matching.
@@ -78,8 +71,6 @@ The `|` is a guard, and it reads as "such that". In words, the function says:
 
 Here are map and filter implemented in Cuttlefish:
 
-
-> IFFY ON THIS BIT HERE
 ```py
 map = fn:
     A => A fun, [] -> []
@@ -167,4 +158,16 @@ print 5 ^ 4 == 5 * 5 * 5 * 5
 print (f ^ 4)(2) == (f * f * f * f)(2) # Which would also be equal to f(f(f(f(2))))
 print 5 ^ 2.5 # 55.90169943749474
 # It still works for regular floating point exponentiation!
+```
+
+# Types
+
+Since Cuttlefish is statically typed, types are very important.
+
+# Macros
+
+Using macros, Cuttlefish can become an extremely expressive and customizable language.
+
+```
+
 ```

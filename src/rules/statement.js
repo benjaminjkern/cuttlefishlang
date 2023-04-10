@@ -25,16 +25,6 @@ export const makeIterator = (iterable) => {
 export default {
     Statement: [
         {
-            pattern: [
-                "print",
-                OR(type("String"), type("Number"), type("Boolean")),
-            ],
-            evaluate: ({ tokens: [_, string] }) => {
-                const stringValue = evaluateExpression(string);
-                console.log(stringValue); // eslint-disable-line no-console
-            },
-        },
-        {
             pattern: ["print", type("Iterable")],
             evaluate: ({ tokens: [_, iter] }) => {
                 const iterator = makeIterator(evaluateExpression(iter));
@@ -45,6 +35,13 @@ export default {
                     if (iterator.hasNext()) process.stdout.write(", ");
                 }
                 process.stdout.write(" ]\n");
+            },
+        },
+        {
+            pattern: ["print", type("stringlike")],
+            evaluate: ({ tokens: [_, string] }) => {
+                const stringValue = evaluateExpression(string);
+                console.log(stringValue); // eslint-disable-line no-console
             },
         },
         {

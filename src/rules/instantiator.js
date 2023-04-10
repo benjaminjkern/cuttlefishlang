@@ -1,5 +1,6 @@
 import { evaluateExpression } from "../evaluate/evaluate.js";
 import { type, OPTIONAL } from "../parse/ruleUtils.js";
+import { makeIterator } from "./statement.js";
 
 export default {
     Instantiator: [
@@ -37,16 +38,16 @@ export default {
         },
         {
             pattern: ["for", type("Iterable"), ":"],
-            evaluate: ({ tokens: [_, iterable], setContext }) => {
-                throw "Cannot loop over iterables quite yet!";
-                // const iterator = evaluateIterator(iterable);
-                // setContext({
-                //     loop: true,
-                //     runBlock: () => {
-                //         if (!iterator.hasNext()) return false;
-                //         return true; // TODO: NOT SURE HOW TO DO THIS QUITE YET
-                //     }
-                // });
+            evaluate: ({ tokens: [_, iterable], setContext, setVariable }) => {
+                const iterator = makeIterator(evaluateExpression(iterable));
+                setContext({
+                    loop: true,
+                    runBlock: () => {
+                        if (!iterator.hasNext()) return false;
+                        setVariable("$", "Object", iterator.next());
+                        return true; // TODO: NOT SURE HOW TO DO THIS QUITE YET
+                    },
+                });
             },
         },
     ],

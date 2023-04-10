@@ -27,8 +27,8 @@ export default {
                 OR(
                     type("Number"),
                     type("String"),
-                    type("Boolean")
-                    // type("Object")
+                    type("Boolean"),
+                    type("Object")
                 ),
             ],
         },

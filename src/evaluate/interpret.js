@@ -10,7 +10,7 @@ import { newContext } from "../parse/context.js";
  */
 export const interpretIndentTree = (
     { instantiatorStatement, statements, lineNumber, line },
-    context = newContext(RULES)
+    context = { ...newContext(RULES), vars: [] }
 ) => {
     if (statements) {
         if (instantiatorStatement) {

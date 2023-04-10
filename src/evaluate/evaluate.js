@@ -1,3 +1,5 @@
+import generateHeuristics from "../parse/heuristics.js";
+
 // UNUSED FOR NOW
 export const evaluateParsedNode = (parsedNode, context) => {
     const { instantiator, children, lineNumber } = parsedNode;
@@ -32,6 +34,18 @@ export const evaluateExpression = (parsedNode, context) => {
             for (const key in newContext) {
                 context[key] = newContext[key];
             }
+        },
+        setVariable: (varName, value) => {
+            if (context.vars[varName] === undefined) {
+                const type = "Number";
+                context.rules[type].push({
+                    pattern: [varName],
+                    evaluate: () => context.vars[varName],
+                });
+                context.heuristics = generateHeuristics(context.rules);
+            }
+
+            context.vars[varName] = value;
         },
     });
 };

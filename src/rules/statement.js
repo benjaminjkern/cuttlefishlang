@@ -1,6 +1,26 @@
 import { evaluateExpression } from "../evaluate/evaluate.js";
 import { type, OR, MULTI, ANYCHAR } from "../parse/ruleUtils.js";
 import { CuttlefishError } from "../util/index.js";
+import { forceString } from "./expressions/string.js";
+
+export const makeIterator = (iterable) => {
+    if (Array.isArray(iterable)) {
+        const iterator = {
+            index: 0,
+            next: () => {
+                if (!iterator.hasNext())
+                    throw "Tried calling iterator.next() when it do not have a next!";
+                iterator.index++;
+                return iterable[iterator.index - 1];
+            },
+            hasNext: () => {
+                return iterator.index < iterable.length;
+            },
+        };
+        return iterator;
+    }
+    throw "Not implemented yet: Non-array iterables";
+};
 
 export default {
     Statement: [
@@ -17,14 +37,14 @@ export default {
         {
             pattern: ["print", type("Iterable")],
             evaluate: ({ tokens: [_, iter] }) => {
-                throw "Cannot print iterables yet!";
-                // const iterator = evaluateIterator(iter);
-                // while (iterator.hasNext()) {
-                //     const i = iterator.next();
-                //     process.stdout.write(i);
-                //     if (iterator.hasNext()) process.stdout.write(", ");
-                // }
-                // process.stdout("\n");
+                const iterator = makeIterator(evaluateExpression(iter));
+                process.stdout.write("[ ");
+                while (iterator.hasNext()) {
+                    const i = iterator.next();
+                    process.stdout.write(forceString(i));
+                    if (iterator.hasNext()) process.stdout.write(", ");
+                }
+                process.stdout.write(" ]\n");
             },
         },
         {

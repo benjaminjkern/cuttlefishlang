@@ -22,6 +22,17 @@ export default {
         },
     ],
     stringlike: [
-        { pattern: [OR(type("Number"), type("String"), type("Boolean"))] },
+        {
+            pattern: [
+                OR(
+                    type("Number"),
+                    type("String"),
+                    type("Boolean")
+                    // type("Object")
+                ),
+            ],
+        },
     ],
 };
+
+export const forceString = (a) => a + "";

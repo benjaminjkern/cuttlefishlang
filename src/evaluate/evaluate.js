@@ -32,8 +32,14 @@ export const evaluateExpression = (parsedNode, context) => {
         lineNumber: parsedNode.lineNumber,
         setContext: (newContext) => {
             for (const key in newContext) {
-                context[key] = newContext[key];
+                if (key === "inLoop" && newContext.inLoop) {
+                    context.loopLevel = 0;
+                } else context[key] = newContext[key];
             }
+        },
+        getContext: (key) => {
+            if (key === "inLoop") return context.loopLevel >= 0;
+            return context[key];
         },
         setVariable: (varName, type, value) => {
             if (

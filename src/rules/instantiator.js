@@ -6,7 +6,10 @@ export default {
         {
             pattern: ["if", type("Boolean"), ":"],
             evaluate: ({ tokens: [_, test], setContext }) => {
-                setContext({ runBlock: () => evaluateExpression(test) });
+                setContext({
+                    inLoop: false,
+                    runBlock: () => evaluateExpression(test),
+                });
             },
         },
         {

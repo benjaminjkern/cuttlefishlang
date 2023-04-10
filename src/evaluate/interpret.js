@@ -22,11 +22,18 @@ export const interpretIndentTree = (
             );
             if (parse.error) throw CuttlefishError(lineNumber, parse.error);
             const insideContext = deepCopy(context);
+            insideContext.vars = context.vars;
             evaluateExpression({ ...parse, lineNumber }, insideContext);
 
             while (insideContext.runBlock()) {
                 interpretStatementList(statements, insideContext);
-                if (!insideContext.inLoop) break;
+                if (insideContext.loopLevel > 0 || insideContext.breakingLoop)
+                    break;
+            }
+            if (insideContext.loopLevel > 0) {
+                // carry to outer context
+                context.breakingLoop = insideContext.breakingLoop;
+                context.continuingLoop = insideContext.continuingLoop;
             }
             return;
         }
@@ -40,13 +47,7 @@ export const interpretIndentTree = (
 
 const interpretStatementList = (statementList, context) => {
     for (const statement of statementList) {
-        if (context.breakingLoop) {
-            context.inLoop = false;
-            break;
-        }
-        if (context.continuingLoop) {
-            break;
-        }
+        if (context.breakingLoop || context.continuingLoop) break;
         interpretIndentTree(statement, context);
     }
 };

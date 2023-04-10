@@ -32,7 +32,7 @@ export default {
             evaluate: ({ tokens: [id, _, obj], setVariable }) => {
                 setVariable(
                     id.sourceString,
-                    obj.children[0][0].type,
+                    obj.tokens[0][0].type,
                     evaluateExpression(obj)
                 );
             },
@@ -41,7 +41,7 @@ export default {
             pattern: ["break"],
             evaluate: ({ lineNumber, setContext, getContext }) => {
                 const inLoop = getContext("inLoop");
-                if (!inLoop || !inLoop.length)
+                if (!inLoop)
                     throw CuttlefishError(
                         lineNumber,
                         `Cannot use break outside of loop!`
@@ -53,7 +53,7 @@ export default {
             pattern: ["continue"],
             evaluate: ({ lineNumber, setContext, getContext }) => {
                 const inLoop = getContext("inLoop");
-                if (inLoop === undefined)
+                if (!inLoop)
                     throw CuttlefishError(
                         lineNumber,
                         `Cannot use continue outside of loop!`

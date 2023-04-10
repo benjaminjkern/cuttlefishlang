@@ -30,7 +30,11 @@ export const interpretIndentTree = (
                 insideContext.breakingLoop = false;
                 insideContext.continuingLoop = false;
                 interpretStatementList(statements, insideContext);
-                if (insideContext.loopLevel > 0 || insideContext.breakingLoop)
+                if (
+                    insideContext.loopLevel === undefined ||
+                    insideContext.loopLevel > 0 ||
+                    insideContext.breakingLoop
+                )
                     break;
             }
             if (insideContext.loopLevel > 0) {

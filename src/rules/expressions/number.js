@@ -32,6 +32,10 @@ export default {
                 evaluateExpression(a) / evaluateExpression(b),
         },
         {
+            pattern: ["-", type("Number")],
+            evaluate: ({ tokens: [_, a] }) => -evaluateExpression(a),
+        },
+        {
             pattern: [type("numlit")],
             evaluate: ({ sourceString }) => +sourceString,
         },

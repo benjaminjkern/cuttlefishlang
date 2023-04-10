@@ -1,4 +1,5 @@
 import { inspect as utilInspect } from "util";
+import "colors";
 
 export const inspect = (obj) =>
     console.log(utilInspect(obj, false, null, true)); // eslint-disable-line no-console
@@ -42,3 +43,32 @@ export const deepCopy = (object) => {
     }
     return newObject;
 };
+
+let debugIndentation = 0;
+export const debugFunction =
+    (func, includeArgs, name = "f") =>
+    (...args) => {
+        const tabWidth = Array(debugIndentation).fill("   ").join("");
+        console.log(
+            `${tabWidth}${name}`,
+            ...args
+                .map((arg, i) =>
+                    includeArgs[i]
+                        ? typeof includeArgs[i] === "function"
+                            ? includeArgs[i](arg)
+                            : arg
+                        : undefined
+                )
+                .filter((x) => x),
+            "{"
+        );
+        debugIndentation++;
+        const result = func(...args);
+        debugIndentation--;
+        console.log(
+            `${tabWidth}}`,
+            "->",
+            result.error ? result.error : "Parsed"
+        );
+        return result;
+    };

@@ -1,4 +1,4 @@
-import { isTerminal } from "./parsingUtils.js";
+import { isTerminal, stringifyPattern } from "./parsingUtils.js";
 import { isValidToken } from "./tokenDict.js";
 
 /**********************
@@ -59,7 +59,9 @@ const parseExpressionAsMetaType = (
                 return parse;
             }
             return {
-                error: `"${expression}" did not match any pattern in list: ${metaTypePatternToken.patterns}!`,
+                error: `"${expression}" did not match any pattern in list: ${stringifyPattern(
+                    [metaTypePatternToken]
+                )}!`,
             };
         case "multi":
             if (metaTypePatternToken.min <= 0 && expression === "") return [];
@@ -84,7 +86,9 @@ const parseExpressionAsMetaType = (
         case "anychar":
             if (!isValidToken(metaTypePatternToken.tokenDict, expression))
                 return {
-                    error: `There do not exist any possible matches of "${expression}" on pattern ${metaTypePatternToken}!`,
+                    error: `There do not exist any possible matches of "${expression}" on pattern ${stringifyPattern(
+                        [metaTypePatternToken]
+                    )}!`,
                 };
             return expression;
     }
@@ -101,7 +105,9 @@ const parseExpressionAsPattern = (
     const possibleMatches = getPossibleMatches(pattern, expression, context);
     if (possibleMatches.length === 0)
         return {
-            error: `There do not exist any possible matches of "${expression}" on pattern ${pattern}!`,
+            error: `There do not exist any possible matches of "${expression}" on pattern ${stringifyPattern(
+                pattern
+            )}!`,
         };
 
     if (rule && rule.associativityReverseSearchOrder) possibleMatches.reverse();
@@ -145,7 +151,9 @@ const parseExpressionAsPattern = (
         return match;
     }
     return {
-        error: `All possible matches of "${expression}" on pattern ${pattern} failed.`,
+        error: `All possible matches of "${expression}" on pattern ${stringifyPattern(
+            pattern
+        )} failed.`,
     };
 };
 
@@ -161,26 +169,28 @@ const checkTypeHeuristics = (type, expression, context) => {
     return {};
 };
 
-const checkMetaTypeHeuristics = (metaTypePatternToken, expression) => {
+const checkMetaTypeHeuristics = (metaTypePatternToken, expression, context) => {
     if (metaTypePatternToken.metaType === "anychar") {
         if (
             expression.length !== 1 ||
             !isValidToken(metaTypePatternToken.tokenDict, expression)
         )
             return {
-                error: `There do not exist any possible matches of "${expression}" on pattern ${metaTypePatternToken}!`,
+                error: `There do not exist any possible matches of "${expression}" on pattern ${stringifyPattern(
+                    [metaTypePatternToken]
+                )}!`,
             };
         return {};
     }
 
-    // Omitted since it's slow
-    // for (const heuristic in HEURISTICS.metaTypeHeuristics) {
-    //     const heuristicCheck = HEURISTICS.metaTypeHeuristics[heuristic](
-    //         metaTypePatternToken,
-    //         expression
-    //     );
-    //     if (heuristicCheck.error) return heuristicCheck;
-    // }
+    // I marked this as slow at one point but it saved on a certain type of parsing at one point so I think its good to leave in
+    for (const heuristic in context.heuristics.metaTypeHeuristics) {
+        const heuristicCheck = context.heuristics.metaTypeHeuristics[heuristic](
+            metaTypePatternToken,
+            expression
+        );
+        if (heuristicCheck.error) return heuristicCheck;
+    }
     return {};
 };
 
@@ -222,7 +232,8 @@ const getPossibleMatches = (pattern, expression, context) => {
         } else {
             const typeHeuristics = checkMetaTypeHeuristics(
                 firstPatternToken,
-                expression.slice(0, i)
+                expression.slice(0, i),
+                context
             );
             if (typeHeuristics.error) continue;
         }

@@ -44,11 +44,20 @@ export default {
                     loop: true,
                     runBlock: () => {
                         if (!iterator.hasNext()) return false;
-                        setVariable("$", "Object", iterator.next());
+                        const value = iterator.next();
+                        setVariable("$", getTypeFromValue(value), value);
                         return true; // TODO: NOT SURE HOW TO DO THIS QUITE YET
                     },
                 });
             },
         },
     ],
+};
+
+const getTypeFromValue = (value) => {
+    if (typeof value === "number") return "Number";
+    if (typeof value === "string") return "String";
+    if (typeof value === "boolean") return "Boolean";
+    if (Array.isArray(value)) return "Iterable";
+    return "Object";
 };

@@ -32,6 +32,12 @@ export default {
                 evaluateExpression(a) / evaluateExpression(b),
         },
         {
+            pattern: [type("Number"), "^", type("Number")],
+            associativityReverseSearchOrder: true,
+            evaluate: ({ tokens: [a, _, b] }) =>
+                evaluateExpression(a) ** evaluateExpression(b),
+        },
+        {
             pattern: ["-", type("Number")],
             evaluate: ({ tokens: [_, a] }) => -evaluateExpression(a),
         },

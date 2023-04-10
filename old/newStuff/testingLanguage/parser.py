@@ -42,9 +42,9 @@ class EarleyParser:
             self.states[origin + 1].add(state.shift)
 
     def _completer(self, state, extension):
-        for penis in self.states[state.origin] | set(extension):
-            if state.nonterminal == penis.symbol:
-                extension.append(penis.shift)
+        for test in self.states[state.origin] | set(extension):
+            if state.nonterminal == test.symbol:
+                extension.append(test.shift)
 
     def _print(self, text):
         print('\n')

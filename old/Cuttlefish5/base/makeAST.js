@@ -101,7 +101,7 @@ module.exports = makeAST;
 if (!module.parent) {
     inspect(
         makeAST(
-            "f = fn:\n→\n    x -> x + 5\n    y -> y + 6\n←\npenis; vagina; james"
+            "f = fn:\n→\n    x -> x + 5\n    y -> y + 6\n←\ntest; test; james"
         )
     );
 }

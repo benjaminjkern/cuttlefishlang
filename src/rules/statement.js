@@ -1,4 +1,4 @@
-import { evaluateExpression } from "../parse/evaluate.js";
+import { evaluateExpression } from "../evaluate/evaluate.js";
 import { type, OR, MULTI, ANYCHAR } from "../parse/ruleUtils.js";
 import { CuttlefishError } from "../util/index.js";
 
@@ -35,7 +35,7 @@ export default {
         },
         {
             pattern: ["break"],
-            evaluate: ({ lineNumber }) => {
+            evaluate: ({ lineNumber, setContext, getContext }) => {
                 const inLoop = getContext("inLoop");
                 if (!inLoop || !inLoop.length)
                     throw CuttlefishError(
@@ -47,7 +47,7 @@ export default {
         },
         {
             pattern: ["continue"],
-            evaluate: ({ lineNumber }) => {
+            evaluate: ({ lineNumber, setContext, getContext }) => {
                 const inLoop = getContext("inLoop");
                 if (inLoop === undefined)
                     throw CuttlefishError(

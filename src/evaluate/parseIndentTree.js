@@ -1,5 +1,5 @@
 import { CuttlefishError, deepCopy } from "../util/index.js";
-import { parseExpressionAsType } from "./parseExpression.js";
+import { parseExpressionAsType } from "../parse/parseExpression.js";
 
 const parseIndentTree = ({
     instantiatorStatement,

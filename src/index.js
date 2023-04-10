@@ -1,15 +1,7 @@
 import { readFileSync } from "fs";
-import { inspect } from "./util/index.js";
 
-import createIndentTree from "./parse/createIndentTree.js";
-import {
-    parseExpressionAsType,
-    setContext,
-    setRules,
-} from "./parse/parseExpression.js";
-import { evaluateIndentTree } from "./parse/evaluate.js";
-import parseIndentTree from "./parse/parseIndentTree.js";
-import { interpretIndentTree } from "./parse/interpret.js";
+import createIndentTree from "./indentTree/createIndentTree.js";
+import { interpretIndentTree } from "./evaluate/interpret.js";
 
 // Cuttlefish command (Deal with arguments);
 const cuttlefish = (node, file, ...args) => {
@@ -20,7 +12,6 @@ const cuttlefish = (node, file, ...args) => {
     const readfile = readFileSync(args[0], "utf8");
     const indentTree = createIndentTree(readfile);
     interpretIndentTree(indentTree);
-    // const evaluatedTree = evaluateIndentTree(parsedTree);
 };
 
 cuttlefish(...process.argv);

@@ -1,5 +1,5 @@
-import { evaluateExpression } from "../parse/evaluate.js";
-import { NOTCHAR, MULTI, type, OR } from "../parse/ruleUtils.js";
+import { evaluateExpression } from "../../evaluate/evaluate.js";
+import { NOTCHAR, MULTI, type, OR } from "../../parse/ruleUtils.js";
 
 export default {
     String: [

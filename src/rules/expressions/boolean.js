@@ -1,5 +1,5 @@
-import { evaluateExpression } from "../parse/evaluate.js";
-import { type } from "../parse/ruleUtils.js";
+import { evaluateExpression } from "../../evaluate/evaluate.js";
+import { type } from "../../parse/ruleUtils.js";
 
 export default {
     Boolean: [

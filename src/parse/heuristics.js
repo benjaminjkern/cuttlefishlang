@@ -1,4 +1,4 @@
-import { isTerminal } from "../util/parsingUtils.js";
+import { isTerminal } from "./parsingUtils.js";
 
 import {
     newTokenDict,
@@ -7,13 +7,9 @@ import {
     isValidToken,
 } from "./tokenDict.js";
 
-// This is so it can be accessed later by the start and end dict function
-let toAddHeuristics;
-let RULES;
-
 const generateHeuristics = (rules) => {
-    RULES = { ...rules };
-    toAddHeuristics = {};
+    // This is so it can be accessed later by the start and end dict function
+    const toAddHeuristics = {};
 
     const HEURISTICS = {
         types: {
@@ -32,7 +28,7 @@ const generateHeuristics = (rules) => {
         },
     };
 
-    toAddHeuristics.minLength = getMinLengths();
+    toAddHeuristics.minLength = getMinLengths(rules);
     HEURISTICS.typeHeuristics.minLength = (type, expression) =>
         expression.length < HEURISTICS.types[type].minLength && {
             error: `"${expression}" is shorter than the minimum possible length (${HEURISTICS.types[type].minLength}) for type: ${type}!`,
@@ -44,7 +40,8 @@ const generateHeuristics = (rules) => {
                 minLength = getPatternListMinLength(
                     metaTypeToken.patterns,
                     {},
-                    toAddHeuristics.minLength
+                    toAddHeuristics.minLength,
+                    rules
                 );
                 break;
             case "multi":
@@ -53,7 +50,8 @@ const generateHeuristics = (rules) => {
                     getPatternMinLength(
                         metaTypeToken.pattern,
                         {},
-                        toAddHeuristics.minLength
+                        toAddHeuristics.minLength,
+                        rules
                     );
                 break;
             default:
@@ -68,9 +66,9 @@ const generateHeuristics = (rules) => {
         return true;
     };
     HEURISTICS.patternHeuristics.minLength = (pattern) =>
-        getPatternMinLength(pattern, {}, toAddHeuristics.minLength);
+        getPatternMinLength(pattern, {}, toAddHeuristics.minLength, rules);
 
-    toAddHeuristics.maxLength = getMaxLengths();
+    toAddHeuristics.maxLength = getMaxLengths(rules);
     HEURISTICS.typeHeuristics.maxLength = (type, expression) =>
         expression.length > HEURISTICS.types[type].maxLength && {
             error: `"${expression}" is longer than the maximum possible length (${HEURISTICS.types[type].maxLength}) for type: ${type}!`,
@@ -82,16 +80,18 @@ const generateHeuristics = (rules) => {
                 maxLength = getPatternListMaxLength(
                     metaTypeToken.patterns,
                     {},
-                    toAddHeuristics.maxLength
+                    toAddHeuristics.maxLength,
+                    rules
                 );
                 break;
             case "multi":
                 maxLength =
                     metaTypeToken.max *
-                    getPatternMinLength(
+                    getPatternMaxLength(
                         metaTypeToken.pattern,
                         {},
-                        toAddHeuristics.maxLength
+                        toAddHeuristics.maxLength,
+                        rules
                     );
                 break;
             default:
@@ -105,8 +105,10 @@ const generateHeuristics = (rules) => {
             };
         return true;
     };
+    HEURISTICS.patternHeuristics.maxLength = (pattern) =>
+        getPatternMaxLength(pattern, {}, toAddHeuristics.maxLength, rules);
 
-    toAddHeuristics.dict = getDicts();
+    toAddHeuristics.dict = getDicts(rules);
     HEURISTICS.typeHeuristics.dict = (type, expression) => {
         for (const token of expression) {
             if (!isValidToken(HEURISTICS.types[type].dict, token))
@@ -124,14 +126,16 @@ const generateHeuristics = (rules) => {
                 dict = getPatternListDict(
                     metaTypeToken.patterns,
                     {},
-                    toAddHeuristics.dict
+                    toAddHeuristics.dict,
+                    rules
                 );
                 break;
             case "multi":
                 dict = getPatternDict(
                     metaTypeToken.pattern,
                     {},
-                    toAddHeuristics.dict
+                    toAddHeuristics.dict,
+                    rules
                 );
                 break;
             default:
@@ -148,7 +152,7 @@ const generateHeuristics = (rules) => {
         return true;
     };
 
-    toAddHeuristics.startDict = getStartDicts();
+    toAddHeuristics.startDict = getStartDicts(rules, toAddHeuristics);
     HEURISTICS.typeHeuristics.startDict = (type, expression) =>
         !isValidToken(HEURISTICS.types[type].startDict, expression[0]) && {
             error: `'${expression[0]}' is not in the set of start tokens for type: ${type}!`,
@@ -161,14 +165,18 @@ const generateHeuristics = (rules) => {
                 startDict = getPatternListStartDict(
                     metaTypeToken.patterns,
                     {},
-                    toAddHeuristics.startDict
+                    toAddHeuristics.startDict,
+                    rules,
+                    toAddHeuristics
                 );
                 break;
             case "multi":
                 startDict = getPatternStartDict(
                     metaTypeToken.pattern,
                     {},
-                    toAddHeuristics.startDict
+                    toAddHeuristics.startDict,
+                    rules,
+                    toAddHeuristics
                 );
                 break;
             default:
@@ -183,7 +191,7 @@ const generateHeuristics = (rules) => {
         );
     };
 
-    toAddHeuristics.endDict = getEndDicts();
+    toAddHeuristics.endDict = getEndDicts(rules, toAddHeuristics);
     HEURISTICS.typeHeuristics.endDict = (type, expression) =>
         !isValidToken(
             HEURISTICS.types[type].endDict,
@@ -201,14 +209,18 @@ const generateHeuristics = (rules) => {
                 endDict = getPatternListEndDict(
                     metaTypeToken.patterns,
                     {},
-                    toAddHeuristics.endDict
+                    toAddHeuristics.endDict,
+                    rules,
+                    toAddHeuristics
                 );
                 break;
             case "multi":
                 endDict = getPatternEndDict(
                     metaTypeToken.pattern,
                     {},
-                    toAddHeuristics.endDict
+                    toAddHeuristics.endDict,
+                    rules,
+                    toAddHeuristics
                 );
                 break;
             default:
@@ -226,7 +238,7 @@ const generateHeuristics = (rules) => {
     };
 
     // Attach each heuristic
-    for (const type in RULES) {
+    for (const type in rules) {
         HEURISTICS.types[type] = {};
         for (const heuristic in HEURISTICS.typeHeuristics) {
             HEURISTICS.types[type][heuristic] =
@@ -240,10 +252,10 @@ const generateHeuristics = (rules) => {
  * Min Length functions
  *************************/
 
-const getMinLengths = () => {
+const getMinLengths = (rules) => {
     const minLengths = {};
-    for (const type in RULES) {
-        minLengths[type] = getTypeMinLength(type);
+    for (const type in rules) {
+        minLengths[type] = getTypeMinLength(type, undefined, undefined, rules);
         if (minLengths[type] >= Number.MAX_SAFE_INTEGER)
             console.warn(
                 `Warning: Type "${type}" has a minimum length of ${minLengths[type]} (Probably an unclosed rule loop)`
@@ -252,7 +264,7 @@ const getMinLengths = () => {
     return minLengths;
 };
 
-const getTypeMinLength = (type, parentCalls = {}, cache = {}) => {
+const getTypeMinLength = (type, parentCalls = {}, cache = {}, rules) => {
     if (cache[type] !== undefined) return cache[type];
     if (parentCalls[type]) {
         cache[type] = Number.MAX_SAFE_INTEGER;
@@ -260,23 +272,27 @@ const getTypeMinLength = (type, parentCalls = {}, cache = {}) => {
     }
     parentCalls[type] = true;
     cache[type] = getPatternListMinLength(
-        RULES[type].map(({ pattern }) => pattern),
+        rules[type].map(({ pattern }) => pattern),
         parentCalls,
-        cache
+        cache,
+        rules
     );
     return cache[type];
 };
 
-const getPatternListMinLength = (patternList, parentCalls, cache) => {
+const getPatternListMinLength = (patternList, parentCalls, cache, rules) => {
     let min = Number.MAX_SAFE_INTEGER;
     for (const pattern of patternList) {
-        min = Math.min(min, getPatternMinLength(pattern, parentCalls, cache));
+        min = Math.min(
+            min,
+            getPatternMinLength(pattern, parentCalls, cache, rules)
+        );
         if (min === 0) break;
     }
     return min;
 };
 
-const getPatternMinLength = (pattern, parentCalls, cache) => {
+const getPatternMinLength = (pattern, parentCalls, cache, rules) => {
     let currentLength = 0;
     for (const token of pattern) {
         if (isTerminal(token)) {
@@ -289,14 +305,19 @@ const getPatternMinLength = (pattern, parentCalls, cache) => {
                     currentLength += getPatternListMinLength(
                         token.patterns,
                         parentCalls,
-                        cache
+                        cache,
+                        rules
                     );
                     break;
                 case "multi":
                     if (token.min === 0) continue;
                     currentLength +=
-                        getPatternMinLength(token.pattern, parentCalls, cache) *
-                        token.min;
+                        getPatternMinLength(
+                            token.pattern,
+                            parentCalls,
+                            cache,
+                            rules
+                        ) * token.min;
                     break;
                 case "anychar":
                     currentLength += 1;
@@ -306,7 +327,8 @@ const getPatternMinLength = (pattern, parentCalls, cache) => {
             currentLength += getTypeMinLength(
                 token.type,
                 { ...parentCalls },
-                cache
+                cache,
+                rules
             );
         }
         if (currentLength >= Number.MAX_SAFE_INTEGER) {
@@ -320,40 +342,43 @@ const getPatternMinLength = (pattern, parentCalls, cache) => {
  * Max Length functions
  *************************/
 
-const getMaxLengths = () => {
+const getMaxLengths = (rules) => {
     const maxLengths = {};
-    for (const type in RULES) {
-        maxLengths[type] = getTypeMaxLength(type);
+    for (const type in rules) {
+        maxLengths[type] = getTypeMaxLength(type, undefined, undefined, rules);
     }
     return maxLengths;
 };
 
-const getTypeMaxLength = (type, parentCalls = {}, cache = {}) => {
+const getTypeMaxLength = (type, parentCalls = {}, cache = {}, rules) => {
     if (cache[type] !== undefined) return cache[type];
     if (parentCalls[type]) {
         cache[type] = Number.MAX_SAFE_INTEGER;
         return cache[type];
     }
     parentCalls[type] = true;
-
     cache[type] = getPatternListMaxLength(
-        RULES[type].map(({ pattern }) => pattern),
+        rules[type].map(({ pattern }) => pattern),
         parentCalls,
-        cache
+        cache,
+        rules
     );
     return cache[type];
 };
 
-const getPatternListMaxLength = (patternList, parentCalls, cache) => {
+const getPatternListMaxLength = (patternList, parentCalls, cache, rules) => {
     let max = 0;
     for (const pattern of patternList) {
-        max = Math.max(max, getPatternMaxLength(pattern, parentCalls, cache));
+        max = Math.max(
+            max,
+            getPatternMaxLength(pattern, parentCalls, cache, rules)
+        );
         if (max >= Number.MAX_SAFE_INTEGER) break;
     }
     return max;
 };
 
-const getPatternMaxLength = (pattern, parentCalls, cache) => {
+const getPatternMaxLength = (pattern, parentCalls, cache, rules) => {
     let currentLength = 0;
     for (const token of pattern) {
         if (isTerminal(token)) {
@@ -366,7 +391,8 @@ const getPatternMaxLength = (pattern, parentCalls, cache) => {
                     currentLength += getPatternListMaxLength(
                         token.patterns,
                         parentCalls,
-                        cache
+                        cache,
+                        rules
                     );
                     break;
                 case "multi":
@@ -377,8 +403,12 @@ const getPatternMaxLength = (pattern, parentCalls, cache) => {
                         continue;
                     }
                     currentLength +=
-                        getPatternMaxLength(token.pattern, parentCalls, cache) *
-                        token.max;
+                        getPatternMaxLength(
+                            token.pattern,
+                            parentCalls,
+                            cache,
+                            rules
+                        ) * token.max;
                     break;
                 case "anychar":
                     currentLength += 1;
@@ -388,7 +418,8 @@ const getPatternMaxLength = (pattern, parentCalls, cache) => {
             currentLength += getTypeMaxLength(
                 token.type,
                 { ...parentCalls },
-                cache
+                cache,
+                rules
             );
         }
         if (currentLength >= Number.MAX_SAFE_INTEGER) {
@@ -402,15 +433,15 @@ const getPatternMaxLength = (pattern, parentCalls, cache) => {
  * Dict functions
  *************************/
 
-const getDicts = () => {
+const getDicts = (rules) => {
     const dicts = {};
-    for (const type in RULES) {
-        dicts[type] = getTypeDict(type);
+    for (const type in rules) {
+        dicts[type] = getTypeDict(type, undefined, undefined, rules);
     }
     return dicts;
 };
 
-const getTypeDict = (type, parentCalls = {}, cache = {}) => {
+const getTypeDict = (type, parentCalls = {}, cache = {}, rules) => {
     if (cache[type] !== undefined) return cache[type];
     if (parentCalls[type]) {
         cache[type] = newTokenDict();
@@ -419,22 +450,26 @@ const getTypeDict = (type, parentCalls = {}, cache = {}) => {
     parentCalls[type] = true;
 
     cache[type] = getPatternListDict(
-        RULES[type].map(({ pattern }) => pattern),
+        rules[type].map(({ pattern }) => pattern),
         parentCalls,
-        cache
+        cache,
+        rules
     );
     return cache[type];
 };
 
-const getPatternListDict = (patternList, parentCalls, cache) => {
+const getPatternListDict = (patternList, parentCalls, cache, rules) => {
     let dict = newTokenDict();
     for (const pattern of patternList) {
-        dict = addTokenDicts(dict, getPatternDict(pattern, parentCalls, cache));
+        dict = addTokenDicts(
+            dict,
+            getPatternDict(pattern, parentCalls, cache, rules)
+        );
     }
     return dict;
 };
 
-const getPatternDict = (pattern, parentCalls, cache) => {
+const getPatternDict = (pattern, parentCalls, cache, rules) => {
     let dict = newTokenDict();
     for (const token of pattern) {
         if (isTerminal(token)) {
@@ -446,13 +481,18 @@ const getPatternDict = (pattern, parentCalls, cache) => {
                 case "or":
                     dict = addTokenDicts(
                         dict,
-                        getPatternListDict(token.patterns, parentCalls, cache)
+                        getPatternListDict(
+                            token.patterns,
+                            parentCalls,
+                            cache,
+                            rules
+                        )
                     );
                     break;
                 case "multi":
                     dict = addTokenDicts(
                         dict,
-                        getPatternDict(token.pattern, parentCalls, cache)
+                        getPatternDict(token.pattern, parentCalls, cache, rules)
                     );
                     break;
                 case "anychar":
@@ -462,7 +502,7 @@ const getPatternDict = (pattern, parentCalls, cache) => {
         } else {
             dict = addTokenDicts(
                 dict,
-                getTypeDict(token.type, { ...parentCalls }, cache)
+                getTypeDict(token.type, { ...parentCalls }, cache, rules)
             );
         }
     }
@@ -473,15 +513,27 @@ const getPatternDict = (pattern, parentCalls, cache) => {
  * Start Dict functions
  *************************/
 
-const getStartDicts = () => {
+const getStartDicts = (rules, toAddHeuristics) => {
     const dicts = {};
-    for (const type in RULES) {
-        dicts[type] = getTypeStartDict(type);
+    for (const type in rules) {
+        dicts[type] = getTypeStartDict(
+            type,
+            undefined,
+            undefined,
+            rules,
+            toAddHeuristics
+        );
     }
     return dicts;
 };
 
-const getTypeStartDict = (type, parentCalls = {}, cache = {}) => {
+const getTypeStartDict = (
+    type,
+    parentCalls = {},
+    cache = {},
+    rules,
+    toAddHeuristics
+) => {
     if (cache[type] !== undefined) return cache[type];
     if (parentCalls[type]) {
         cache[type] = newTokenDict();
@@ -489,31 +541,50 @@ const getTypeStartDict = (type, parentCalls = {}, cache = {}) => {
     }
     parentCalls[type] = true;
     cache[type] = getPatternListStartDict(
-        RULES[type].map(({ pattern }) => pattern),
+        rules[type].map(({ pattern }) => pattern),
         parentCalls,
-        cache
+        cache,
+        rules,
+        toAddHeuristics
     );
     return cache[type];
 };
 
-const getPatternListStartDict = (patternList, parentCalls, cache) => {
+const getPatternListStartDict = (
+    patternList,
+    parentCalls,
+    cache,
+    rules,
+    toAddHeuristics
+) => {
     let startDict = newTokenDict();
     for (const pattern of patternList) {
         startDict = addTokenDicts(
             startDict,
-            getPatternStartDict(pattern, parentCalls, cache)
+            getPatternStartDict(
+                pattern,
+                parentCalls,
+                cache,
+                rules,
+                toAddHeuristics
+            )
         );
     }
     return startDict;
 };
 
-const getPatternStartDict = (pattern, parentCalls, cache) => {
+const getPatternStartDict = (
+    pattern,
+    parentCalls,
+    cache,
+    rules,
+    toAddHeuristics
+) => {
     let startDict = newTokenDict();
     for (const token of pattern) {
         if (isTerminal(token)) {
-            if (token.length) {
-                return addToTokenDict(startDict, token[0]);
-            }
+            // if the minimum length is > 0, no need to check any further
+            if (token.length) return addToTokenDict(startDict, token[0]);
             continue;
         }
 
@@ -525,18 +596,31 @@ const getPatternStartDict = (pattern, parentCalls, cache) => {
                         getPatternListStartDict(
                             token.patterns,
                             parentCalls,
-                            cache
+                            cache,
+                            rules,
+                            toAddHeuristics
                         )
                     );
-                    if (getPatternListMinLength(token.patterns, {}, {}))
+                    // if the minimum length is > 0, no need to check any further
+                    if (getPatternListMinLength(token.patterns, {}, {}, rules))
                         return startDict;
                     break;
                 case "multi":
                     startDict = addTokenDicts(
                         startDict,
-                        getPatternStartDict(token.pattern, parentCalls, cache)
+                        getPatternStartDict(
+                            token.pattern,
+                            parentCalls,
+                            cache,
+                            rules,
+                            toAddHeuristics
+                        )
                     );
-                    if (token.min && getPatternMinLength(token.pattern, {}, {}))
+                    // if the minimum length is > 0, no need to check any further
+                    if (
+                        token.min &&
+                        getPatternMinLength(token.pattern, {}, {}, rules)
+                    )
                         return startDict;
                     break;
                 case "anychar":
@@ -545,9 +629,16 @@ const getPatternStartDict = (pattern, parentCalls, cache) => {
         } else {
             startDict = addTokenDicts(
                 startDict,
-                getTypeStartDict(token.type, { ...parentCalls }, cache)
+                getTypeStartDict(
+                    token.type,
+                    { ...parentCalls },
+                    cache,
+                    rules,
+                    toAddHeuristics
+                )
             );
 
+            // if the minimum length is > 0, no need to check any further
             if (toAddHeuristics.minLength[token.type]) return startDict;
         }
     }
@@ -558,15 +649,27 @@ const getPatternStartDict = (pattern, parentCalls, cache) => {
  * End Dict functions
  *************************/
 
-const getEndDicts = () => {
+const getEndDicts = (rules, toAddHeuristics) => {
     const dicts = {};
-    for (const type in RULES) {
-        dicts[type] = getTypeEndDict(type);
+    for (const type in rules) {
+        dicts[type] = getTypeEndDict(
+            type,
+            undefined,
+            undefined,
+            rules,
+            toAddHeuristics
+        );
     }
     return dicts;
 };
 
-const getTypeEndDict = (type, parentCalls = {}, cache = {}) => {
+const getTypeEndDict = (
+    type,
+    parentCalls = {},
+    cache = {},
+    rules,
+    toAddHeuristics
+) => {
     if (cache[type] !== undefined) return cache[type];
     if (parentCalls[type]) {
         cache[type] = newTokenDict();
@@ -574,32 +677,52 @@ const getTypeEndDict = (type, parentCalls = {}, cache = {}) => {
     }
     parentCalls[type] = true;
     cache[type] = getPatternListEndDict(
-        RULES[type].map(({ pattern }) => pattern),
+        rules[type].map(({ pattern }) => pattern),
         parentCalls,
-        cache
+        cache,
+        rules,
+        toAddHeuristics
     );
     return cache[type];
 };
 
-const getPatternListEndDict = (patternList, parentCalls, cache) => {
+const getPatternListEndDict = (
+    patternList,
+    parentCalls,
+    cache,
+    rules,
+    toAddHeuristics
+) => {
     let endDict = newTokenDict();
     for (const pattern of patternList) {
         endDict = addTokenDicts(
             endDict,
-            getPatternEndDict(pattern, parentCalls, cache)
+            getPatternEndDict(
+                pattern,
+                parentCalls,
+                cache,
+                rules,
+                toAddHeuristics
+            )
         );
     }
     return endDict;
 };
 
-const getPatternEndDict = (pattern, parentCalls, cache) => {
+const getPatternEndDict = (
+    pattern,
+    parentCalls,
+    cache,
+    rules,
+    toAddHeuristics
+) => {
     let endDict = newTokenDict();
     for (let i = pattern.length - 1; i >= 0; i--) {
         const token = pattern[i];
         if (isTerminal(token)) {
-            if (token.length) {
+            // if the minimum length is > 0, no need to check any further
+            if (token.length)
                 return addToTokenDict(endDict, token[token.length - 1]);
-            }
             continue;
         }
         if (token.metaType) {
@@ -610,18 +733,31 @@ const getPatternEndDict = (pattern, parentCalls, cache) => {
                         getPatternListEndDict(
                             token.patterns,
                             parentCalls,
-                            cache
+                            cache,
+                            rules,
+                            toAddHeuristics
                         )
                     );
-                    if (getPatternListMinLength(token.patterns, {}, {}))
+                    // if the minimum length is > 0, no need to check any further
+                    if (getPatternListMinLength(token.patterns, {}, {}, rules))
                         return endDict;
                     break;
                 case "multi":
                     endDict = addTokenDicts(
                         endDict,
-                        getPatternEndDict(token.pattern, parentCalls, cache)
+                        getPatternEndDict(
+                            token.pattern,
+                            parentCalls,
+                            cache,
+                            rules,
+                            toAddHeuristics
+                        )
                     );
-                    if (token.min && getPatternMinLength(token.pattern, {}, {}))
+                    // if the minimum length is > 0, no need to check any further
+                    if (
+                        token.min &&
+                        getPatternMinLength(token.pattern, {}, {}, rules)
+                    )
                         return endDict;
                     break;
                 case "anychar":
@@ -630,9 +766,16 @@ const getPatternEndDict = (pattern, parentCalls, cache) => {
         } else {
             endDict = addTokenDicts(
                 endDict,
-                getTypeEndDict(token.type, { ...parentCalls }, cache)
+                getTypeEndDict(
+                    token.type,
+                    { ...parentCalls },
+                    cache,
+                    rules,
+                    toAddHeuristics
+                )
             );
 
+            // if the minimum length is > 0, no need to check any further
             if (toAddHeuristics.minLength[token.type]) return endDict;
         }
     }

@@ -1,42 +1,52 @@
 import { CuttlefishError, deepCopy } from "../util/index.js";
-import { parseExpressionAsType } from "./parseExpression.js";
+import { parseExpressionAsType } from "../parse/parseExpression.js";
+import RULES from "../rules/index.js";
 
-import RULES from "../expressions/index.js";
-import {
-    evaluateExpression,
-    evaluateIndentTree,
-    evaluateInstantiator,
-    evaluateStatement,
-} from "./evaluate.js";
+import { evaluateExpression } from "./evaluate.js";
+import { newContext } from "../parse/context.js";
 
 /**
  * Parse AND evaluate
  */
 export const interpretIndentTree = (
     { instantiatorStatement, statements, lineNumber, line },
-    rules = deepCopy(RULES),
-    context = {}
+    context = newContext(RULES)
 ) => {
     if (statements) {
         if (instantiatorStatement) {
-            const parsedTree = { lineNumber };
-            parsedTree.instantiator = parseExpressionAsType(
+            const parse = parseExpressionAsType(
                 "Instantiator",
                 instantiatorStatement.line,
-                lineNumber
+                lineNumber,
+                context
             );
-            if (parsedTree.instantiator.error)
-                throw CuttlefishError(
-                    instantiatorStatement.lineNumber,
-                    parsedTree.instantiator.error
-                );
-            evaluateInstantiator(parsedTree, context);
+            if (parse.error) throw CuttlefishError(lineNumber, parse.error);
+            const insideContext = deepCopy(context);
+            evaluateExpression({ ...parse, lineNumber }, insideContext);
+
+            while (insideContext.runBlock()) {
+                interpretStatementList(statements, insideContext);
+                if (!insideContext.inLoop) break;
+            }
+            return;
         }
-        for (const statementNode of statements) {
-            interpretIndentTree(statementNode, rules, context);
-        }
+        interpretStatementList(statements, context);
+        return;
     }
-    const parse = parseExpressionAsType("Statement", line, lineNumber);
+    const parse = parseExpressionAsType("Statement", line, lineNumber, context);
     if (parse.error) throw CuttlefishError(lineNumber, parse.error);
-    evaluateStatement({ ...parse, lineNumber }, context);
+    evaluateExpression({ ...parse, lineNumber }, context);
+};
+
+const interpretStatementList = (statementList, context) => {
+    for (const statement of statementList) {
+        if (context.breakingLoop) {
+            context.inLoop = false;
+            break;
+        }
+        if (context.continuingLoop) {
+            break;
+        }
+        interpretIndentTree(statement, context);
+    }
 };

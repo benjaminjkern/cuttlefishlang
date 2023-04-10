@@ -1,8 +1,5 @@
-import {
-    evaluateExpression,
-    evaluateStatementList,
-} from "../parse/evaluate.js";
-import { type, OR } from "../parse/ruleUtils.js";
+import { evaluateExpression } from "../../evaluate/evaluate.js";
+import { type, OR } from "../../parse/ruleUtils.js";
 
 export default {
     Object: [

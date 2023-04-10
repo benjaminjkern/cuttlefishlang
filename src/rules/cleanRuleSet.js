@@ -1,5 +1,5 @@
-import { MULTI, type } from "./ruleUtils.js";
-import { evaluateExpression } from "./evaluate.js";
+import { MULTI, type } from "../parse/ruleUtils.js";
+import { evaluateExpression } from "../evaluate/evaluate.js";
 
 /**
  * Spaces:

@@ -1,4 +1,4 @@
-import { MULTI, NOTCHAR, OPTIONAL, OR, type } from "../parse/ruleUtils";
+import { MULTI, NOTCHAR, OPTIONAL, OR, type } from "./ruleUtils";
 
 export default {
     A: [

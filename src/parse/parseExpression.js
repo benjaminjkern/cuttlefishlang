@@ -1,65 +1,27 @@
-import { isTerminal } from "../util/parsingUtils.js";
-import { inspect, deepCopy } from "../util/index.js";
+import { isTerminal } from "./parsingUtils.js";
 import { isValidToken } from "./tokenDict.js";
-import generateHeuristics from "./heuristics.js";
-
-let HEURISTICS,
-    BASE_RULES,
-    RULES,
-    VARS,
-    CONTEXT = {};
-
-export const setVariable = (varName, value) => {
-    VARS[varName].value = value;
-};
-
-export const newParseVariable = (typeName, varName) => {
-    RULES = deepCopy(BASE_RULES);
-    VARS[varName] = { typeName };
-    setVars();
-    HEURISTICS = generateHeuristics(RULES);
-};
-
-/**
- * Add variables from VARS -> RULES
- */
-const setVars = () => {
-    for (const varName in VARS) {
-        RULES[VARS[varName].typeName].push({
-            pattern: [varName],
-            evaluate: () => VARS[varName].value,
-        });
-    }
-};
-
-export const setContext = (newContext) => {
-    CONTEXT = { ...CONTEXT, ...newContext };
-};
-
-export const getContext = (key) => CONTEXT[key];
-
-export const setRules = (rules) => {
-    BASE_RULES = rules;
-    RULES = { ...rules };
-    VARS = {};
-    HEURISTICS = generateHeuristics(rules);
-};
 
 /**********************
  * Parse functions
  **********************/
 
-export const parseExpressionAsType = (type, expression, lineNumber) => {
-    if (!RULES[type]) return { error: `Invalid type: ${type}` };
-    const typeHeuristics = checkTypeHeuristics(type, expression);
+export const parseExpressionAsType = (
+    type,
+    expression,
+    lineNumber,
+    context
+) => {
+    if (!context.rules[type]) return { error: `Invalid type: ${type}` };
+    const typeHeuristics = checkTypeHeuristics(type, expression, context);
     if (typeHeuristics.error) return typeHeuristics;
 
-    for (const rule of RULES[type]) {
+    for (const rule of context.rules[type]) {
         const parse = parseExpressionAsPattern(
             rule.pattern,
             expression,
             rule,
-            lineNumber
+            lineNumber,
+            context
         );
         if (parse.error) continue;
         const obj = {
@@ -80,7 +42,8 @@ export const parseExpressionAsType = (type, expression, lineNumber) => {
 const parseExpressionAsMetaType = (
     metaTypePatternToken,
     expression,
-    lineNumber
+    lineNumber,
+    context
 ) => {
     switch (metaTypePatternToken.metaType) {
         case "or":
@@ -89,7 +52,8 @@ const parseExpressionAsMetaType = (
                     pattern,
                     expression,
                     undefined,
-                    lineNumber
+                    lineNumber,
+                    context
                 );
                 if (parse.error) continue;
                 return parse;
@@ -111,7 +75,9 @@ const parseExpressionAsMetaType = (
                     },
                 ],
                 expression,
-                lineNumber
+                undefined,
+                lineNumber,
+                context
             );
             if (parse.error) return parse;
             return compactifyMulti(metaTypePatternToken.pattern, parse);
@@ -125,8 +91,14 @@ const parseExpressionAsMetaType = (
     return { error: `Invalid metaType: ${metaTypePatternToken.metaType}` };
 };
 
-const parseExpressionAsPattern = (pattern, expression, rule, lineNumber) => {
-    const possibleMatches = getPossibleMatches(pattern, expression);
+const parseExpressionAsPattern = (
+    pattern,
+    expression,
+    rule,
+    lineNumber,
+    context
+) => {
+    const possibleMatches = getPossibleMatches(pattern, expression, context);
     if (possibleMatches.length === 0)
         return {
             error: `There do not exist any possible matches of "${expression}" on pattern ${pattern}!`,
@@ -152,7 +124,8 @@ const parseExpressionAsPattern = (pattern, expression, rule, lineNumber) => {
                 const parse = parseExpressionAsMetaType(
                     patternToken,
                     subExpression,
-                    lineNumber
+                    lineNumber,
+                    context
                 );
                 if (parse.error) continue nextBreakPoint;
                 match.push(parse);
@@ -162,7 +135,8 @@ const parseExpressionAsPattern = (pattern, expression, rule, lineNumber) => {
             const parse = parseExpressionAsType(
                 patternToken.type,
                 subExpression,
-                lineNumber
+                lineNumber,
+                context
             );
             if (parse.error) continue nextBreakPoint;
             match.push(parse);
@@ -175,9 +149,9 @@ const parseExpressionAsPattern = (pattern, expression, rule, lineNumber) => {
     };
 };
 
-const checkTypeHeuristics = (type, expression) => {
-    for (const heuristic in HEURISTICS.typeHeuristics) {
-        const heuristicCheck = HEURISTICS.typeHeuristics[heuristic](
+const checkTypeHeuristics = (type, expression, context) => {
+    for (const heuristic in context.heuristics.typeHeuristics) {
+        const heuristicCheck = context.heuristics.typeHeuristics[heuristic](
             type,
             expression
         );
@@ -210,15 +184,15 @@ const checkMetaTypeHeuristics = (metaTypePatternToken, expression) => {
     return {};
 };
 
-const patternMinLength = (pattern) => {
-    return HEURISTICS.patternHeuristics.minLength(pattern);
+const patternMinLength = (pattern, context) => {
+    return context.heuristics.patternHeuristics.minLength(pattern);
 };
 
-const getPossibleMatches = (pattern, expression) => {
+const getPossibleMatches = (pattern, expression, context) => {
     // If the pattern doesnt have any tokens left, either the expression should also be empty or there should be no matches
     if (pattern.length === 0) return expression.length === 0 ? [[]] : [];
 
-    if (expression.length < patternMinLength(pattern)) return [];
+    if (expression.length < patternMinLength(pattern, context)) return [];
 
     const firstPatternToken = pattern[0];
     if (isTerminal(firstPatternToken)) {
@@ -228,7 +202,8 @@ const getPossibleMatches = (pattern, expression) => {
 
         return getPossibleMatches(
             pattern.slice(1),
-            expression.slice(firstPatternToken.length)
+            expression.slice(firstPatternToken.length),
+            context
         ).map((match) => [
             firstPatternToken.length,
             ...match.map((len) => len + firstPatternToken.length),
@@ -240,7 +215,8 @@ const getPossibleMatches = (pattern, expression) => {
         if (firstPatternToken.type) {
             const typeHeuristics = checkTypeHeuristics(
                 firstPatternToken.type,
-                expression.slice(0, i)
+                expression.slice(0, i),
+                context
             );
             if (typeHeuristics.error) continue;
         } else {
@@ -252,9 +228,11 @@ const getPossibleMatches = (pattern, expression) => {
         }
 
         matches.push(
-            ...getPossibleMatches(pattern.slice(1), expression.slice(i)).map(
-                (match) => [i, ...match.map((len) => len + i)]
-            )
+            ...getPossibleMatches(
+                pattern.slice(1),
+                expression.slice(i),
+                context
+            ).map((match) => [i, ...match.map((len) => len + i)])
         );
     }
     return matches;

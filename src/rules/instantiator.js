@@ -1,27 +1,5 @@
-import {
-    evaluateExpression,
-    evaluateStatementList,
-    evaluateIndentTree,
-} from "../parse/evaluate.js";
-import { setContext, getContext } from "../parse/parseExpression.js";
+import { evaluateExpression } from "../evaluate/evaluate.js";
 import { type, OPTIONAL } from "../parse/ruleUtils.js";
-
-const loop = (testFunc, children) => {
-    bigLoop: while (testFunc()) {
-        for (const child of children) {
-            evaluateIndentTree(child);
-
-            if (getContext("breakingLoop")) {
-                setContext({ breakingLoop: false });
-                break bigLoop;
-            }
-            if (getContext("continuingLoop")) {
-                setContext({ continuingLoop: false });
-                break;
-            }
-        }
-    }
-};
 
 export default {
     Instantiator: [
@@ -35,7 +13,7 @@ export default {
             pattern: ["while", type("Boolean"), ":"],
             evaluate: ({ tokens: [_, test], setContext }) => {
                 setContext({
-                    loop: true,
+                    inLoop: true,
                     runBlock: () => evaluateExpression(test),
                 });
             },
@@ -45,7 +23,7 @@ export default {
             evaluate: ({ tokens: [_, test], setContext }) => {
                 let i = 0;
                 setContext({
-                    loop: true,
+                    inLoop: true,
                     runBlock: () => {
                         i++;
                         if (test.length) return i < evaluateExpression(test); // If no number is input, just repeat indefinitely

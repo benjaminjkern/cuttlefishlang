@@ -26,6 +26,8 @@ export const interpretIndentTree = (
             evaluateExpression({ ...parse, lineNumber }, insideContext);
 
             while (insideContext.runBlock()) {
+                insideContext.breakingLoop = false;
+                insideContext.continuingLoop = false;
                 interpretStatementList(statements, insideContext);
                 if (insideContext.loopLevel > 0 || insideContext.breakingLoop)
                     break;

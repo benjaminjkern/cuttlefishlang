@@ -1,5 +1,5 @@
-const { MULTI, type } = require("../parse/ruleUtils");
-const { evaluateExpression } = require("./evaluate");
+import { MULTI, type } from "./ruleUtils.js";
+import { evaluateExpression } from "./evaluate.js";
 
 /**
  * Spaces:
@@ -68,4 +68,4 @@ const cleanRuleSet = (rules) => {
     return rules;
 };
 
-module.exports = cleanRuleSet;
+export default cleanRuleSet;

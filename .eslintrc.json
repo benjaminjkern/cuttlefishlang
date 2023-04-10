@@ -1,0 +1,68 @@
+// module.exports = {
+//     // root: true,
+//     // parserOptions: {
+//     //     // ecmaVersion: 2018,
+//     //     sourceType: "module",
+//     // },
+
+//     rules: {
+//         curly: "off",
+//         "react-native/no-inline-styles": "off",
+//         "no-fallthrough": "off",
+//         "prettier/prettier": "off",
+//     },
+// };
+
+{
+    "root": true,
+    "parserOptions": {
+        "sourceType": "module",
+        "ecmaVersion": "latest"
+    },
+    "extends": "airbnb-base",
+    "rules": {
+        "quotes": "off",
+        "import/extensions": "off",
+        "indent": "off",
+        "implicit-arrow-linebreak": "off",
+        "no-bitwise": "off",
+        "no-unused-vars": [
+            "warn",
+            {
+                "argsIgnorePattern": "^_",
+                "varsIgnorePattern": "^_",
+                "caughtErrorsIgnorePattern": "^_"
+            }
+        ],
+        "no-plusplus": "off",
+        "curly": "off",
+        "object-curly-newline": "off",
+        "comma-dangle": "off",
+        "nonblock-statement-body-position": "off",
+        "max-len": "off",
+        "no-param-reassign": ["warn", { "props": false }],
+        "default-case-last": "warn",
+        "no-shadow": "warn",
+        "function-paren-newline": "off",
+        "no-console": ["warn", { "allow": ["warn", "error"] }],
+        "prefer-template": "warn",
+        "no-continue": "off",
+        "prefer-destructuring": "warn",
+        "no-use-before-define": ["error", { "variables": false }],
+        "import/prefer-default-export": "warn",
+        "operator-linebreak": "off",
+        "spaced-comment": "off",
+        "one-var": "off",
+        "no-throw-literal": "warn",
+
+        "arrow-body-style": "off",
+        "no-labels": "off",
+        "no-restricted-syntax": "off",
+        "no-fallthrough": "off",
+        "no-confusing-arrow": "off",
+        "guard-for-in": "off",
+        "default-case": "off",
+        "no-loop-func": "off",
+        "no-case-declarations": "off"
+    }
+}

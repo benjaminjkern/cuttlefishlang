@@ -1,6 +1,6 @@
 // First parse through: Just break everything up into indent-based tree structure
 // Also included in this: Removal of comments and empty lines
-const { CuttlefishError } = require("../util");
+import { CuttlefishError } from "../util/index.js";
 
 // Remove comments and empty lines
 const filterLines = (lines) => {
@@ -13,7 +13,7 @@ const filterLines = (lines) => {
             if (inComment) {
                 const blockComment = existingLine.search(/###/);
                 if (blockComment === -1) break;
-                existingLine = " " + existingLine.substring(blockComment + 3);
+                existingLine = ` ${existingLine.substring(blockComment + 3)}`;
                 inComment = false;
             }
             const firstComment = existingLine.search(/#/);
@@ -80,7 +80,7 @@ const createIndentTree = (sourceString) => {
                         lineNumber,
                         `Did not indent back to any parent indentation! (Line: ${indent})`
                     );
-                const parent = currentProgram.parent;
+                const { parent } = currentProgram;
                 delete currentProgram.parent;
                 delete currentProgram.indent;
                 currentProgram = parent;
@@ -92,7 +92,7 @@ const createIndentTree = (sourceString) => {
 
     // Track back up tree
     while (currentProgram !== topLevelProgram) {
-        const parent = currentProgram.parent;
+        const { parent } = currentProgram;
         delete currentProgram.parent;
         delete currentProgram.indent;
         currentProgram = parent;
@@ -103,4 +103,4 @@ const createIndentTree = (sourceString) => {
     return topLevelProgram;
 };
 
-module.exports = createIndentTree;
+export default createIndentTree;

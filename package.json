@@ -1,6 +1,7 @@
 {
     "name": "cuttlefishlang",
     "version": "0.1",
+    "type": "module",
     "description": "![cuttlefish](etc/cuttlefish.png \"Cuttlefish!\")",
     "main": "src/index.js",
     "directories": {
@@ -19,5 +20,10 @@
     "bugs": {
         "url": "https://github.com/benjaminjkern/cuttlefishlang/issues"
     },
-    "homepage": "https://github.com/benjaminjkern/cuttlefishlang#readme"
+    "homepage": "https://github.com/benjaminjkern/cuttlefishlang#readme",
+    "devDependencies": {
+        "eslint": "^8.38.0",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-plugin-import": "^2.27.5"
+    }
 }

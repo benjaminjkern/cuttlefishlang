@@ -1,12 +1,11 @@
-const { isTerminal } = require("../util/parsingUtils");
+import { isTerminal } from "../util/parsingUtils.js";
 
-const {
+import {
     newTokenDict,
     addToTokenDict,
     addTokenDicts,
     isValidToken,
-} = require("./tokenDict");
-const { inspect } = require("../util");
+} from "./tokenDict.js";
 
 // This is so it can be accessed later by the start and end dict function
 let toAddHeuristics;
@@ -80,14 +79,14 @@ const generateHeuristics = (rules) => {
         let maxLength;
         switch (metaTypeToken.metaType) {
             case "or":
-                minLength = getPatternListMaxLength(
+                maxLength = getPatternListMaxLength(
                     metaTypeToken.patterns,
                     {},
                     toAddHeuristics.maxLength
                 );
                 break;
             case "multi":
-                minLength =
+                maxLength =
                     metaTypeToken.max *
                     getPatternMinLength(
                         metaTypeToken.pattern,
@@ -102,7 +101,7 @@ const generateHeuristics = (rules) => {
         }
         if (expression.length > maxLength)
             return {
-                error: `"${expression}" is longer than the maximum possible length (${minLength}) for meta-type: ${metaTypeToken}!`,
+                error: `"${expression}" is longer than the maximum possible length (${maxLength}) for meta-type: ${metaTypeToken}!`,
             };
         return true;
     };
@@ -640,8 +639,4 @@ const getPatternEndDict = (pattern, parentCalls, cache) => {
     return endDict;
 };
 
-/*************************
- * Final stuff
- *************************/
-
-module.exports = { generateHeuristics };
+export default generateHeuristics;

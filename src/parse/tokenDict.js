@@ -1,10 +1,10 @@
-const { subtract, intersect, makeSet } = require("../util/sets");
+import { subtract, intersect, makeSet } from "../util/sets.js";
 
-const newTokenDict = () => {
+export const newTokenDict = () => {
     return { whitelist: {} };
 };
 
-const addTokenDicts = (a, b) => {
+export const addTokenDicts = (a, b) => {
     if (a.whitelist) {
         if (b.whitelist)
             return { whitelist: { ...a.whitelist, ...b.whitelist } };
@@ -14,14 +14,12 @@ const addTokenDicts = (a, b) => {
     return { blacklist: intersect(a.blacklist, b.blacklist) };
 };
 
-const addToTokenDict = (dict, terminalToken) => {
+export const addToTokenDict = (dict, terminalToken) => {
     return addTokenDicts(dict, { whitelist: makeSet(terminalToken.split("")) });
 };
 
-const isValidToken = (tokenDict, token) => {
+export const isValidToken = (tokenDict, token) => {
     if (tokenDict.whitelist)
         return token.split("").every((char) => tokenDict.whitelist[char]);
     return token.split("").every((char) => !tokenDict.blacklist[char]);
 };
-
-module.exports = { newTokenDict, addTokenDicts, addToTokenDict, isValidToken };

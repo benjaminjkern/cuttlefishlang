@@ -1,6 +1,6 @@
-const { makeSet } = require("../util/sets");
+import { makeSet } from "../util/sets.js";
 
-const ANYCHAR = (whitelist = "") => {
+export const ANYCHAR = (whitelist = "") => {
     if (typeof whitelist !== "string" || !whitelist.length)
         throw "ANYCHAR(whitelist): whitelist must be a string of characters to include!";
     return {
@@ -9,7 +9,7 @@ const ANYCHAR = (whitelist = "") => {
     };
 };
 
-const NOTCHAR = (blacklist = "") => {
+export const NOTCHAR = (blacklist = "") => {
     if (typeof blacklist !== "string")
         throw "NOTCHAR(blacklist): blacklist must be a string of characters to exclude!";
     return {
@@ -31,7 +31,7 @@ const NOTCHAR = (blacklist = "") => {
 //     return { metaType: "positiveLookahead", pattern };
 // };
 
-const OR = (...patterns) => {
+export const OR = (...patterns) => {
     return {
         metaType: "or",
         patterns: patterns.map((pattern) =>
@@ -40,7 +40,7 @@ const OR = (...patterns) => {
     };
 };
 
-const MULTI = (pattern, min = 0, max = Number.MAX_SAFE_INTEGER) => {
+export const MULTI = (pattern, min = 0, max = Number.MAX_SAFE_INTEGER) => {
     return {
         metaType: "multi",
         pattern: isList(pattern) ? pattern : [pattern],
@@ -49,18 +49,9 @@ const MULTI = (pattern, min = 0, max = Number.MAX_SAFE_INTEGER) => {
     };
 };
 
-const OPTIONAL = (...x) => MULTI(x, 0, 1);
+export const OPTIONAL = (...x) => MULTI(x, 0, 1);
 
 const isList = (object) =>
     typeof object === "object" && object.length !== undefined;
 
-const type = (typeName) => ({ type: typeName });
-
-module.exports = {
-    ANYCHAR,
-    NOTCHAR,
-    OR,
-    MULTI,
-    OPTIONAL,
-    type,
-};
+export const type = (typeName) => ({ type: typeName });

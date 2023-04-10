@@ -1,7 +1,7 @@
-const { isTerminal } = require("../util/parsingUtils");
-const { inspect, deepCopy } = require("../util");
-const { isValidToken } = require("./tokenDict");
-const { generateHeuristics } = require("./heuristics");
+import { isTerminal } from "../util/parsingUtils.js";
+import { inspect, deepCopy } from "../util/index.js";
+import { isValidToken } from "./tokenDict.js";
+import generateHeuristics from "./heuristics.js";
 
 let HEURISTICS,
     BASE_RULES,
@@ -9,11 +9,11 @@ let HEURISTICS,
     VARS,
     CONTEXT = {};
 
-const setVariable = (varName, value) => {
+export const setVariable = (varName, value) => {
     VARS[varName].value = value;
 };
 
-const newParseVariable = (typeName, varName) => {
+export const newParseVariable = (typeName, varName) => {
     RULES = deepCopy(BASE_RULES);
     VARS[varName] = { typeName };
     setVars();
@@ -32,13 +32,13 @@ const setVars = () => {
     }
 };
 
-const setContext = (newContext) => {
+export const setContext = (newContext) => {
     CONTEXT = { ...CONTEXT, ...newContext };
 };
 
-const getContext = (key) => CONTEXT[key];
+export const getContext = (key) => CONTEXT[key];
 
-const setRules = (rules) => {
+export const setRules = (rules) => {
     BASE_RULES = rules;
     RULES = { ...rules };
     VARS = {};
@@ -49,7 +49,7 @@ const setRules = (rules) => {
  * Parse functions
  **********************/
 
-const parseExpressionAsType = (type, expression, lineNumber) => {
+export const parseExpressionAsType = (type, expression, lineNumber) => {
     if (!RULES[type]) return { error: `Invalid type: ${type}` };
     const typeHeuristics = checkTypeHeuristics(type, expression);
     if (typeHeuristics.error) return typeHeuristics;
@@ -268,13 +268,4 @@ const compactifyMulti = (pattern, parse) => {
     if (nextTokens.length === 0) return theseTokens.map((token) => [token]);
 
     return pattern.map((token, i) => [theseTokens[i], ...nextTokens[i]]);
-};
-
-module.exports = {
-    parseExpressionAsType,
-    setContext,
-    setRules,
-    newParseVariable,
-    setVariable,
-    getContext,
 };

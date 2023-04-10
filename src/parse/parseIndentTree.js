@@ -1,5 +1,5 @@
-const { CuttlefishError } = require("../util");
-const { parseExpressionAsType } = require("./parseExpression");
+import { CuttlefishError } from "../util/index.js";
+import { parseExpressionAsType } from "./parseExpression.js";
 
 const parseIndentTree = ({
     instantiatorStatement,
@@ -29,4 +29,4 @@ const parseIndentTree = ({
     return { ...parse, lineNumber };
 };
 
-module.exports = parseIndentTree;
+export default parseIndentTree;

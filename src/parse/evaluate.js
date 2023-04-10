@@ -1,4 +1,4 @@
-const evaluateIndentTree = (parsedNode) => {
+export const evaluateIndentTree = (parsedNode) => {
     const { instantiator, children, lineNumber } = parsedNode;
     if (children) {
         if (parsedNode.instantiator) {
@@ -23,11 +23,11 @@ const evaluateIndentTree = (parsedNode) => {
     return evaluateExpression(parsedNode);
 };
 
-const evaluateStatementList = (expList) => {
+export const evaluateStatementList = (expList) => {
     expList.forEach(evaluateIndentTree);
 };
 
-const evaluateExpression = (parsedNode) => {
+export const evaluateExpression = (parsedNode) => {
     if (!parsedNode.evaluate) {
         if (parsedNode.length) return evaluateExpression(parsedNode[0]);
         console.warn("not sure what happened", parsedNode);
@@ -37,10 +37,4 @@ const evaluateExpression = (parsedNode) => {
         sourceString: parsedNode.sourceString,
         lineNumber: parsedNode.lineNumber,
     });
-};
-
-module.exports = {
-    evaluateExpression,
-    evaluateStatementList,
-    evaluateIndentTree,
 };

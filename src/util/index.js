@@ -1,7 +1,9 @@
-const inspect = (obj) =>
-    console.log(require("util").inspect(obj, false, null, true));
+import { inspect as utilInspect } from "util";
 
-const CuttlefishError = (lineNumber, string) => {
+export const inspect = (obj) =>
+    console.log(utilInspect(obj, false, null, true)); // eslint-disable-line no-console
+
+export const CuttlefishError = (lineNumber, string) => {
     console.error(`${lineNumber}: ${string}`);
     process.exit(-1);
 };
@@ -15,7 +17,7 @@ const scrambleList = (list) => {
     return newList;
 };
 
-const deepCopy = (object) => {
+export const deepCopy = (object) => {
     if (typeof object !== "object") return object;
     if (object.length !== undefined) return object.map(deepCopy);
     const newObject = {};
@@ -24,5 +26,3 @@ const deepCopy = (object) => {
     }
     return newObject;
 };
-
-module.exports = { inspect, CuttlefishError, deepCopy };

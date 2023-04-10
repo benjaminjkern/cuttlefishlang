@@ -1,36 +1,40 @@
-const {
+import {
     evaluateExpression,
     evaluateStatementList,
-} = require("../parse/evaluate");
-const { type, OR } = require("../parse/ruleUtils");
+} from "../parse/evaluate.js";
+import { type, OR } from "../parse/ruleUtils.js";
+import { newRuleList } from "./index.js";
 
-module.exports = {
-    Object: [
-        {
-            pattern: [
-                OR(
-                    type("Number"),
-                    type("String"),
-                    type("Boolean"),
-                    type("Iterable"),
-                    type("Dictionary")
-                ),
-            ],
-        },
-        {
-            pattern: [type("Dictionary"), ".", type("varName")],
-            spaces: "specify",
-        },
-        {
-            pattern: [type("Dictionary"), "[", type("String"), "]"],
-            spaces: "specify",
-        },
-        {
-            pattern: [type("Iterable"), "[", type("Number"), "]"],
-            evaluate: ({ tokens: [iterable, _, index] }) =>
-                evaluateExpression(iterable)[evaluateExpression(index)],
-        },
-    ],
-    Dictionary: [{ pattern: [type("dictlit")] }],
-    dictlit: [{ pattern: ["{", "}"] }],
-};
+newRuleList("Object", [
+    {
+        pattern: [
+            OR(
+                type("Number"),
+                type("String"),
+                type("Boolean"),
+                type("Iterable"),
+                type("Dictionary")
+            ),
+        ],
+    },
+    {
+        pattern: [type("Dictionary"), ".", type("varName")],
+        evaluate: ({ tokens: [dict, _, variable] }) =>
+            evaluateExpression(dict)[evaluateExpression(variable)],
+    },
+    {
+        pattern: [
+            type("Dictionary"),
+            "[",
+            OR(type("String"), type("Number")),
+            "]",
+        ],
+        evaluate: ({ tokens: [dict, _, exp] }) =>
+            evaluateExpression(dict)[evaluateExpression(exp)],
+    },
+    {
+        pattern: [type("Iterable"), "[", type("Number"), "]"],
+        evaluate: ({ tokens: [iterable, _, index] }) =>
+            evaluateExpression(iterable)[evaluateExpression(index)],
+    },
+]);

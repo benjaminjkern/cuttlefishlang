@@ -1,16 +1,16 @@
-const fs = require("fs");
-const { inspect } = require("./util");
+import { readFileSync } from "fs";
+import { inspect } from "./util/index.js";
 
-const createIndentTree = require("./parse/createIndentTree");
-const {
+import createIndentTree from "./parse/createIndentTree.js";
+import {
     parseExpressionAsType,
     setContext,
     setRules,
-} = require("./parse/parseExpression");
-const { evaluateIndentTree } = require("./parse/evaluate");
-const parseIndentTree = require("./parse/parseIndentTree");
+} from "./parse/parseExpression.js";
+import { evaluateIndentTree } from "./parse/evaluate.js";
+import parseIndentTree from "./parse/parseIndentTree.js";
 
-const { RULES } = require("./expressions");
+import { RULES } from "./expressions/index.js";
 
 // Cuttlefish command (Deal with arguments);
 const cuttlefish = (node, file, ...args) => {
@@ -19,7 +19,7 @@ const cuttlefish = (node, file, ...args) => {
         return;
     }
     setRules(RULES);
-    const readfile = fs.readFileSync(args[0], "utf8");
+    const readfile = readFileSync(args[0], "utf8");
     const indentTree = createIndentTree(readfile);
     const parsedTree = parseIndentTree(indentTree);
     const evaluatedTree = evaluateIndentTree(parsedTree);

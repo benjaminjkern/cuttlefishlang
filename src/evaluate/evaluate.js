@@ -35,17 +35,32 @@ export const evaluateExpression = (parsedNode, context) => {
                 context[key] = newContext[key];
             }
         },
-        setVariable: (varName, value) => {
+        setVariable: (varName, type, value) => {
+            if (
+                context.vars[varName]?.type &&
+                context.vars[varName].type !== type
+            ) {
+                console.warn(
+                    `Warning: Changing type of variable ${varName} (${context.vars[varName].type} -> ${type})`
+                );
+                context.rules[context.vars[varName].type] = context.rules[
+                    context.vars[varName].type
+                ].filter(
+                    ({ pattern }) =>
+                        pattern.length !== 1 && pattern[0] !== varName
+                );
+                delete context.vars[varName];
+            }
+
             if (context.vars[varName] === undefined) {
-                const type = "Number";
                 context.rules[type].push({
                     pattern: [varName],
-                    evaluate: () => context.vars[varName],
+                    evaluate: () => context.vars[varName].value,
                 });
                 context.heuristics = generateHeuristics(context.rules);
             }
 
-            context.vars[varName] = value;
+            context.vars[varName] = { value, type };
         },
     });
 };

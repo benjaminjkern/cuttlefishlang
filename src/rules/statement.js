@@ -30,7 +30,11 @@ export default {
         {
             pattern: [type("varName"), "=", type("Object")],
             evaluate: ({ tokens: [id, _, obj], setVariable }) => {
-                setVariable(id.sourceString, evaluateExpression(obj));
+                setVariable(
+                    id.sourceString,
+                    obj.children[0][0].type,
+                    evaluateExpression(obj)
+                );
             },
         },
         {

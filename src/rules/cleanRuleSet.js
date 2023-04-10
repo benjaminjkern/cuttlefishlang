@@ -2,7 +2,10 @@ import { MULTI, type } from "../parse/ruleUtils.js";
 import { evaluateExpression } from "../evaluate/evaluate.js";
 
 /**
- * Spaces:
+ * Add "extra rules" to ruleset. Right now all this does is add the spaces to patterns as a convenience so that you don't have to write them in yourself, and then it changes the associated valuate function to work correctly with these new spaces.
+ * It also attaches an evaluate function to the pattern if one wasn't already defined.
+ *
+ * Rules for spaces:
  * - ignore (default):
  *      Assume there can be an optional space (or many) in between every token. (Not on the outsides)
  * - require:

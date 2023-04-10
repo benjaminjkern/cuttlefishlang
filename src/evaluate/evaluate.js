@@ -1,4 +1,5 @@
 import generateHeuristics from "../parse/heuristics.js";
+import { interpretIndentTree } from "./interpret.js";
 
 // UNUSED FOR NOW
 export const evaluateParsedNode = (parsedNode, context) => {
@@ -26,22 +27,34 @@ export const evaluateExpression = (parsedNode, context) => {
         if (parsedNode.length) return evaluateExpression(parsedNode[0]);
         throw "not sure what happened";
     }
+
+    const childIterator = parsedNode.unparsedStatements && {
+        index: 0,
+        hasNext: () => parsedNode.unparsedStatements[childIterator.index],
+        next: () => {
+            childIterator.index++;
+            interpretIndentTree(
+                parsedNode.unparsedStatements[childIterator.index - 1],
+                context
+            );
+        },
+        iterateToEnd: () => {
+            while (childIterator.hasNext()) childIterator.next();
+        },
+        restart: () => (childIterator.index = 0),
+    };
+
     return parsedNode.evaluate({
         tokens: parsedNode.tokens,
         sourceString: parsedNode.sourceString,
         lineNumber: parsedNode.lineNumber,
+        childIterator,
         setContext: (newContext) => {
             for (const key in newContext) {
-                if (key === "inLoop") {
-                    if (newContext.inLoop) context.loopLevel = 0;
-                    else if (context.loopLevel !== undefined) {
-                        context.loopLevel += 1;
-                    }
-                } else context[key] = newContext[key];
+                context[key] = newContext[key];
             }
         },
         getContext: (key) => {
-            if (key === "inLoop") return context.loopLevel >= 0;
             return context[key];
         },
         setVariable: (varName, type, value) => {
@@ -68,7 +81,6 @@ export const evaluateExpression = (parsedNode, context) => {
                 });
                 context.heuristics = generateHeuristics(context.rules);
             }
-
             context.vars[varName] = { value, type };
         },
     });

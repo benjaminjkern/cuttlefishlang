@@ -14,14 +14,15 @@ const { RULES } = require("./expressions");
 
 // Cuttlefish command (Deal with arguments);
 const cuttlefish = (node, file, ...args) => {
+    if (args.length === 0) {
+        console.warn("Error: Did not include a cuttlefish file!");
+        return;
+    }
     setRules(RULES);
     const readfile = fs.readFileSync(args[0], "utf8");
-    const parsedFile = parseIndentTree(createIndentTree(readfile));
-    // console.log(inspect(parsedFile));
-    evaluateIndentTree(parsedFile);
-    // const tree = parseExpressionAsType("Statement", readfile);
-    // // console.log(inspect(tree));
-    // evaluateExpression(tree);
+    const indentTree = createIndentTree(readfile);
+    const parsedTree = parseIndentTree(indentTree);
+    const evaluatedTree = evaluateIndentTree(parsedTree);
 };
 
 cuttlefish(...process.argv);

@@ -20,6 +20,9 @@ const newParseVariable = (typeName, varName) => {
     HEURISTICS = generateHeuristics(RULES);
 };
 
+/**
+ * Add variables from VARS -> RULES
+ */
 const setVars = () => {
     for (const varName in VARS) {
         RULES[VARS[varName].typeName].push({
@@ -41,6 +44,10 @@ const setRules = (rules) => {
     VARS = {};
     HEURISTICS = generateHeuristics(rules);
 };
+
+/**********************
+ * Parse functions
+ **********************/
 
 const parseExpressionAsType = (type, expression, lineNumber) => {
     if (!RULES[type]) return { error: `Invalid type: ${type}` };

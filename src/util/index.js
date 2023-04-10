@@ -1,4 +1,5 @@
-const inspect = (obj) => require("util").inspect(obj, false, null, true);
+const inspect = (obj) =>
+    console.log(require("util").inspect(obj, false, null, true));
 
 const CuttlefishError = (lineNumber, string) => {
     console.error(`${lineNumber}: ${string}`);

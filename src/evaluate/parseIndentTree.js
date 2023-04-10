@@ -17,15 +17,17 @@ const parseIndentTree = ({
             );
             if (parsedTree.instantiator.error)
                 throw CuttlefishError(
+                    parsedTree.instantiator.error,
                     instantiatorStatement.lineNumber,
-                    parsedTree.instantiator.error
+                    "Parsing Error"
                 );
         }
         parsedTree.children = statements.map(parseIndentTree);
         return { ...parsedTree, lineNumber };
     }
     const parse = parseExpressionAsType("Statement", line, lineNumber);
-    if (parse.error) throw CuttlefishError(lineNumber, parse.error);
+    if (parse.error)
+        throw CuttlefishError(parse.error, lineNumber, "Parsing Error");
     return { ...parse, lineNumber };
 };
 

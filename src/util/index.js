@@ -3,8 +3,24 @@ import { inspect as utilInspect } from "util";
 export const inspect = (obj) =>
     console.log(utilInspect(obj, false, null, true)); // eslint-disable-line no-console
 
-export const CuttlefishError = (lineNumber, string) => {
-    console.error(`${lineNumber}: ${string}`);
+const ALLOWED_ERROR_TYPES = [
+    "Error",
+    "Parsing Error",
+    "Preparsing Error",
+    "Runtime Exception",
+];
+export const CuttlefishError = (
+    errorString,
+    lineNumber,
+    errorType = "Error"
+) => {
+    if (!ALLOWED_ERROR_TYPES.includes(errorType))
+        console.warn(`Warning: ${errorType} is not an allowed error type.`);
+    console.error(
+        `${errorType}: ${
+            lineNumber ? `Line ${lineNumber}: ` : ""
+        }${errorString}`
+    );
     process.exit(-1);
 };
 

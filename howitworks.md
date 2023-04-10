@@ -69,8 +69,7 @@ These are some basic notes as to how everything is set up and how it all works:
         - Will likely get directly implemented as something you can just do within cuttlefish
 
 - Entrypoint `src/index.js`
-    - Right now you just need to run `yarn start [filename].w` to run cuttlefish, but theoretically you will be able to just do `cuttlefish [filename].w` or `cuttle [filename].w` (lol)
-    - Does not work with `node src/index.js [filename].w` because of esmodules. I'm sure there's a somewhat nice way to fix this, as right now yarn start wraps the output with yarn stuff
+    - Right now you just need to run `node src/index.js [filename].w` to run cuttlefish, but theoretically you will be able to just do `cuttlefish [filename].w` or `cuttle [filename].w` (lol)
 
 - Test files `test` and `workingonfiles` directories
     - Right now just a loose list of cuttlefish files, some of which are supposed to compile all the way and others are only supposed to make it through a couple of the steps. Right now it's unlabeled and I dont exactly remember which ones are which but I'm certain I could guess

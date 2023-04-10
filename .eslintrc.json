@@ -1,6 +1,7 @@
 {
     "env": {
-        "node": true
+        "node": true,
+        "es6": true
     },
     "root": true,
     "parserOptions": {
@@ -35,13 +36,13 @@
         // "no-console": ["warn", { "allow": ["warn", "error"] }],
         "prefer-template": "warn",
         "no-continue": "off",
-        "prefer-destructuring": "warn",
         "no-use-before-define": ["error", { "variables": false }],
         "operator-linebreak": "off",
         "spaced-comment": "off",
         "one-var": "off",
         "no-throw-literal": "warn",
 
+        "prefer-destructuring": "off",
         "import/prefer-default-export": "off",
         "no-console": "off",
         "arrow-body-style": "off",

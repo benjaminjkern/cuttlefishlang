@@ -43,8 +43,9 @@ export default {
                 const inLoop = getContext("inLoop");
                 if (!inLoop)
                     throw CuttlefishError(
+                        `Cannot use break outside of loop!`,
                         lineNumber,
-                        `Cannot use break outside of loop!`
+                        "Runtime Exception"
                     );
                 setContext({ breakingLoop: true });
             },
@@ -55,8 +56,9 @@ export default {
                 const inLoop = getContext("inLoop");
                 if (!inLoop)
                     throw CuttlefishError(
+                        `Cannot use continue outside of loop!`,
                         lineNumber,
-                        `Cannot use continue outside of loop!`
+                        "Runtime Exception"
                     );
                 setContext({ continuingLoop: true });
             },

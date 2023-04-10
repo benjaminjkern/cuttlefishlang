@@ -53,8 +53,9 @@ const createIndentTree = (sourceString) => {
             currentProgram.indent = firstIndent;
         } else if (indent < firstIndent)
             throw CuttlefishError(
+                `Line indented deeper than start of file! (Line: ${indent}, File: ${firstIndent})`,
                 lineNumber,
-                `Line indented deeper than start of file! (Line: ${indent}, File: ${firstIndent})`
+                "Preparsing Error"
             );
 
         const realLine = { lineNumber, line: line.substring(indent) };
@@ -77,8 +78,9 @@ const createIndentTree = (sourceString) => {
             while (indent !== currentProgram.indent) {
                 if (!currentProgram.parent)
                     throw CuttlefishError(
+                        `Did not indent back to any parent indentation! (Line: ${indent})`,
                         lineNumber,
-                        `Did not indent back to any parent indentation! (Line: ${indent})`
+                        "Preparsing Error"
                     );
                 const { parent } = currentProgram;
                 delete currentProgram.parent;

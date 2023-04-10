@@ -20,7 +20,8 @@ export const interpretIndentTree = (
                 lineNumber,
                 context
             );
-            if (parse.error) throw CuttlefishError(lineNumber, parse.error);
+            if (parse.error)
+                throw CuttlefishError(parse.error, lineNumber, "Parsing Error");
             const insideContext = deepCopy(context);
             insideContext.vars = context.vars;
             evaluateExpression({ ...parse, lineNumber }, insideContext);
@@ -43,7 +44,8 @@ export const interpretIndentTree = (
         return;
     }
     const parse = parseExpressionAsType("Statement", line, lineNumber, context);
-    if (parse.error) throw CuttlefishError(lineNumber, parse.error);
+    if (parse.error)
+        throw CuttlefishError(parse.error, lineNumber, "Parsing Error");
     evaluateExpression({ ...parse, lineNumber }, context);
 };
 

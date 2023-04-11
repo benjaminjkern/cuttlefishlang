@@ -25,23 +25,10 @@ export const makeIterator = (iterable) => {
 export default {
     Statement: [
         {
-            pattern: ["print", type("Iterable")],
+            pattern: ["print", OR(type("Iterable"), type("stringlike"))],
             evaluate: ({ tokens: [_, iter] }) => {
-                const iterator = makeIterator(evaluateExpression(iter));
-                process.stdout.write("[ ");
-                while (iterator.hasNext()) {
-                    const i = iterator.next();
-                    process.stdout.write(forceString(i));
-                    if (iterator.hasNext()) process.stdout.write(", ");
-                }
-                process.stdout.write(" ]\n");
-            },
-        },
-        {
-            pattern: ["print", type("stringlike")],
-            evaluate: ({ tokens: [_, string] }) => {
-                const stringValue = evaluateExpression(string);
-                console.log(stringValue); // eslint-disable-line no-console
+                print(evaluateExpression(iter));
+                process.stdout.write("\n");
             },
         },
         {
@@ -116,4 +103,18 @@ export default {
             pattern: [MULTI(ANYCHAR("abcdefghijklmnopqrstuvwxyz"), 1)],
         },
     ],
+};
+
+const print = (object) => {
+    if (!Array.isArray(object))
+        return process.stdout.write(forceString(object));
+
+    const iterator = makeIterator(object);
+    process.stdout.write("[ ");
+    while (iterator.hasNext()) {
+        const next = iterator.next();
+        print(next);
+        if (iterator.hasNext()) process.stdout.write(", ");
+    }
+    process.stdout.write(" ]");
 };

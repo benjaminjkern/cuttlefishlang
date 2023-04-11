@@ -45,6 +45,15 @@ export default {
             pattern: [type("numlit")],
             evaluate: ({ sourceString }) => +sourceString,
         },
+        {
+            pattern: ["rand", "(", ")"],
+            evaluate: () => Math.random(),
+        },
+        {
+            pattern: ["round", type("Number")],
+            evaluate: ({ tokens: [_, num] }) =>
+                Math.round(evaluateExpression(num)),
+        },
     ],
     numlit: [
         {

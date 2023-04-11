@@ -1,5 +1,75 @@
 # Implemented
 
+- Standard control flow
+```yml
+if x < 3:
+    print "x < 3!" # Allowed on one line, REQUIRED TO BE TABBED HERE
+else:
+    print "x >= 3!"
+
+if james == "Cool": # Not necessary to use a pass statement! Although I think a code linter should yell at something like this
+else if james == "Not Cool":
+    print
+while true:
+    print "I love you!"
+    x += 1
+    break
+```
+- Repeat loop, honestly idk how useful this is since we have a nice for loop but its nice to have
+```yml
+repeat 8:
+    print "I love you 8 times!"
+
+# Allows for expressions (Must cast to int)
+x = 3
+repeat x + x:
+    print "I love you 6 times!"
+
+# Same as while true
+repeat:
+    print "I love you forever!"
+
+# i refers to loop iteration
+repeat: i -> print `I love you {i}` # <---------------------------- Not implemented yet
+```
+- "Nice" for loops
+```yml
+list = [1, 5, "Hello"]
+for list:
+    x -> print x # <---------------------------- Pattern matching Not implemented yet
+
+# Can also do pattern matching here, you can kinda do it anywhere
+```
+- Standard unary and binary operations
+```yml
+print 1 + 1 # 2
+print 1 * 1 # 1
+print 1 - 1 # 0
+print 1 / 0 # TODO: Figure out if NaN or throw exception
+
+print -(1 + 1) # -2
+
+print 2 ^ 3 # exponentiation
+
+print true and false
+print true or false
+print true && false # <---------------------------- Not implemented yet
+print true || false # <---------------------------- Not implemented yet
+
+# Equality
+print a == b # <---------------------------- Not fully implemented yet
+```
+- Automatically assumed types of variables
+```yml
+x = 5 # x is a number
+y = "Hello!" # y is a string
+z = false # z is a boolean
+```
+
+
+# Not fully implemented yet
+- Print automatically toStrings everything, but every other case of strings have to be explicitly casted to strings (Or they have to add a string cast function)
+
 # Not implemented but definitely want to add
 
 - Generally, as little parentheses as possible
@@ -40,58 +110,6 @@ doSomething()
 insideInstantiator: doAThirdThing()
 }
 ```
-- Standard control flow
-```yml
-if x < 3:
-    print "x < 3!" # Allowed on one line, REQUIRED TO BE TABBED HERE
-else:
-    print "x >= 3!"
-
-
-if james == "Cool": # Not necessary to use a pass statement! Although I think a code linter should yell at something like this
-else if james == "Not Cool":
-    print
-while true:
-    print "I love you!"
-    x += 1
-    break
-```
-- Repeat loop, honestly idk how useful this is since we have a nice for loop but its nice to have
-```yml
-repeat 8:
-    print "I love you 8 times!"
-
-# Allows for expressions (Must cast to int)
-x = 3
-repeat x + x:
-    print "I love you 6 times!"
-
-# Same as while true
-repeat:
-    print "I love you forever!"
-
-# i refers to loop iteration
-repeat: i -> print `I love you {i}`
-```
-- Standard unary and binary operations
-```yml
-print 1 + 1 # 2
-print 1 * 1 # 1
-print 1 - 1 # 0
-print 1 / 0 # TODO: Figure out if NaN or throw exception
-
-print -(1 + 1) # -2
-
-print 2 ^ 3 # exponentiation
-
-print true and false
-print true or false
-print true && false
-print true || false
-
-# Equality
-print a == b
-```
 - Sets! (And Set operations)
 ```yml
 mySet = {1, 2, 3}
@@ -101,21 +119,6 @@ print mySet | mySet2 # {1, 2, 3, 4, 5}
 print mySet & mySet2 # {3}
 print mySet - mySet2 # {1, 2}
 print mySet ! mySet2 # {1, 2, 4, 5} I want to have this in but ! seems like a weird operator to use
-```
-- Automatically assumed types of variables
-```yml
-x = 5 # x is a number
-y = "Hello!" # y is a string
-z = false # z is a boolean
-```
-- Print automatically toStrings everything, but every other case of strings have to be explicitly casted to strings (Or they have to add a string cast function)
-- "Nice" for loops
-```yml
-list = [1, 5, "Hello"]
-for list:
-    x -> print x
-
-# Can also do pattern matching here, you can kinda do it anywhere
 ```
 - "Nice" Strings
 ```yml

@@ -6,6 +6,7 @@ export default {
         {
             pattern: [type("Iterable"), "++", type("Iterable")],
             evaluate: ({ tokens: [a, _, b] }) => [
+                // This will have issues when it comes to non-list iterables
                 ...evaluateExpression(a),
                 ...evaluateExpression(b),
             ],

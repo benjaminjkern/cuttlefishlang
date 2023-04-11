@@ -8,7 +8,6 @@
 
 # Important
 
-1. else statements
 3. Non-list iterables (Ranges & generator functions)
 4. Functions
 5. Patterns
@@ -27,6 +26,9 @@
 print y
 # 1: 'y' is not in the set of end tokens for type: Statement!
 ```
+16. Keyboard input
+17. String templates
+18. Map & filter
 
 # Medium important
 
@@ -47,6 +49,7 @@ print y
 3. Switch to es modules instead of commonjs
 4. Add a function to clean a parse tree and turn it into an AST
 5. Make all contexts (Rules, heuristics) work in a modular fashion
+6. Built in terminal colors because I like it
 
 # Not Super important
 

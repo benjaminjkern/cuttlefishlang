@@ -24,8 +24,22 @@ export const evaluateStatementList = (expList, context) => {
 export const evaluateExpression = (parsedNode, context) => {
     if (!parsedNode.evaluate) {
         // Catch list expressions
-        if (parsedNode.length) return evaluateExpression(parsedNode[0]);
+        if (parsedNode.length)
+            return evaluateExpression(parsedNode[0], context);
         throw "not sure what happened";
+    }
+    if (["Statement", "Instantiator"].includes(parsedNode.type)) {
+        const ranIfStatement = context["ranIfStatement"];
+        switch (ranIfStatement) {
+            case true:
+                context["ranIfStatement"] = 1;
+                break;
+            case false:
+                context["ranIfStatement"] = 0;
+                break;
+            default:
+                context["ranIfStatement"] = undefined;
+        }
     }
 
     const childIterator = parsedNode.unparsedStatements && {
@@ -49,6 +63,7 @@ export const evaluateExpression = (parsedNode, context) => {
         sourceString: parsedNode.sourceString,
         lineNumber: parsedNode.lineNumber,
         childIterator,
+        context,
         setContext: (newContext) => {
             for (const key in newContext) {
                 context[key] = newContext[key];

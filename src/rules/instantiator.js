@@ -1,5 +1,6 @@
 import { evaluateExpression } from "../evaluate/evaluate.js";
 import { type, OPTIONAL } from "../parse/ruleUtils.js";
+import { CuttlefishError } from "../util/index.js";
 import { makeIterator } from "./statement.js";
 
 const loop = (testFunc, setContext, getContext, childIterator) => {
@@ -28,7 +29,7 @@ const loop = (testFunc, setContext, getContext, childIterator) => {
 export default {
     Instantiator: [
         {
-            pattern: ["if", type("Boolean"), ":"],
+            pattern: ["if", type("Boolean"), ":"], // None of these colons need to be here since the parser can handle it but I like them
             evaluate: ({ tokens: [_, test], childIterator, setContext }) => {
                 const shouldRun = evaluateExpression(test);
                 if (shouldRun) childIterator.iterateToEnd();
@@ -38,6 +39,13 @@ export default {
         {
             pattern: ["else", ":"],
             evaluate: ({ getContext, childIterator }) => {
+                const ranIfStatement = getContext("ranIfStatement");
+                if (ranIfStatement === undefined)
+                    throw CuttlefishError(
+                        "`else` statement must follow an `if` statement!",
+                        undefined,
+                        "Semantics Error"
+                    );
                 if (getContext("ranIfStatement")) return;
                 childIterator.iterateToEnd();
             },
@@ -81,7 +89,7 @@ export default {
             },
         },
         {
-            pattern: ["for", type("Iterable"), ":"],
+            pattern: ["for", type("Iterable"), OPTIONAL(":")],
             evaluate: ({
                 tokens: [_, iterable],
                 setContext,

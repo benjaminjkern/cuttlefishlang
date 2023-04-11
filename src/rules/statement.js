@@ -1,5 +1,5 @@
 import { evaluateExpression } from "../evaluate/evaluate.js";
-import { type, OR, MULTI, ANYCHAR } from "../parse/ruleUtils.js";
+import { type, OR, MULTI, ANYCHAR, OPTIONAL } from "../parse/ruleUtils.js";
 import { CuttlefishError } from "../util/index.js";
 import { forceString } from "./expressions/string.js";
 
@@ -78,6 +78,36 @@ export default {
                         "Runtime Exception"
                     );
                 setContext({ continuingLoop: true });
+            },
+        },
+        {
+            pattern: ["if", type("Boolean"), ":", OPTIONAL(type("Statement"))],
+            evaluate: ({
+                tokens: [_1, test, _2, statement],
+                setContext,
+                context,
+            }) => {
+                const shouldRun = evaluateExpression(test);
+                if (shouldRun) evaluateExpression(statement, context);
+                setContext({ ranIfStatement: shouldRun });
+            },
+        },
+        {
+            pattern: ["else", OPTIONAL(":"), type("Statement")], // I personally like this colon being optional
+            evaluate: ({
+                getContext,
+                tokens: [_1, _2, statement],
+                context,
+            }) => {
+                const ranIfStatement = getContext("ranIfStatement");
+                if (ranIfStatement === undefined)
+                    throw CuttlefishError(
+                        "`else` statement must follow an `if` statement!",
+                        undefined,
+                        "Semantics Error"
+                    );
+                if (getContext("ranIfStatement")) return;
+                evaluateExpression(statement, context);
             },
         },
     ],

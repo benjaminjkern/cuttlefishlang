@@ -43,6 +43,18 @@ export default {
             evaluate: ({ tokens: [a, _, b] }) =>
                 evaluateExpression(a) >= evaluateExpression(b),
         },
+        {
+            // Value comparison
+            pattern: [type("Object"), "==", type("Object")],
+            evaluate: ({ tokens: [a, _, b] }) =>
+                evaluateExpression(a) === evaluateExpression(b),
+        },
+        // {
+        //     // Pointer comparison
+        //     pattern: [type("Object"), "===", type("Object")],
+        //     evaluate: ({ tokens: [a, _, b] }) =>
+        //         evaluateExpression(a) === evaluateExpression(b),
+        // },
         { pattern: [type("boollit")] },
     ],
     boollit: [

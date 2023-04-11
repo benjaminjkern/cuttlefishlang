@@ -31,7 +31,7 @@ export const parseExpressionAsType = (
             sourceString: expression,
             lineNumber,
         };
-        if (rule.onParse) rule.onParse(obj);
+        if (rule.onParse) rule.onParse(obj, context);
         return obj;
     }
     return {

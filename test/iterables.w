@@ -4,3 +4,5 @@ print x
 
 for x:
     print 'there are some elements here! ' ++ $
+
+print x ++ x

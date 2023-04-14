@@ -1,9 +1,10 @@
 import { evaluateExpression } from "../../evaluate/evaluate.js";
 import { MULTI, OPTIONAL, OR, type } from "../../parse/ruleUtils.js";
 
-addGenerics("Number", ["Integer"]);
+export const numberGenerics = ["Integer"];
 export default {
     Number: [
+        { pattern: [type("Integer")] },
         {
             // TODO: Encode the idea that Number + Number -> Number | Integer, but Integer + Integer -> Integer
             pattern: [type("Number"), "+", type("Number")],
@@ -47,10 +48,18 @@ export default {
             pattern: ["rand", "(", ")"],
             evaluate: () => Math.random(),
         },
+    ],
+    Integer: [
+        // Should somehow include all the same math rules here
         {
             pattern: ["round", type("Number")],
             evaluate: ({ tokens: [_, num] }) =>
                 Math.round(evaluateExpression(num)),
+        },
+        {
+            pattern: [MULTI(type("digit"), 1)],
+            spaces: "specify",
+            evaluate: ({ sourceString }) => +sourceString,
         },
     ],
     numlit: [

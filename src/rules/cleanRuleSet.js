@@ -32,14 +32,14 @@ const cleanRuleSet = (rules) => {
             } = rule;
             rule.evaluate = evaluate;
             switch (spaces) {
-                default:
+                default: // eslint-disable-line default-case-last
                     console.warn(
                         `Warning: Rule ${i} in type "${typeName}" has invalid spaces configuration: "${spaces}", defaulting to default (ignore).`
                     );
                 case "require":
                 case "ignore":
-                    rule.pattern = rule.pattern.flatMap((token, i) =>
-                        i === rule.pattern.length - 1
+                    rule.pattern = rule.pattern.flatMap((token, j) =>
+                        j === rule.pattern.length - 1
                             ? token
                             : [
                                   token,
@@ -52,14 +52,14 @@ const cleanRuleSet = (rules) => {
                     if (onParse) {
                         rule.onParse = ({ tokens, ...args }) => {
                             return onParse({
-                                tokens: tokens.filter((_, i) => i % 2 === 0),
+                                tokens: tokens.filter((_, j) => j % 2 === 0),
                                 ...args,
                             });
                         };
                     }
                     rule.evaluate = ({ tokens, ...args }) => {
                         return evaluate({
-                            tokens: tokens.filter((_, i) => i % 2 === 0),
+                            tokens: tokens.filter((_, j) => j % 2 === 0),
                             ...args,
                         });
                     };

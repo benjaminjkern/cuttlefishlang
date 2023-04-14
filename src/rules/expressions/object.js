@@ -1,13 +1,13 @@
 import { evaluateExpression } from "../../evaluate/evaluate.js";
-import { type, OR } from "../../parse/ruleUtils.js";
+import { type, OR, thisType, genericType } from "../../parse/ruleUtils.js";
 
-addGenerics("Object", [
+export const objectGenerics = [
     "Number",
     "String",
     "Boolean",
     "Iterable",
     "Dictionary",
-]);
+];
 
 export default {
     Object: [

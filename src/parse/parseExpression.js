@@ -23,10 +23,9 @@ export const parseExpressionAsType = (
     if (typeHeuristics.error) return typeHeuristics;
 
     for (const rule of [
-        ...getGenericRules(type, context),
+        ...getGenericRules(type, context), // First parse any generic rules, determined by which rules this type falls under (i.e. A -> '(' A ')' )
         ...context.rules[type],
     ]) {
-        // TODO: First parse any generic rules, determined by which rules this type falls under (i.e. A -> '(' A ')' )
         const parse = parseExpressionAsPattern(
             rule.pattern,
             expression,

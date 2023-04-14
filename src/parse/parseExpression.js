@@ -7,42 +7,42 @@ import { isValidToken } from "./tokenDict.js";
  * Parse functions
  **********************/
 
-export const parseExpressionAsType = debugFunction(
-    (type, expression, lineNumber, context) => {
-        if (typeof type !== "string")
-            throw "Complex types are not allowed quite yet! But also this could just be an error with the typeType() or genericType() stuff cuz that shouldnt ever get here";
-        // TODO: Allow complex types & generic types (Actually maybe wont ever run into generic types, not sure)
-        if (!context.rules[type]) return { error: `Invalid type: ${type}` };
-        const typeHeuristics = checkTypeHeuristics(type, expression, context);
-        if (typeHeuristics.error) return typeHeuristics;
+export const parseExpressionAsType = (
+    type,
+    expression,
+    lineNumber,
+    context
+) => {
+    if (typeof type !== "string")
+        throw "Complex types are not allowed quite yet! But also this could just be an error with the typeType() or genericType() stuff cuz that shouldnt ever get here";
+    // TODO: Allow complex types & generic types (Actually maybe wont ever run into generic types, not sure)
+    if (!context.rules[type]) return { error: `Invalid type: ${type}` };
+    const typeHeuristics = checkTypeHeuristics(type, expression, context);
+    if (typeHeuristics.error) return typeHeuristics;
 
-        for (const rule of getAllRules(type, context)) {
-            const parse = parseExpressionAsPattern(
-                rule.pattern,
-                expression,
-                rule,
-                lineNumber,
-                context
-            );
-            if (parse.error) continue;
-            const obj = {
-                type,
-                tokens: parse,
-                evaluate: rule.evaluate,
-                sourceString: expression,
-                lineNumber,
-            };
-            if (rule.onParse) rule.onParse(obj, context);
-            return obj;
-        }
-        return {
-            error: `"${expression}" did not match any pattern of type: ${type}!`,
+    for (const rule of getAllRules(type, context)) {
+        const parse = parseExpressionAsPattern(
+            rule.pattern,
+            expression,
+            rule,
+            lineNumber,
+            context
+        );
+        if (parse.error) continue;
+        const obj = {
+            type,
+            tokens: parse,
+            evaluate: rule.evaluate,
+            sourceString: expression,
+            lineNumber,
         };
-    },
-    "parseExpressionAsType",
-    [true, true],
-    "Parsed"
-);
+        if (rule.onParse) rule.onParse(obj, context);
+        return obj;
+    }
+    return {
+        error: `"${expression}" did not match any pattern of type: ${type}!`,
+    };
+};
 
 const parseExpressionAsMetaType = (
     metaTypePatternToken,

@@ -24,7 +24,7 @@ const replaceThisTypeInPattern = (pattern, typeName) => {
             }
             throw `Invalid metatype: ${patternToken.metaType}`;
         }
-        if (patternToken.thisType) return typeName;
+        if (patternToken.thisType) return type(typeName);
         // This includes raw types and terminal tokens
         return patternToken;
     });

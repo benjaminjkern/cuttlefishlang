@@ -11,7 +11,10 @@ export const objectGenerics = [
 
 export default {
     Object: [
-        { pattern: ["(", thisType(), ")"] },
+        {
+            pattern: ["(", thisType(), ")"],
+            evaluate: ({ tokens: [_, token] }) => evaluateExpression(token),
+        },
         {
             pattern: [type("Dictionary", thisType()), ".", type("varName")],
             evaluate: ({ tokens: [dict, _, variable] }) =>

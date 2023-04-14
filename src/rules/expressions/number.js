@@ -1,13 +1,11 @@
 import { evaluateExpression } from "../../evaluate/evaluate.js";
 import { MULTI, OPTIONAL, OR, type } from "../../parse/ruleUtils.js";
 
+addGenerics("Number", ["Integer"]);
 export default {
     Number: [
         {
-            pattern: ["(", type("Number"), ")"],
-            evaluate: ({ tokens: [_, a] }) => evaluateExpression(a),
-        },
-        {
+            // TODO: Encode the idea that Number + Number -> Number | Integer, but Integer + Integer -> Integer
             pattern: [type("Number"), "+", type("Number")],
             associativityReverseSearchOrder: true,
             evaluate: ({ tokens: [a, _, b] }) =>

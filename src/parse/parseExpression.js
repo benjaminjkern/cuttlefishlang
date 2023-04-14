@@ -5,17 +5,28 @@ import { isValidToken } from "./tokenDict.js";
  * Parse functions
  **********************/
 
+const getGenericRules = (type, context) => {
+    return context.genericParents[type].map((genericRule) =>
+        replaceThisType(genericRule, type)
+    );
+};
+
 export const parseExpressionAsType = (
     type,
     expression,
     lineNumber,
     context
 ) => {
+    // TODO: Allow complex types & generic types (Actually maybe wont ever run into generic types, not sure)
     if (!context.rules[type]) return { error: `Invalid type: ${type}` };
     const typeHeuristics = checkTypeHeuristics(type, expression, context);
     if (typeHeuristics.error) return typeHeuristics;
 
-    for (const rule of context.rules[type]) {
+    for (const rule of [
+        ...getGenericRules(type, context),
+        ...context.rules[type],
+    ]) {
+        // TODO: First parse any generic rules, determined by which rules this type falls under (i.e. A -> '(' A ')' )
         const parse = parseExpressionAsPattern(
             rule.pattern,
             expression,

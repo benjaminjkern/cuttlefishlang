@@ -5,12 +5,14 @@ export default {
     Iterable: [
         {
             pattern: [type("Iterable"), "++", type("Iterable")],
+            // TODO: Need output types to be a union of the two input types
             evaluate: ({ tokens: [a, _, b] }) => [
                 // This will have issues when it comes to non-list iterables
                 ...evaluateExpression(a),
                 ...evaluateExpression(b),
             ],
         },
+        // TODO: Need output types to be a union of all input types
         { pattern: [type("listlit")] },
     ],
     listlit: [

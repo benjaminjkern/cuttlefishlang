@@ -46,20 +46,20 @@ export const deepCopy = (object) => {
 
 let debugIndentation = 0;
 export const debugFunction =
-    (func, includeArgs, name = "f") =>
+    (func, name = "f", includeArgs, resultEnd) =>
     (...args) => {
         const tabWidth = Array(debugIndentation).fill("   ").join("");
         console.log(
             `${tabWidth}${name}`,
             ...args
-                .map((arg, i) =>
-                    includeArgs[i]
-                        ? typeof includeArgs[i] === "function"
-                            ? includeArgs[i](arg)
-                            : arg
-                        : undefined
-                )
-                .filter((x) => x),
+                .map((arg, i) => {
+                    if (!includeArgs) return arg;
+                    if (!includeArgs[i]) return null;
+                    if (typeof includeArgs[i] === "function")
+                        return includeArgs[i](arg);
+                    return arg;
+                })
+                .filter((x) => x !== null),
             "{"
         );
         debugIndentation++;
@@ -68,7 +68,13 @@ export const debugFunction =
         console.log(
             `${tabWidth}}`,
             "->",
-            result.error ? result.error : "Parsed"
+            result.error
+                ? result.error
+                : resultEnd
+                ? typeof resultEnd === "function"
+                    ? resultEnd(result)
+                    : resultEnd
+                : result
         );
         return result;
     };

@@ -26,6 +26,7 @@ export const evaluateExpression = (parsedNode, context) => {
         // Catch list expressions
         if (parsedNode.length)
             return evaluateExpression(parsedNode[0], context);
+        console.warn(parsedNode);
         throw "not sure what happened";
     }
     if (["Statement", "Instantiator"].includes(parsedNode.type)) {
@@ -94,7 +95,10 @@ export const evaluateExpression = (parsedNode, context) => {
                     pattern: [varName],
                     evaluate: () => context.vars[varName].value,
                 });
-                context.heuristics = generateHeuristics(context.rules);
+                context.heuristics = generateHeuristics(
+                    context.rules,
+                    context.generics
+                );
             }
             context.vars[varName] = { value, type };
         },

@@ -11,17 +11,6 @@ export const objectGenerics = [
 
 export default {
     Object: [
-        // {
-        //     pattern: [
-        //         OR(
-        //             type("Number"),
-        //             type("String"),
-        //             type("Boolean"),
-        //             type("Iterable"),
-        //             type("Dictionary")
-        //         ),
-        //     ],
-        // },
         { pattern: ["(", thisType(), ")"] },
         {
             pattern: [type("Dictionary", thisType()), ".", type("varName")],
@@ -43,16 +32,16 @@ export default {
             evaluate: ({ tokens: [iterable, _, index] }) =>
                 evaluateExpression(iterable)[evaluateExpression(index)],
         },
-        {
-            pattern: [
-                type("Function", genericType("A"), thisType()),
-                genericType("A"),
-            ], // The A's must match
-            genericTypes: {
-                A: "Object",
-            },
-            evaluate: ({ tokens: [iterable, _, index] }) =>
-                evaluateExpression(iterable)[evaluateExpression(index)],
-        },
+        // {
+        //     pattern: [
+        //         type("Function", genericType("A"), thisType()),
+        //         genericType("A"),
+        //     ], // The A's must match
+        //     genericTypes: {
+        //         A: "Object",
+        //     },
+        //     evaluate: ({ tokens: [iterable, _, index] }) =>
+        //         evaluateExpression(iterable)[evaluateExpression(index)],
+        // },
     ],
 };

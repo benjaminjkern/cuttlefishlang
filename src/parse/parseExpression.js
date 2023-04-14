@@ -1,3 +1,5 @@
+import { debugFunction } from "../util/index.js";
+import { getAllRules } from "./genericUtils.js";
 import { isTerminal, stringifyPattern } from "./parsingUtils.js";
 import { isValidToken } from "./tokenDict.js";
 
@@ -5,49 +7,42 @@ import { isValidToken } from "./tokenDict.js";
  * Parse functions
  **********************/
 
-const getGenericRules = (type, context) => {
-    return context.genericParents[type].map((genericRule) =>
-        replaceThisType(genericRule, type)
-    );
-};
+export const parseExpressionAsType = debugFunction(
+    (type, expression, lineNumber, context) => {
+        if (typeof type !== "string")
+            throw "Complex types are not allowed quite yet! But also this could just be an error with the typeType() or genericType() stuff cuz that shouldnt ever get here";
+        // TODO: Allow complex types & generic types (Actually maybe wont ever run into generic types, not sure)
+        if (!context.rules[type]) return { error: `Invalid type: ${type}` };
+        const typeHeuristics = checkTypeHeuristics(type, expression, context);
+        if (typeHeuristics.error) return typeHeuristics;
 
-export const parseExpressionAsType = (
-    type,
-    expression,
-    lineNumber,
-    context
-) => {
-    // TODO: Allow complex types & generic types (Actually maybe wont ever run into generic types, not sure)
-    if (!context.rules[type]) return { error: `Invalid type: ${type}` };
-    const typeHeuristics = checkTypeHeuristics(type, expression, context);
-    if (typeHeuristics.error) return typeHeuristics;
-
-    for (const rule of [
-        ...getGenericRules(type, context), // First parse any generic rules, determined by which rules this type falls under (i.e. A -> '(' A ')' )
-        ...context.rules[type],
-    ]) {
-        const parse = parseExpressionAsPattern(
-            rule.pattern,
-            expression,
-            rule,
-            lineNumber,
-            context
-        );
-        if (parse.error) continue;
-        const obj = {
-            type,
-            tokens: parse,
-            evaluate: rule.evaluate,
-            sourceString: expression,
-            lineNumber,
+        for (const rule of getAllRules(type, context)) {
+            const parse = parseExpressionAsPattern(
+                rule.pattern,
+                expression,
+                rule,
+                lineNumber,
+                context
+            );
+            if (parse.error) continue;
+            const obj = {
+                type,
+                tokens: parse,
+                evaluate: rule.evaluate,
+                sourceString: expression,
+                lineNumber,
+            };
+            if (rule.onParse) rule.onParse(obj, context);
+            return obj;
+        }
+        return {
+            error: `"${expression}" did not match any pattern of type: ${type}!`,
         };
-        if (rule.onParse) rule.onParse(obj, context);
-        return obj;
-    }
-    return {
-        error: `"${expression}" did not match any pattern of type: ${type}!`,
-    };
-};
+    },
+    "parseExpressionAsType",
+    [true, true],
+    "Parsed"
+);
 
 const parseExpressionAsMetaType = (
     metaTypePatternToken,
@@ -259,6 +254,11 @@ const getPossibleMatches = (pattern, expression, context) => {
     return matches;
 };
 
+/**
+ * Used exclusively in parsing an expression as a multi-metatype,
+ * I don't entirely remember what it does and i don't feel like spending time figuring it out,
+ * but if I had to guess, it probably "compactifies" multi-metatypes
+ */
 const compactifyMulti = (pattern, parse) => {
     if (parse.length === 0) return [];
     if (parse.length === pattern.length) return parse.map((token) => token);

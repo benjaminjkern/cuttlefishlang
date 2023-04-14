@@ -1,7 +1,7 @@
 import { evaluateExpression } from "../../evaluate/evaluate.js";
 import { MULTI, OPTIONAL, OR, type } from "../../parse/ruleUtils.js";
 
-export const numberGenerics = ["Integer"];
+// export const numberGenerics = ["Integer"];
 export default {
     Number: [
         { pattern: [type("Integer")] },

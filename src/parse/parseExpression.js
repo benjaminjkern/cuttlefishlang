@@ -1,3 +1,5 @@
+import { debugFunction } from "../util/index.js";
+import { getAllRules } from "./genericUtils.js";
 import { isTerminal, stringifyPattern } from "./parsingUtils.js";
 import { isValidToken } from "./tokenDict.js";
 
@@ -11,11 +13,14 @@ export const parseExpressionAsType = (
     lineNumber,
     context
 ) => {
+    if (typeof type !== "string")
+        throw "Complex types are not allowed quite yet! But also this could just be an error with the typeType() or genericType() stuff cuz that shouldnt ever get here";
+    // TODO: Allow complex types & generic types (Actually maybe wont ever run into generic types, not sure)
     if (!context.rules[type]) return { error: `Invalid type: ${type}` };
     const typeHeuristics = checkTypeHeuristics(type, expression, context);
     if (typeHeuristics.error) return typeHeuristics;
 
-    for (const rule of context.rules[type]) {
+    for (const rule of getAllRules(type, context)) {
         const parse = parseExpressionAsPattern(
             rule.pattern,
             expression,
@@ -249,6 +254,11 @@ const getPossibleMatches = (pattern, expression, context) => {
     return matches;
 };
 
+/**
+ * Used exclusively in parsing an expression as a multi-metatype,
+ * I don't entirely remember what it does and i don't feel like spending time figuring it out,
+ * but if I had to guess, it probably "compactifies" multi-metatypes
+ */
 const compactifyMulti = (pattern, parse) => {
     if (parse.length === 0) return [];
     if (parse.length === pattern.length) return parse.map((token) => token);

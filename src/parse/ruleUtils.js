@@ -54,4 +54,8 @@ export const OPTIONAL = (...x) => MULTI(x, 0, 1);
 const isList = (object) =>
     typeof object === "object" && object.length !== undefined;
 
-export const type = (typeName, subtypes) => ({ type: typeName, subtypes });
+export const type = (typeName, ...subtypes) => ({ type: typeName, subtypes });
+
+export const thisType = () => ({ thisType: true });
+
+export const genericType = (typeName) => ({ genericType: typeName });

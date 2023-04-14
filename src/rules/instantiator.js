@@ -67,7 +67,7 @@ export default {
             },
         },
         {
-            pattern: ["repeat", OPTIONAL(type("Number")), ":"],
+            pattern: ["repeat", OPTIONAL(type("Integer")), ":"], // NOTE: I am casting to integer here but maybe it should allow non-integers
             evaluate: ({
                 tokens: [_, repeatCount],
                 setContext,

@@ -1,6 +1,7 @@
 import { CuttlefishError, deepCopy } from "../util/index.js";
 import { parseExpressionAsType } from "../parse/parseExpression.js";
 import RULES from "../rules/index.js";
+import GENERICS from "../rules/generics.js";
 
 import { evaluateExpression } from "./evaluate.js";
 import { newContext } from "../parse/context.js";
@@ -10,7 +11,7 @@ import { newContext } from "../parse/context.js";
  */
 export const interpretIndentTree = (
     treeNode,
-    context = { ...newContext(RULES), vars: [] }
+    context = { ...newContext(RULES, GENERICS), vars: [] }
 ) => {
     const { instantiatorStatement, statements, lineNumber, line, parsedNode } =
         treeNode;

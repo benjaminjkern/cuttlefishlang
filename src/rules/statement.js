@@ -90,6 +90,7 @@ export default {
 const print = (object) => {
     if (!object.hasNext) return consoleWrite(forceString(object));
     // Assume object is an iterator
+    object.restart();
 
     // If it has at least one item, then it should have padding (Looks nice)
     const listPadding = object.hasNext() ? " " : "";

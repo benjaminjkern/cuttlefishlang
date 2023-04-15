@@ -97,6 +97,7 @@ export default {
                 childIterator,
             }) => {
                 const iterator = evaluateExpression(iterable);
+                iterator.restart();
                 loop(
                     () => {
                         if (!iterator.hasNext()) return false;

@@ -23,6 +23,7 @@ const discreteRangeIterator = ({
             value += step;
             return value;
         },
+        restart: () => (value = start - step * includeStart),
     };
 };
 
@@ -41,6 +42,7 @@ const makeListIterator = (list) => {
         hasNext: () => {
             return index < list.length;
         },
+        restart: () => (index = 0),
     };
     return iterator;
 };
@@ -78,6 +80,11 @@ export default {
                         if (returnIterator.usingIteratorA)
                             return iteratorA.hasNext();
                         return iteratorB.hasNext();
+                    },
+                    restart: () => {
+                        iteratorA.restart();
+                        iteratorB.restart();
+                        returnIterator.usingIteratorA = iteratorA.hasNext();
                     },
                 };
                 return returnIterator;

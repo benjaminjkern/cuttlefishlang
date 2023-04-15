@@ -33,7 +33,9 @@ export default {
         {
             pattern: [type("Iterable", thisType()), "[", type("Integer"), "]"],
             evaluate: ({ tokens: [iterable, _, index] }) =>
-                evaluateExpression(iterable)[evaluateExpression(index)],
+                evaluateExpression(iterable).getIndex(
+                    evaluateExpression(index)
+                ),
         },
         // {
         //     pattern: [

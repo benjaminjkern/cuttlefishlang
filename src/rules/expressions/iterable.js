@@ -24,6 +24,24 @@ const discreteRangeIterator = ({
             return value;
         },
         restart: () => (value = start - step * includeStart),
+        clone: () =>
+            discreteRangeIterator({
+                start,
+                step,
+                end,
+                includeEnd,
+                includeStart,
+            }),
+        getIndex: (index) => {
+            const returnValue = start - step * includeStart + step * index;
+            if ((returnValue + step - end) * step >= 0) {
+                if (returnValue + step === end && includeEnd)
+                    return returnValue;
+                return undefined;
+            }
+            return returnValue;
+        },
+        length: end === null ? null : (end - start + 1) / step, // Definitely wrong but good enough for now
     };
 };
 
@@ -39,12 +57,42 @@ const makeListIterator = (list) => {
             index++;
             return list[index - 1];
         },
-        hasNext: () => {
-            return index < list.length;
-        },
+        hasNext: () => index < list.length,
         restart: () => (index = 0),
+        clone: () => makeListIterator(list),
+        getIndex: (indexToGet) => list[indexToGet],
+        length: list.length,
     };
     return iterator;
+};
+
+const concatenateIterators = (iteratorA, iteratorB) => {
+    const returnIterator = {
+        usingIteratorA: iteratorA.hasNext(),
+        next: () => {
+            if (returnIterator.usingIteratorA) {
+                const next = iteratorA.next();
+                returnIterator.usingIteratorA = iteratorA.hasNext();
+                return next;
+            }
+            return iteratorB.next();
+        },
+        hasNext: () => {
+            if (returnIterator.usingIteratorA) return iteratorA.hasNext();
+            return iteratorB.hasNext();
+        },
+        restart: () => {
+            iteratorA.restart();
+            iteratorB.restart();
+            returnIterator.usingIteratorA = iteratorA.hasNext();
+        },
+        clone: () => concatenateIterators(iteratorA.clone(), iteratorB.clone()),
+        getIndex: (index) => {
+            if (index < iteratorA.length) return iteratorA.getIndex(index);
+            return iteratorB.getIndex(index - iteratorA.length);
+        },
+    };
+    return returnIterator;
 };
 
 export default {
@@ -63,31 +111,10 @@ export default {
             pattern: [type("Iterable"), "++", type("Iterable")],
             // TODO: Need output types to be a union of the two input types
             evaluate: ({ tokens: [a, _, b] }) => {
-                // Combine the two iterators
-                const iteratorA = evaluateExpression(a);
-                const iteratorB = evaluateExpression(b);
-                const returnIterator = {
-                    usingIteratorA: iteratorA.hasNext(),
-                    next: () => {
-                        if (returnIterator.usingIteratorA) {
-                            const next = iteratorA.next();
-                            returnIterator.usingIteratorA = iteratorA.hasNext();
-                            return next;
-                        }
-                        return iteratorB.next();
-                    },
-                    hasNext: () => {
-                        if (returnIterator.usingIteratorA)
-                            return iteratorA.hasNext();
-                        return iteratorB.hasNext();
-                    },
-                    restart: () => {
-                        iteratorA.restart();
-                        iteratorB.restart();
-                        returnIterator.usingIteratorA = iteratorA.hasNext();
-                    },
-                };
-                return returnIterator;
+                return concatenateIterators(
+                    evaluateExpression(a).clone(),
+                    evaluateExpression(b).clone()
+                );
             },
         },
     ],

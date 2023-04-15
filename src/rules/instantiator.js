@@ -96,8 +96,7 @@ export default {
                 getContext,
                 childIterator,
             }) => {
-                const iterator = evaluateExpression(iterable);
-                iterator.restart();
+                const iterator = evaluateExpression(iterable).clone();
                 loop(
                     () => {
                         if (!iterator.hasNext()) return false;

@@ -24,8 +24,10 @@ export const startRepl = () => {
         },
     });
     const context = { ...newContext(RULES, GENERICS), vars: [] };
+
+    // eslint-disable-next-line no-constant-condition
     while (true) {
-        const line = prompt("$> ");
+        const line = prompt("$".red + "> ");
         try {
             interpretIndentTree(createIndentTree(line), context);
         } catch (error) {

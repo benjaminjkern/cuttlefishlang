@@ -44,6 +44,13 @@ const discreteRangeIterator = ({
             return returnValue;
         },
         length: end === null ? null : Math.floor((end - start) / step), // Definitely wrong but good enough for now
+        itemInIterator: (object) =>
+            typeof object === "number" &&
+            (object - start) % step === 0 &&
+            (object - start) * step >= 0 &&
+            (end === null ||
+                (object - end) * step < 0 ||
+                (object === end && includeEnd)),
     };
 };
 
@@ -64,6 +71,7 @@ const makeListIterator = (list) => {
         clone: () => makeListIterator(list),
         getIndex: (indexToGet) => list[indexToGet],
         length: list.length,
+        itemInIterator: (object) => list.includes(object),
     };
     return iterator;
 };
@@ -98,6 +106,9 @@ const concatenateIterators = (iteratorA, iteratorB) => {
                 return iteratorA.getIndex(index);
             return iteratorB.getIndex(index - iteratorA.length);
         },
+        itemInIterator: (object) =>
+            iteratorA.itemInIterator(object) ||
+            iteratorB.itemInIterator(object),
     };
     return returnIterator;
 };

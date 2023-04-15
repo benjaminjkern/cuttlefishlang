@@ -1,3 +1,4 @@
+import { consoleWarn } from "../util/environment.js";
 import { debugFunction } from "../util/index.js";
 import { getAllRules } from "./genericUtils.js";
 import { isTerminal } from "./parsingUtils.js";
@@ -266,7 +267,7 @@ const getMinLengths = (context) => {
             context
         );
         if (minLengths[type] >= Number.MAX_SAFE_INTEGER)
-            console.warn(
+            consoleWarn(
                 `Warning: Type "${type}" has a minimum length of ${minLengths[type]} (Probably an unclosed rule loop)`
             );
     }
@@ -411,7 +412,7 @@ const getPatternMaxLength = (pattern, parentCalls, cache, context) => {
                     break;
                 case "multi":
                     if (token.max === 0) {
-                        console.warn(
+                        consoleWarn(
                             "You have a multi token with a max length of 0, this should probably never happen."
                         );
                         continue;

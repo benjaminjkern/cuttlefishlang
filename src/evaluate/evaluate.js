@@ -1,4 +1,5 @@
 import generateHeuristics from "../parse/heuristics.js";
+import { consoleWarn } from "../util/environment.js";
 import { interpretIndentTree } from "./interpret.js";
 
 // UNUSED FOR NOW
@@ -26,7 +27,7 @@ export const evaluateExpression = (parsedNode, context) => {
         // Catch list expressions
         if (parsedNode.length)
             return evaluateExpression(parsedNode[0], context);
-        console.warn(parsedNode);
+
         throw "not sure what happened";
     }
     if (["Statement", "Instantiator"].includes(parsedNode.type)) {
@@ -78,7 +79,7 @@ export const evaluateExpression = (parsedNode, context) => {
                 context.vars[varName]?.type &&
                 context.vars[varName].type !== type
             ) {
-                console.warn(
+                consoleWarn(
                     `Warning: Changing type of variable ${varName} (${context.vars[varName].type} -> ${type})`
                 );
                 context.rules[context.vars[varName].type] = context.rules[

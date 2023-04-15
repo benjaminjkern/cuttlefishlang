@@ -1,5 +1,6 @@
 import { MULTI, type } from "../parse/ruleUtils.js";
 import { evaluateExpression } from "../evaluate/evaluate.js";
+import { consoleWarn } from "../util/environment.js";
 
 /**
  * Add "extra rules" to ruleset. Right now all this does is add the spaces to patterns as a convenience so that you don't have to write them in yourself, and then it changes the associated valuate function to work correctly with these new spaces.
@@ -23,7 +24,7 @@ const cleanRuleSet = (rules) => {
                 spaces = "ignore",
                 evaluate = ({ tokens }) => {
                     if (tokens.length > 1)
-                        console.warn(
+                        consoleWarn(
                             `Warning: Evaluating rule ${i} in type "${typeName}" with default evaluation, ignoring all tokens aside from the first.`
                         );
                     return evaluateExpression(tokens[0]);
@@ -33,7 +34,7 @@ const cleanRuleSet = (rules) => {
             rule.evaluate = evaluate;
             switch (spaces) {
                 default: // eslint-disable-line default-case-last
-                    console.warn(
+                    consoleWarn(
                         `Warning: Rule ${i} in type "${typeName}" has invalid spaces configuration: "${spaces}", defaulting to default (ignore).`
                     );
                 case "require":

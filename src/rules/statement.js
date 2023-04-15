@@ -1,5 +1,6 @@
 import { evaluateExpression } from "../evaluate/evaluate.js";
 import { type, OR, MULTI, ANYCHAR, OPTIONAL } from "../parse/ruleUtils.js";
+import { consoleWrite } from "../util/environment.js";
 import { CuttlefishError } from "../util/index.js";
 import { forceString } from "./expressions/string.js";
 
@@ -28,7 +29,7 @@ export default {
             pattern: ["print", OR(type("Iterable"), type("stringlike"))],
             evaluate: ({ tokens: [_, iter] }) => {
                 print(evaluateExpression(iter));
-                process.stdout.write("\n");
+                consoleWrite("\n");
             },
         },
         {
@@ -106,15 +107,14 @@ export default {
 };
 
 const print = (object) => {
-    if (!Array.isArray(object))
-        return process.stdout.write(forceString(object));
+    if (!Array.isArray(object)) return consoleWrite(forceString(object));
 
     const iterator = makeIterator(object);
-    process.stdout.write("[ ");
+    consoleWrite("[ ");
     while (iterator.hasNext()) {
         const next = iterator.next();
         print(next);
-        if (iterator.hasNext()) process.stdout.write(", ");
+        if (iterator.hasNext()) consoleWrite(", ");
     }
-    process.stdout.write(" ]");
+    consoleWrite(" ]");
 };

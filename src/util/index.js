@@ -1,5 +1,6 @@
 import { inspect as utilInspect } from "util";
 import "colors";
+import { consoleError, consoleWarn, environment } from "./environment.js";
 
 export const inspect = (obj) =>
     console.log(utilInspect(obj, false, null, true)); // eslint-disable-line no-console
@@ -16,13 +17,13 @@ export const CuttlefishError = (
     errorType = "Error"
 ) => {
     if (!ALLOWED_ERROR_TYPES.includes(errorType))
-        console.warn(`Warning: ${errorType} is not an allowed error type.`);
-    console.error(
-        `${errorType}: ${
-            lineNumber ? `Line ${lineNumber}: ` : ""
-        }${errorString}`
-    );
-    process.exit(-1);
+        consoleWarn(`Warning: ${errorType} is not an allowed error type.`);
+    const error = `${errorType}: ${
+        lineNumber ? `Line ${lineNumber}: ` : ""
+    }${errorString}`;
+    consoleError(error);
+    if (environment.exitOnError) process.exit(-1);
+    else throw error;
 };
 
 const scrambleList = (list) => {

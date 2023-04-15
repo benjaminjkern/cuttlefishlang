@@ -1,20 +1,42 @@
 import { makeSet } from "../util/sets.js";
 
-export const ANYCHAR = (whitelist = "") => {
+export const ANYCHAR = (whitelist = "", caseInsensitive = false) => {
     if (typeof whitelist !== "string" || !whitelist.length)
         throw "ANYCHAR(whitelist): whitelist must be a string of characters to include!";
     return {
         metaType: "anychar",
-        tokenDict: { whitelist: makeSet(whitelist.split("")) },
+        tokenDict: {
+            whitelist: makeSet(
+                caseInsensitive
+                    ? whitelist
+                          .split("")
+                          .flatMap((char) => [
+                              char.toLowerCase(),
+                              char.toUpperCase(),
+                          ])
+                    : whitelist.split("")
+            ),
+        },
     };
 };
 
-export const NOTCHAR = (blacklist = "") => {
+export const NOTCHAR = (blacklist = "", caseInsensitive = false) => {
     if (typeof blacklist !== "string")
         throw "NOTCHAR(blacklist): blacklist must be a string of characters to exclude!";
     return {
         metaType: "anychar",
-        tokenDict: { blacklist: makeSet(blacklist.split("")) },
+        tokenDict: {
+            blacklist: makeSet(
+                caseInsensitive
+                    ? blacklist
+                          .split("")
+                          .flatMap((char) => [
+                              char.toLowerCase(),
+                              char.toUpperCase(),
+                          ])
+                    : blacklist.split("")
+            ),
+        },
     };
 };
 

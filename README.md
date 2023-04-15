@@ -80,16 +80,6 @@ Here are map and filter implemented in Cuttlefish:
 
 
 > IFFY ON THIS BIT HERE
-```py
-map = fn:
-    A => A fun, [] -> []
-    fun, [A] head:tail -> fun head ++ map fun tail
-
-filter = fn:
-    A => Bool fun, [] -> []
-    A => Bool fun, [A] head:tail | fun head -> head ++ filter fun tail
-    A => Bool fun, [A] head:tail -> filter fun tail
-```
 
 Pattern matching can be incredibly expressive for exactly which cases you want to run and how your processes should respond. The patterns are tested against the argument in definition order:
 
@@ -110,6 +100,33 @@ doTaxes = prc:
     # This will never match, since every dog matches above
     Dog d | d.love > 100 ->
         d.love -= 1
+```
+
+# Discrete Ranges
+```py
+print [1..10] # [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+print [0..5] ++ [0..10] # [ 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ] (Concatenate two ranges)
+
+print [0..-1..-10] # [ 0, -1, -2, -3, -4, -5, -6, -7, -8, -9 ]
+
+print [0..0.7..9] # [ 0, 0.7, 1.4, 2.0999999999999996, 2.8, 3.5, 4.2, 4.9, 5.6000000000000005, 6.300000000000001, 7.000000000000001, 7.700000000000001, 8.4 ]
+
+print [-10 .. (10 + 10)] # [ -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 ]
+
+print [0 .. -1] # [] ( step is 1 here )
+
+print [7..0..10] # [] (I didnt mean to do this but I actually kind of like it, since the other option is a weird infinite loop)
+
+print [7..0..] # [ 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, ... (I kind of like this although I could see someone thinking this is inconsistent)
+
+print [0..] # [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, ...
+
+print [0..-1..] # [ 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, ...
+
+# They also work in for loops
+for [2..]:
+    print isPrime $ # Prints all prime numbers (Requires isPrime to be defined but you get the point)
 ```
 
 # Expression Operators

@@ -20,3 +20,8 @@ print [7..0..10] # [] (I didnt mean to do this but I actually kind of like it, s
 # print [0..] # Prints forever
 
 # print [0..-1..] # Prints forever in the other direction
+
+###
+# Ranges also work in for loops
+for [1..]:
+    print $

@@ -135,6 +135,18 @@ export default {
                 ...evaluateExpression(b),
             ],
         },
+        {
+            pattern: [type("List"), "**", type("Integer")],
+            // TODO: Need output types to be a union of the two input types
+            evaluate: ({ tokens: [list, _, n] }) => {
+                let num = evaluateExpression(n);
+                if (num <= 0) return [];
+                const inputList = evaluateExpression(list);
+                const outputList = [inputList];
+                while (--num > 0) outputList.push(...inputList);
+                return outputList;
+            },
+        },
         { pattern: [type("listlit")] },
     ],
     listlit: [

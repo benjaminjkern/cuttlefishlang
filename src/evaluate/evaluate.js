@@ -44,20 +44,21 @@ export const evaluateExpression = (parsedNode, context) => {
         }
     }
 
+    let index = 0;
+
     const childIterator = parsedNode.unparsedStatements && {
-        index: 0,
-        hasNext: () => parsedNode.unparsedStatements[childIterator.index],
+        hasNext: () => parsedNode.unparsedStatements[index],
         next: () => {
-            childIterator.index++;
+            index++;
             interpretIndentTree(
-                parsedNode.unparsedStatements[childIterator.index - 1],
+                parsedNode.unparsedStatements[index - 1],
                 context
             );
         },
         iterateToEnd: () => {
             while (childIterator.hasNext()) childIterator.next();
         },
-        restart: () => (childIterator.index = 0),
+        restart: () => (index = 0),
     };
 
     return parsedNode.evaluate({

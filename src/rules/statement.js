@@ -4,31 +4,12 @@ import { consoleWrite } from "../util/environment.js";
 import { CuttlefishError } from "../util/index.js";
 import { forceString } from "./expressions/string.js";
 
-export const makeIterator = (iterable) => {
-    if (Array.isArray(iterable)) {
-        const iterator = {
-            index: 0,
-            next: () => {
-                if (!iterator.hasNext())
-                    throw "Tried calling iterator.next() when it do not have a next!";
-                iterator.index++;
-                return iterable[iterator.index - 1];
-            },
-            hasNext: () => {
-                return iterator.index < iterable.length;
-            },
-        };
-        return iterator;
-    }
-    throw "Not implemented yet: Non-array iterables";
-};
-
 export default {
     Statement: [
         {
             pattern: ["print", OR(type("Iterable"), type("stringlike"))],
-            evaluate: ({ tokens: [_, iter] }) => {
-                print(evaluateExpression(iter));
+            evaluate: ({ tokens: [_, toPrint] }) => {
+                print(evaluateExpression(toPrint));
                 consoleWrite("\n");
             },
         },
@@ -107,14 +88,16 @@ export default {
 };
 
 const print = (object) => {
-    if (!Array.isArray(object)) return consoleWrite(forceString(object));
+    if (!object.hasNext) return consoleWrite(forceString(object));
+    // Assume object is an iterator
 
-    const iterator = makeIterator(object);
-    consoleWrite("[ ");
-    while (iterator.hasNext()) {
-        const next = iterator.next();
-        print(next);
-        if (iterator.hasNext()) consoleWrite(", ");
+    // If it has at least one item, then it should have padding (Looks nice)
+    const listPadding = object.hasNext() ? " " : "";
+
+    consoleWrite(`[${listPadding}`);
+    while (object.hasNext()) {
+        print(object.next());
+        if (object.hasNext()) consoleWrite(", ");
     }
-    consoleWrite(" ]");
+    consoleWrite(`${listPadding}]`);
 };

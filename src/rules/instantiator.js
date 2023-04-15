@@ -1,7 +1,6 @@
 import { evaluateExpression } from "../evaluate/evaluate.js";
 import { type, OPTIONAL } from "../parse/ruleUtils.js";
 import { CuttlefishError } from "../util/index.js";
-import { makeIterator } from "./statement.js";
 
 const loop = (testFunc, setContext, getContext, childIterator) => {
     const oldInLoop = getContext("inLoop");
@@ -97,7 +96,7 @@ export default {
                 getContext,
                 childIterator,
             }) => {
-                const iterator = makeIterator(evaluateExpression(iterable));
+                const iterator = evaluateExpression(iterable);
                 loop(
                     () => {
                         if (!iterator.hasNext()) return false;

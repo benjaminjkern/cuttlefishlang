@@ -1,5 +1,5 @@
 import { evaluateExpression } from "../../evaluate/evaluate.js";
-import { type, OPTIONAL, MULTI, OR } from "../../parse/ruleUtils.js";
+import { type, OPTIONAL, MULTI } from "../../parse/ruleUtils.js";
 
 const discreteRangeIterator = ({
     start,

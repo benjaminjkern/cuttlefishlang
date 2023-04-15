@@ -87,7 +87,7 @@ export default {
     ],
 };
 
-const print = (object) => {
+export const print = (object) => {
     if (!object.hasNext) return consoleWrite(forceString(object));
     // Assume object is an iterator
     object.restart();

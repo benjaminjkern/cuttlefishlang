@@ -5,11 +5,11 @@ import { interpretIndentTree } from "./evaluate/interpret.js";
 import { CuttlefishError } from "./util/index.js";
 import { runTests } from "./test/runTests.js";
 import { consoleWarn } from "./util/environment.js";
+import { startRepl } from "./repl.js";
 
 // Cuttlefish command (Deal with arguments);
-export const cuttlefishCommandLine = async (node, file, ...args) => {
-    if (args.length === 0)
-        throw CuttlefishError("Did not include a Cuttlefish file!");
+export const cuttlefishCommandLine = (node, file, ...args) => {
+    if (args.length === 0) return startRepl();
 
     if (args[0] === "test") return runTests();
 

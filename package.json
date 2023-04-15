@@ -27,6 +27,7 @@
         "eslint-plugin-import": "^2.27.5"
     },
     "dependencies": {
-        "colors": "^1.4.0"
+        "colors": "^1.4.0",
+        "prompt-sync": "^4.2.0"
     }
 }

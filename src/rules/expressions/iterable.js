@@ -1,5 +1,7 @@
 import { evaluateExpression } from "../../evaluate/evaluate.js";
 import { type, OPTIONAL, MULTI } from "../../parse/ruleUtils.js";
+import { consoleWarn } from "../../util/environment.js";
+import { CuttlefishError } from "../../util/index.js";
 
 const discreteRangeIterator = ({
     start,
@@ -41,7 +43,7 @@ const discreteRangeIterator = ({
             }
             return returnValue;
         },
-        length: end === null ? null : (end - start + 1) / step, // Definitely wrong but good enough for now
+        length: end === null ? null : Math.floor((end - start) / step), // Definitely wrong but good enough for now
     };
 };
 
@@ -67,6 +69,10 @@ const makeListIterator = (list) => {
 };
 
 const concatenateIterators = (iteratorA, iteratorB) => {
+    if (iteratorA.length === null)
+        consoleWarn(
+            "Warning: Concatenating a to an infinite iterable (The second iterable will never run)"
+        );
     const returnIterator = {
         usingIteratorA: iteratorA.hasNext(),
         next: () => {
@@ -88,7 +94,8 @@ const concatenateIterators = (iteratorA, iteratorB) => {
         },
         clone: () => concatenateIterators(iteratorA.clone(), iteratorB.clone()),
         getIndex: (index) => {
-            if (index < iteratorA.length) return iteratorA.getIndex(index);
+            if (iteratorA.length === null || index < iteratorA.length)
+                return iteratorA.getIndex(index);
             return iteratorB.getIndex(index - iteratorA.length);
         },
     };
@@ -133,7 +140,30 @@ export default {
     listlit: [
         {
             pattern: ["[", OPTIONAL(type("commaSeparatedObjects")), "]"],
-            evaluate: ({ tokens: [_, a] }) => evaluateExpression(a),
+            evaluate: ({ tokens: [_, a] }) => {
+                if (a.length === 0) return [];
+                return evaluateExpression(a);
+            },
+        },
+    ],
+    commaSeparatedObjects: [
+        {
+            pattern: [
+                type("Object"),
+                MULTI([
+                    ",",
+                    MULTI(type("space")),
+                    type("Object"),
+                    MULTI(type("space")),
+                ]),
+                OPTIONAL(","),
+            ],
+            evaluate: ({ tokens: [head, [commas, spaces, rest]] }) => {
+                return [
+                    evaluateExpression(head),
+                    ...(rest ? rest.map(evaluateExpression) : []),
+                ];
+            },
         },
     ],
     DiscreteRange: [
@@ -174,21 +204,6 @@ export default {
                 step: evaluateExpression(step),
                 end: evaluateExpression(end),
             }),
-        },
-    ],
-    commaSeparatedObjects: [
-        {
-            pattern: [
-                type("Object"),
-                MULTI([",", MULTI(type("space")), type("Object")]),
-                OPTIONAL(","),
-            ],
-            evaluate: ({ tokens: [head, [commas, spaces, rest]] }) => {
-                return [
-                    evaluateExpression(head),
-                    ...rest.map(evaluateExpression),
-                ];
-            },
         },
     ],
 };

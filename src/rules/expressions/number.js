@@ -61,6 +61,12 @@ export default {
             spaces: "specify",
             evaluate: ({ sourceString }) => +sourceString,
         },
+        {
+            pattern: [type("Iterable"), ".", "length"],
+            evaluate: ({ tokens: [iterable] }) => {
+                return evaluateExpression(iterable).length;
+            },
+        },
     ],
     numlit: [
         {

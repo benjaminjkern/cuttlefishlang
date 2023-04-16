@@ -28,6 +28,7 @@
     },
     "dependencies": {
         "colors": "^1.4.0",
-        "prompt-sync": "^4.2.0"
+        "prompt-sync": "^4.2.0",
+        "prompt-sync-history": "^1.0.1"
     }
 }

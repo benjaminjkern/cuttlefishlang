@@ -1,4 +1,5 @@
 import promptPackage from "prompt-sync";
+import promptHistory from "prompt-sync-history";
 import { newContext } from "./parse/context.js";
 import RULES from "./rules/index.js";
 import GENERICS from "./rules/generics.js";
@@ -8,7 +9,7 @@ import { evaluateExpression } from "./evaluate/evaluate.js";
 import { print } from "./rules/statement.js";
 import createIndentTree from "./indentTree/createIndentTree.js";
 import { interpretIndentTree } from "./evaluate/interpret.js";
-const prompt = promptPackage({ sigint: true });
+const prompt = promptPackage({ sigint: true, history: promptHistory() });
 
 export const startRepl = () => {
     environment.exitOnError = false;

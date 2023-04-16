@@ -82,7 +82,7 @@ export default {
     ],
     varName: [
         {
-            pattern: [MULTI(ANYCHAR("abcdefghijklmnopqrstuvwxyz", true), 1)],
+            pattern: [MULTI(ANYCHAR("abcdefghijklmnopqrstuvwxyz_", true), 1)],
         },
     ],
 };

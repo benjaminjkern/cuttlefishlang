@@ -13,6 +13,7 @@ export const objectGenerics = [
     "List",
     "Iterable",
     "Dictionary",
+    "Function",
 ];
 
 export default {
@@ -43,16 +44,17 @@ export default {
                     evaluateExpression(index)
                 ),
         },
-        // {
-        //     pattern: [
-        //         type("Function", genericType("A"), thisType()),
-        //         genericType("A"),
-        //     ], // The A's must match
-        //     genericTypes: {
-        //         A: "Object",
-        //     },
-        //     evaluate: ({ tokens: [iterable, _, index] }) =>
-        //         evaluateExpression(iterable)[evaluateExpression(index)],
-        // },
+        {
+            pattern: [
+                type("Function", genericType("A"), thisType()),
+                type("Object"),
+                // genericType("A"),
+            ], // The A's must match
+            genericTypes: {
+                A: "Object",
+            },
+            evaluate: ({ tokens: [func, argument] }) =>
+                evaluateExpression(func).call(evaluateExpression(argument)),
+        },
     ],
 };

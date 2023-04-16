@@ -2,9 +2,15 @@ import { evaluateExpression } from "../../evaluate/evaluate.js";
 import { type, OR, thisType, genericType } from "../../parse/ruleUtils.js";
 
 export const objectGenerics = [
+    // Temporarily put these here so that it can catch it, needs to be before number
+    "Integer",
     "Number",
     "String",
     "Boolean",
+    // Temporarily put these here so that it can catch it, needs to be before iterable
+    "DiscreteRange",
+    // Temporarily put these here so that it can catch it, needs to be before iterable
+    "List",
     "Iterable",
     "Dictionary",
 ];

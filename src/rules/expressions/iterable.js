@@ -135,6 +135,22 @@ export default {
                 );
             },
         },
+        {
+            pattern: [type("Iterable"), "**", type("Integer")],
+            // TODO: Need output types to be a union of the two input types
+            evaluate: ({ tokens: [iter, _, n] }) => {
+                let num = evaluateExpression(n);
+                if (num <= 0) return makeListIterator([]);
+                const inputIterator = evaluateExpression(iter);
+                let outputIterator = inputIterator.clone();
+                while (--num > 0)
+                    outputIterator = concatenateIterators(
+                        outputIterator.clone(),
+                        inputIterator.clone()
+                    );
+                return outputIterator;
+            },
+        },
     ],
     List: [
         {
@@ -153,7 +169,7 @@ export default {
                 let num = evaluateExpression(n);
                 if (num <= 0) return [];
                 const inputList = evaluateExpression(list);
-                const outputList = [inputList];
+                const outputList = [...inputList];
                 while (--num > 0) outputList.push(...inputList);
                 return outputList;
             },

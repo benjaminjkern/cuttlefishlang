@@ -6,3 +6,10 @@ for x:
     print 'there are some elements here! ' ++ $
 
 print x ++ x
+
+
+print x.length
+
+print []
+
+print [1]

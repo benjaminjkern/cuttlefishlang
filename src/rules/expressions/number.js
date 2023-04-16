@@ -57,15 +57,51 @@ export default {
                 Math.round(evaluateExpression(num)),
         },
         {
-            pattern: [MULTI(type("digit"), 1)],
-            spaces: "specify",
-            evaluate: ({ sourceString }) => +sourceString,
-        },
-        {
             pattern: [type("Iterable"), ".", "length"],
             evaluate: ({ tokens: [iterable] }) => {
                 return evaluateExpression(iterable).length;
             },
+        },
+
+        // NOTE: ALL OF THESE ARE REPEATS OF NUMBER RULES BUT IT WAS EASIER TO DO IT THIS WAY FOR THE TIME BEING
+        {
+            pattern: [type("Integer"), "+", type("Integer")],
+            associativityReverseSearchOrder: true,
+            evaluate: ({ tokens: [a, _, b] }) =>
+                evaluateExpression(a) + evaluateExpression(b),
+        },
+        {
+            pattern: [type("Integer"), "-", type("Integer")],
+            associativityReverseSearchOrder: true,
+            evaluate: ({ tokens: [a, _, b] }) =>
+                evaluateExpression(a) - evaluateExpression(b),
+        },
+        {
+            pattern: [type("Integer"), "*", type("Integer")],
+            associativityReverseSearchOrder: true,
+            evaluate: ({ tokens: [a, _, b] }) =>
+                evaluateExpression(a) * evaluateExpression(b),
+        },
+        {
+            pattern: [type("Integer"), "/", type("Integer")],
+            associativityReverseSearchOrder: true,
+            evaluate: ({ tokens: [a, _, b] }) =>
+                evaluateExpression(a) / evaluateExpression(b),
+        },
+        {
+            pattern: [type("Integer"), "^", type("Integer")],
+            associativityReverseSearchOrder: true,
+            evaluate: ({ tokens: [a, _, b] }) =>
+                evaluateExpression(a) ** evaluateExpression(b),
+        },
+        {
+            pattern: ["-", type("Integer")],
+            evaluate: ({ tokens: [_, a] }) => -evaluateExpression(a),
+        },
+        {
+            pattern: [MULTI(type("digit"), 1)],
+            spaces: "specify",
+            evaluate: ({ sourceString }) => +sourceString,
         },
     ],
     numlit: [

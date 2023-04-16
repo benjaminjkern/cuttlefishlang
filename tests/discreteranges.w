@@ -24,3 +24,7 @@ print [7..0..10] # [] (I didnt mean to do this but I actually kind of like it, s
 # Works for for loops as well
 for [1..20]:
     print $
+
+
+# Can fetch from list as well
+print [69..7..][200] # 1469

@@ -35,10 +35,9 @@ const discreteRangeIterator = ({
                 includeStart,
             }),
         getIndex: (index) => {
-            const returnValue = start - step * includeStart + step * index;
-            if ((returnValue + step - end) * step >= 0) {
-                if (returnValue + step === end && includeEnd)
-                    return returnValue;
+            const returnValue = start + step * !includeStart + step * index;
+            if (end !== null && (returnValue - end) * step >= 0) {
+                if (returnValue === end && includeEnd) return returnValue;
                 return undefined;
             }
             return returnValue;

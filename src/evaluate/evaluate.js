@@ -1,6 +1,5 @@
 import generateHeuristics from "../parse/heuristics.js";
 import { consoleWarn } from "../util/environment.js";
-import { interpretIndentTree } from "./interpret.js";
 
 // UNUSED FOR NOW
 export const evaluateParsedNode = (parsedNode, context) => {
@@ -22,7 +21,11 @@ export const evaluateStatementList = (expList, context) => {
     expList.forEach(evaluateParsedNode);
 };
 
-export const evaluateExpression = (parsedNode, context) => {
+export const evaluateExpression = (
+    parsedNode,
+    context,
+    interpretUnparsedStatement
+) => {
     if (!parsedNode.evaluate) {
         // Catch list expressions
         if (parsedNode.length)
@@ -50,7 +53,7 @@ export const evaluateExpression = (parsedNode, context) => {
         hasNext: () => parsedNode.unparsedStatements[index],
         next: () => {
             index++;
-            interpretIndentTree(
+            interpretUnparsedStatement(
                 parsedNode.unparsedStatements[index - 1],
                 context
             );

@@ -8,7 +8,7 @@ import { print } from "./rules/statement.js";
 import createIndentTree from "./indentTree/createIndentTree.js";
 import { interpretIndentTree } from "./evaluate/interpret.js";
 
-export const startRepl = (getLine) => {
+export const startRepl = async (getLine) => {
     environment.exitOnError = false;
     RULES.Statement.push({
         pattern: ["exit"],
@@ -23,9 +23,11 @@ export const startRepl = (getLine) => {
     });
     const context = { ...newContext(RULES, GENERICS), vars: [] };
 
+    consoleWrite("Welcome to Cuttlefish v2.0.a\n");
+
     // eslint-disable-next-line no-constant-condition
     while (true) {
-        const line = getLine();
+        const line = await getLine();
         try {
             interpretIndentTree(createIndentTree(line), context);
         } catch (error) {

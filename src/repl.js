@@ -1,5 +1,3 @@
-import promptPackage from "prompt-sync";
-import promptHistory from "prompt-sync-history";
 import { newContext } from "./parse/context.js";
 import RULES from "./rules/index.js";
 import GENERICS from "./rules/generics.js";
@@ -9,9 +7,8 @@ import { evaluateExpression } from "./evaluate/evaluate.js";
 import { print } from "./rules/statement.js";
 import createIndentTree from "./indentTree/createIndentTree.js";
 import { interpretIndentTree } from "./evaluate/interpret.js";
-const prompt = promptPackage({ sigint: true, history: promptHistory() });
 
-export const startRepl = () => {
+export const startRepl = async (getLine) => {
     environment.exitOnError = false;
     RULES.Statement.push({
         pattern: ["exit"],
@@ -26,9 +23,11 @@ export const startRepl = () => {
     });
     const context = { ...newContext(RULES, GENERICS), vars: [] };
 
+    consoleWrite("Welcome to Cuttlefish v2.0.a\n");
+
     // eslint-disable-next-line no-constant-condition
     while (true) {
-        const line = prompt("$".red + "> ");
+        const line = await getLine();
         try {
             interpretIndentTree(createIndentTree(line), context);
         } catch (error) {

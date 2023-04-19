@@ -81,3 +81,9 @@ export const type = (typeName, ...subtypes) => ({ type: typeName, subtypes });
 export const thisType = () => ({ thisType: true });
 
 export const genericType = (typeName) => ({ genericType: typeName });
+
+export const subcontext = (pattern, rules) => ({
+    metaType: "subcontext",
+    pattern,
+    rules,
+});

@@ -8,7 +8,7 @@ environment.consoleWrite = (string) => (terminal.value += string);
 environment.consoleError = (string) => (terminal.value += string + "\n");
 
 const totalCharactersWidth = Math.floor((window.innerWidth - 4) / 8);
-const totalCharactersHeight = Math.floor((window.innerHeight - 4) / 8);
+// const totalCharactersHeight = Math.floor((window.innerHeight - 4) / 15.5);
 
 const updateCaret = (currentTerminal) => {
     const selectionStart = Math.max(terminal.selectionStart, currentTerminal);

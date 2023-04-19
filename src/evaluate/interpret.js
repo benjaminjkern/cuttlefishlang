@@ -69,7 +69,8 @@ export const interpretIndentTree = (
             treeNode.parsedNode = parse;
             evaluateExpression(
                 { ...parse, unparsedStatements: statements, lineNumber },
-                context
+                context,
+                interpretIndentTree
             );
             return;
         }

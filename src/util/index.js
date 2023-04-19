@@ -1,9 +1,4 @@
-import { inspect as utilInspect } from "util";
-import "colors";
 import { consoleError, consoleWarn, environment } from "./environment.js";
-
-export const inspect = (obj) =>
-    console.log(utilInspect(obj, false, null, true)); // eslint-disable-line no-console
 
 const ALLOWED_ERROR_TYPES = [
     "Error",

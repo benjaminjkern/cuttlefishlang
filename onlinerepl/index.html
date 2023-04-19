@@ -1,0 +1,47 @@
+<html>
+
+<head>
+    <title>Cuttlefish!</title>
+    <script type="module" src="index.js"></script>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #111;
+            color: rgb(227, 179, 91);
+        }
+
+        #terminal {
+            width: 100%;
+            height: 100%;
+            border: none;
+            /* padding: 0; */
+            border-radius: 0;
+            background-color: transparent;
+            color: rgb(227, 179, 91);
+            word-wrap: break-word;
+            word-break: break-all;
+            caret-color: transparent;
+        }
+
+        #terminal:focus {
+            outline-width: 0;
+            background-color: #ffffff22
+        }
+
+        #cursor {
+            width: 8px;
+            height: 16px;
+            background: rgba(227, 179, 91, 0.3);
+            position: absolute;
+        }
+    </style>
+</head>
+
+<body>
+    <textarea id="terminal" autofocus spellcheck="false" wrap="hard"></textarea>
+    <div id="cursor"></div>
+</body>
+
+</html>

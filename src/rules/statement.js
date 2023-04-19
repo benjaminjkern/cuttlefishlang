@@ -25,57 +25,49 @@ export default {
         },
         {
             pattern: ["break"],
-            evaluate: ({ lineNumber, setContext, getContext }) => {
-                const inLoop = getContext("inLoop");
+            evaluate: ({ lineNumber, context }) => {
+                const inLoop = context.inLoop;
                 if (!inLoop)
                     throw CuttlefishError(
                         `Cannot use break outside of loop!`,
                         lineNumber,
                         "Runtime Exception"
                     );
-                setContext({ breakingLoop: true });
+                context.breakingLoop = true;
             },
         },
         {
             pattern: ["continue"],
-            evaluate: ({ lineNumber, setContext, getContext }) => {
-                const inLoop = getContext("inLoop");
+            evaluate: ({ lineNumber, context }) => {
+                const inLoop = context.inLoop;
                 if (!inLoop)
                     throw CuttlefishError(
                         `Cannot use continue outside of loop!`,
                         lineNumber,
                         "Runtime Exception"
                     );
-                setContext({ continuingLoop: true });
+                context.breakingLoop = true;
             },
         },
         {
             pattern: ["if", type("Boolean"), ":", OPTIONAL(type("Statement"))],
-            evaluate: ({
-                tokens: [_1, test, _2, statement],
-                setContext,
-                context,
-            }) => {
+            evaluate: ({ tokens: [_1, test, _2, statement], context }) => {
                 const shouldRun = evaluateExpression(test);
                 if (shouldRun) evaluateExpression(statement, context);
-                setContext({ ranIfStatement: shouldRun });
+                context.ranIfStatement = shouldRun;
             },
         },
         {
             pattern: ["else", OPTIONAL(":"), type("Statement")], // I personally like this colon being optional
-            evaluate: ({
-                getContext,
-                tokens: [_1, _2, statement],
-                context,
-            }) => {
-                const ranIfStatement = getContext("ranIfStatement");
+            evaluate: ({ tokens: [_1, _2, statement], context }) => {
+                const ranIfStatement = context.ranIfStatement;
                 if (ranIfStatement === undefined)
                     throw CuttlefishError(
                         "`else` statement must follow an `if` statement!",
                         undefined,
                         "Semantics Error"
                     );
-                if (getContext("ranIfStatement")) return;
+                if (ranIfStatement) return;
                 evaluateExpression(statement, context);
             },
         },

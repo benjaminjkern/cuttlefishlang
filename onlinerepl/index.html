@@ -20,6 +20,9 @@
             border-radius: 0;
             background-color: transparent;
             color: rgb(227, 179, 91);
+            word-wrap: break-word;
+            word-break: break-all;
+            caret-color: transparent;
         }
 
         #terminal:focus {
@@ -37,7 +40,7 @@
 </head>
 
 <body>
-    <textarea id="terminal" autofocus readonly wrap="off"></textarea>
+    <textarea id="terminal" autofocus spellcheck="false" wrap="hard"></textarea>
     <div id="cursor"></div>
 </body>
 

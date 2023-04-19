@@ -7,51 +7,60 @@ const cursorElement = document.getElementById("cursor");
 environment.consoleWrite = (string) => (terminal.value += string);
 environment.consoleError = (string) => (terminal.value += string + "\n");
 
-let cursorLine = 0;
+const totalCharactersWidth = Math.floor((window.innerWidth - 4) / 8);
+const totalCharactersHeight = Math.floor((window.innerHeight - 4) / 8);
+
+const updateCaret = (currentTerminal) => {
+    let totalXPosition = 3 + terminal.selectionStart - currentTerminal;
+    if (terminal.selectionStart < currentTerminal) totalXPosition = 3;
+    let x = ((totalXPosition - 1) % totalCharactersWidth) + 1;
+    if (x < 0) x += totalCharactersWidth - 1;
+
+    let totalYPosition =
+        terminal.value
+            .slice(0, terminal.selectionStart)
+            .split("\n")
+            .reduce(
+                (p, c) => p + Math.ceil(c.length / totalCharactersWidth),
+                0
+            ) - 1;
+
+    cursorElement.style.left = 2 + x * 8 + "px";
+    cursorElement.style.top =
+        2 + totalYPosition * 15.5 - terminal.scrollTop + "px";
+};
 
 startRepl(async () => {
-    let cursor = 0;
-    let currentString = "";
+    terminal.value += "$> ";
 
+    const currentTerminal = terminal.value.length;
     const pressedEnter = new Promise((resolve) => {
         window.onkeydown = (event) => {
             if (event.key === "Enter") {
                 terminal.value += "\n";
-                cursorLine++;
-                return resolve(currentString);
-            }
-            terminal.value = terminal.value.slice(
-                0,
-                terminal.value.length - currentString.length
-            );
-            if (event.key === "Backspace") {
-                currentString =
-                    currentString.slice(0, cursor - 1) +
-                    currentString.slice(cursor);
-                cursor = Math.max(cursor - 1, 0);
+                event.preventDefault();
+                return resolve(terminal.value.slice(currentTerminal, -1));
+            } else if (event.key === "Backspace") {
+                if (terminal.value.length === currentTerminal)
+                    event.preventDefault();
+                else if (terminal.selectionStart === terminal.selectionEnd) {
+                    terminal.selectionStart--;
+                }
             } else if (event.key === "ArrowLeft") {
-                cursor = Math.max(cursor - 1, 0);
-            } else if (event.key === "ArrowRight") {
-                cursor = Math.min(cursor + 1, currentString.length);
+                if (terminal.value.length === currentTerminal)
+                    event.preventDefault();
             } else if (event.key === "ArrowUp") {
-                cursor = 0;
+                // Should go back in history
+                event.preventDefault();
             } else if (event.key === "ArrowDown") {
-                cursor = currentString.length;
-            } else if (event.key.length > 1) return;
-            else {
-                currentString =
-                    currentString.slice(0, cursor) +
-                    event.key +
-                    currentString.slice(cursor);
-                cursor += event.key.length;
+                // Should go forward in history
+                event.preventDefault();
             }
-            cursorElement.style.left = 2 + (cursor + 3) * 8 + "px";
-            cursorElement.style.top = 2 + (cursorLine * 2 + 1) * 15 + "px";
-            terminal.value += currentString;
         };
+
+        document.onselectionchange = () => updateCaret(currentTerminal);
+        window.onresize = () => updateCaret(currentTerminal);
     });
-    terminal.value += "$> ";
-    cursorElement.style.left = 2 + (cursor + 3) * 8 + "px";
-    cursorElement.style.top = 2 + (cursorLine * 2 + 1) * 15 + "px";
+    terminal.scrollTo(0, terminal.scrollHeight);
     return await pressedEnter;
 });

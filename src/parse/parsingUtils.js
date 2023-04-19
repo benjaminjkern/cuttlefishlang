@@ -1,5 +1,4 @@
-import { consoleWarn } from "../util/environment.js";
-import { colorString } from "../util/specialUtils.js";
+import { colorString } from "../util/index.js";
 
 export const isTerminal = (token) => typeof token !== "object";
 

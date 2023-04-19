@@ -99,7 +99,7 @@ const parseExpressionAsMetaType = (
             return expression;
         case "subcontext":
             return parseExpressionAsPattern(
-                metaTypePatternToken,
+                metaTypePatternToken.pattern,
                 expression,
                 undefined,
                 lineNumber,
@@ -109,70 +109,67 @@ const parseExpressionAsMetaType = (
     return { error: `Invalid metaType: ${metaTypePatternToken.metaType}` };
 };
 
-const parseExpressionAsPattern = debugFunction(
-    (pattern, expression, rule, lineNumber, context) => {
-        const possibleMatches = getPossibleMatches(
-            pattern,
-            expression,
-            context
-        );
-        if (possibleMatches.length === 0)
-            return {
-                error: `There do not exist any possible matches of "${expression}" on pattern ${stringifyPattern(
-                    pattern
-                )}!`,
-            };
+const parseExpressionAsPattern = (
+    pattern,
+    expression,
+    rule,
+    lineNumber,
+    context
+) => {
+    const possibleMatches = getPossibleMatches(pattern, expression, context);
+    if (possibleMatches.length === 0)
+        return {
+            error: `There do not exist any possible matches of "${expression}" on pattern ${stringifyPattern(
+                pattern
+            )}!`,
+        };
 
-        if (rule && rule.associativityReverseSearchOrder)
-            possibleMatches.reverse();
+    if (rule && rule.associativityReverseSearchOrder) possibleMatches.reverse();
 
-        nextBreakPoint: for (const breakpointList of possibleMatches) {
-            const match = [];
-            for (const [i, patternToken] of pattern.entries()) {
-                const subExpression = expression.slice(
-                    breakpointList[i - 1] || 0,
-                    breakpointList[i]
-                );
+    nextBreakPoint: for (const breakpointList of possibleMatches) {
+        const match = [];
+        for (const [i, patternToken] of pattern.entries()) {
+            const subExpression = expression.slice(
+                breakpointList[i - 1] || 0,
+                breakpointList[i]
+            );
 
-                // This should be redundant
-                if (isTerminal(patternToken)) {
-                    if (patternToken !== subExpression) continue nextBreakPoint;
-                    match.push(patternToken);
-                    continue;
-                }
-                if (patternToken.metaType) {
-                    const parse = parseExpressionAsMetaType(
-                        patternToken,
-                        subExpression,
-                        lineNumber,
-                        context
-                    );
-                    if (parse.error) continue nextBreakPoint;
-                    match.push(parse);
-                    continue;
-                }
-
-                const parse = parseExpressionAsType(
-                    patternToken.type,
+            // This should be redundant
+            if (isTerminal(patternToken)) {
+                if (patternToken !== subExpression) continue nextBreakPoint;
+                match.push(patternToken);
+                continue;
+            }
+            if (patternToken.metaType) {
+                const parse = parseExpressionAsMetaType(
+                    patternToken,
                     subExpression,
                     lineNumber,
                     context
                 );
                 if (parse.error) continue nextBreakPoint;
                 match.push(parse);
+                continue;
             }
 
-            return match;
+            const parse = parseExpressionAsType(
+                patternToken.type,
+                subExpression,
+                lineNumber,
+                context
+            );
+            if (parse.error) continue nextBreakPoint;
+            match.push(parse);
         }
-        return {
-            error: `All possible matches of "${expression}" on pattern ${stringifyPattern(
-                pattern
-            )} failed.`,
-        };
-    },
-    "parseExpressionAsPattern",
-    [stringifyPattern, true]
-);
+
+        return match;
+    }
+    return {
+        error: `All possible matches of "${expression}" on pattern ${stringifyPattern(
+            pattern
+        )} failed.`,
+    };
+};
 
 const checkTypeHeuristics = (type, expression, context) => {
     for (const heuristic in context.heuristics.typeHeuristics) {
@@ -202,8 +199,6 @@ const checkMetaTypeHeuristics =
             return {};
         }
         if (metaTypePatternToken.metaType === "subcontext") {
-            console.log(context);
-            console.log(metaTypePatternToken.getSubcontext());
             return checkMetaTypeHeuristics(
                 {
                     ...metaTypePatternToken,

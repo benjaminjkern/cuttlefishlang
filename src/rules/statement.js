@@ -3,6 +3,7 @@ import { type, OR, MULTI, ANYCHAR, OPTIONAL } from "../parse/ruleUtils.js";
 import { consoleWrite } from "../util/environment.js";
 import { CuttlefishError } from "../util/index.js";
 import { forceString } from "./expressions/string.js";
+import { getTypeFromValue } from "./instantiator.js";
 
 export default {
     Statement: [
@@ -16,10 +17,12 @@ export default {
         {
             pattern: [type("varName"), "=", type("Object")],
             evaluate: ({ tokens: [id, _, obj], context }) => {
+                const evaluated = evaluateExpression(obj);
                 context.setVariable(
                     id.sourceString,
-                    obj.tokens[0][0].type,
-                    evaluateExpression(obj)
+                    // obj.tokens[0][0].type,
+                    getTypeFromValue(evaluated),
+                    evaluated
                 );
             },
         },

@@ -6,6 +6,7 @@ const cursorElement = document.getElementById("cursor");
 
 environment.consoleWrite = (string) => (terminal.value += string);
 environment.consoleError = (string) => (terminal.value += string + "\n");
+environment.colors = false;
 
 const updateCaret = (currentTerminal) => {
     const selectionStart = Math.max(terminal.selectionStart, currentTerminal);

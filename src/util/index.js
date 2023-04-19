@@ -1,5 +1,10 @@
 import { consoleError, consoleWarn, environment } from "./environment.js";
 
+export const colorString = (string, color) => {
+    if (environment.colors) return string[color];
+    return string;
+};
+
 const ALLOWED_ERROR_TYPES = [
     "Error",
     "Parsing Error",

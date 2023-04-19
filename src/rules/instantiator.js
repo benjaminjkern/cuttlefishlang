@@ -91,6 +91,7 @@ export default {
             pattern: ["for", type("Iterable"), OPTIONAL(":")],
             evaluate: ({
                 tokens: [_, iterable],
+                context,
                 setContext,
                 setVariable,
                 getContext,
@@ -101,7 +102,11 @@ export default {
                     () => {
                         if (!iterator.hasNext()) return false;
                         const value = iterator.next();
-                        setVariable("$", getTypeFromValue(value), value);
+                        context.setVariable(
+                            "$",
+                            getTypeFromValue(value),
+                            value
+                        );
                         return true; // TODO: NOT SURE HOW TO DO THIS QUITE YET
                     },
                     setContext,
@@ -113,7 +118,7 @@ export default {
     ],
 };
 
-const getTypeFromValue = (value) => {
+export const getTypeFromValue = (value) => {
     if (typeof value === "number") return "Number";
     if (typeof value === "string") return "String";
     if (typeof value === "boolean") return "Boolean";

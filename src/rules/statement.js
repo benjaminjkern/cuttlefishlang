@@ -15,8 +15,8 @@ export default {
         },
         {
             pattern: [type("varName"), "=", type("Object")],
-            evaluate: ({ tokens: [id, _, obj], setVariable }) => {
-                setVariable(
+            evaluate: ({ tokens: [id, _, obj], context }) => {
+                context.setVariable(
                     id.sourceString,
                     obj.tokens[0][0].type,
                     evaluateExpression(obj)

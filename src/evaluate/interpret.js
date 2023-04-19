@@ -7,10 +7,15 @@ import { evaluateExpression } from "./evaluate.js";
 import { newContext } from "../parse/context.js";
 import { consoleWarn } from "../util/environment.js";
 import generateHeuristics from "../parse/heuristics.js";
+import { combineRulesets } from "../parse/ruleUtils.js";
 
-export const newInterpretContext = (parentContexts = {}) => {
+export const newInterpretContext = (extraRules = {}, parentContexts = {}) => {
     const context = {
-        ...newContext(RULES, GENERICS, parentContexts),
+        ...newContext(
+            combineRulesets(RULES, extraRules),
+            GENERICS,
+            parentContexts
+        ),
         vars: [],
         setVariable: (varName, type, value) => {
             if (
@@ -44,6 +49,7 @@ export const newInterpretContext = (parentContexts = {}) => {
             context.vars[varName] = { value, type };
         },
     };
+    context.evaluateExpression = evaluateExpression(context);
     return context;
 };
 
@@ -69,9 +75,8 @@ export const interpretIndentTree = (
             if (parse.error)
                 throw CuttlefishError(parse.error, lineNumber, "Parsing Error");
             treeNode.parsedNode = parse;
-            evaluateExpression(
+            context.evaluateExpression(
                 { ...parse, unparsedStatements: statements, lineNumber },
-                context,
                 interpretIndentTree
             );
             return;
@@ -85,7 +90,7 @@ export const interpretIndentTree = (
     if (parse.error)
         throw CuttlefishError(parse.error, lineNumber, "Parsing Error");
     treeNode.parsedNode = parse;
-    evaluateExpression({ ...parse, lineNumber }, context);
+    context.evaluateExpression({ ...parse, lineNumber });
 };
 
 const interpretStatementList = (statementList, context) => {

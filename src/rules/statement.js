@@ -1,4 +1,3 @@
-import { evaluateExpression } from "../evaluate/evaluate.js";
 import { type, OR, MULTI, ANYCHAR, OPTIONAL } from "../parse/ruleUtils.js";
 import { consoleWrite } from "../util/environment.js";
 import { CuttlefishError } from "../util/index.js";
@@ -9,15 +8,15 @@ export default {
     Statement: [
         {
             pattern: ["print", OR(type("Iterable"), type("stringlike"))],
-            evaluate: ({ tokens: [_, toPrint] }) => {
-                print(evaluateExpression(toPrint));
+            evaluate: ({ tokens: [_, toPrint], context }) => {
+                print(context.evaluateExpression(toPrint));
                 consoleWrite("\n");
             },
         },
         {
             pattern: [type("varName"), "=", type("Object")],
             evaluate: ({ tokens: [id, _, obj], context }) => {
-                const evaluated = evaluateExpression(obj);
+                const evaluated = context.evaluateExpression(obj);
                 context.setVariable(
                     id.sourceString,
                     // obj.tokens[0][0].type,
@@ -55,8 +54,8 @@ export default {
         {
             pattern: ["if", type("Boolean"), ":", OPTIONAL(type("Statement"))],
             evaluate: ({ tokens: [_1, test, _2, statement], context }) => {
-                const shouldRun = evaluateExpression(test);
-                if (shouldRun) evaluateExpression(statement, context);
+                const shouldRun = context.evaluateExpression(test);
+                if (shouldRun) context.evaluateExpression(statement, context);
                 context.ranIfStatement = shouldRun;
             },
         },
@@ -71,7 +70,7 @@ export default {
                         "Semantics Error"
                     );
                 if (ranIfStatement) return;
-                evaluateExpression(statement, context);
+                context.evaluateExpression(statement, context);
             },
         },
     ],

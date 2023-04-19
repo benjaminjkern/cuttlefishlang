@@ -1,7 +1,6 @@
 import RULES from "./rules/index.js";
 import { OR, type } from "./parse/ruleUtils.js";
 import { consoleWrite, environment } from "./util/environment.js";
-import { evaluateExpression } from "./evaluate/evaluate.js";
 import { print } from "./rules/statement.js";
 import createIndentTree from "./indentTree/createIndentTree.js";
 import {
@@ -17,8 +16,8 @@ export const startRepl = async (getLine) => {
     });
     RULES.Statement.push({
         pattern: [OR(type("Iterable"), type("stringlike"))],
-        evaluate: ({ tokens: [toPrint] }) => {
-            print(evaluateExpression(toPrint));
+        evaluate: ({ tokens: [toPrint], context }) => {
+            print(context.evaluateExpression(toPrint));
             consoleWrite("\n");
         },
     });

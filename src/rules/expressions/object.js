@@ -1,4 +1,3 @@
-import { evaluateExpression } from "../../evaluate/evaluate.js";
 import { type, OR, thisType, genericType } from "../../parse/ruleUtils.js";
 
 export const objectGenerics = [
@@ -20,12 +19,15 @@ export default {
     Object: [
         {
             pattern: ["(", thisType(), ")"],
-            evaluate: ({ tokens: [_, token] }) => evaluateExpression(token),
+            evaluate: ({ tokens: [_, token], context }) =>
+                context.evaluateExpression(token),
         },
         {
             pattern: [type("Dictionary", thisType()), ".", type("varName")],
-            evaluate: ({ tokens: [dict, _, variable] }) =>
-                evaluateExpression(dict)[evaluateExpression(variable)],
+            evaluate: ({ tokens: [dict, _, variable], context }) =>
+                context.evaluateExpression(dict)[
+                    context.evaluateExpression(variable)
+                ],
         },
         {
             pattern: [
@@ -34,15 +36,17 @@ export default {
                 OR(type("String"), type("Number")),
                 "]",
             ],
-            evaluate: ({ tokens: [dict, _, exp] }) =>
-                evaluateExpression(dict)[evaluateExpression(exp)],
+            evaluate: ({ tokens: [dict, _, exp], context }) =>
+                context.evaluateExpression(dict)[
+                    context.evaluateExpression(exp)
+                ],
         },
         {
             pattern: [type("Iterable", thisType()), "[", type("Integer"), "]"],
-            evaluate: ({ tokens: [iterable, _, index] }) =>
-                evaluateExpression(iterable).getIndex(
-                    evaluateExpression(index)
-                ),
+            evaluate: ({ tokens: [iterable, _, index], context }) =>
+                context
+                    .evaluateExpression(iterable)
+                    .getIndex(context.evaluateExpression(index)),
         },
         {
             pattern: [
@@ -53,8 +57,10 @@ export default {
             genericTypes: {
                 A: "Object",
             },
-            evaluate: ({ tokens: [func, argument] }) =>
-                evaluateExpression(func).call(evaluateExpression(argument)),
+            evaluate: ({ tokens: [func, argument], context }) =>
+                context
+                    .evaluateExpression(func)
+                    .call(context.evaluateExpression(argument)),
         },
     ],
 };

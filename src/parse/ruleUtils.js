@@ -100,7 +100,7 @@ export const thisType = () => ({ thisType: true });
 export const genericType = (typeName) => ({ genericType: typeName });
 
 let subcontextId = 0;
-export const subcontext = (pattern, rules, createNewContext) => {
+export const subcontext = (pattern, createNewContext) => {
     const token = {
         metaType: "subcontext",
         pattern,
@@ -108,7 +108,6 @@ export const subcontext = (pattern, rules, createNewContext) => {
         getSubcontext: () => {
             if (token.subcontext) return token.subcontext;
             const newContext = createNewContext(token.subcontextId);
-            newContext.rules = combineRulesets(newContext.rules, rules);
             token.subcontext = newContext;
             return token.subcontext;
         },

@@ -2,101 +2,76 @@ import { evaluateExpression } from "../evaluate/evaluate.js";
 import { type, OPTIONAL } from "../parse/ruleUtils.js";
 import { CuttlefishError } from "../util/index.js";
 
-const loop = (testFunc, setContext, getContext, childIterator) => {
-    const oldInLoop = getContext("inLoop");
-    setContext({
-        inLoop: true,
-    });
+const loop = (testFunc, context, childIterator) => {
+    const oldInLoop = context.inLoop;
+    context.inLoop = true;
     while (testFunc()) {
-        setContext({
-            continuingLoop: false,
-            breakingLoop: false,
-        });
+        context.continuingLoop = false;
+        context.breakingLoop = false;
         childIterator.restart();
         while (childIterator.hasNext()) {
             childIterator.next();
-            if (getContext("continuingLoop") || getContext("breakingLoop"))
-                break;
+            if (context.continuingLoop || context.breakingLoop) break;
         }
-        if (getContext("breakingLoop")) break;
+        if (context.breakingLoop) break;
     }
-    setContext({
-        inLoop: oldInLoop,
-    });
+    context.inLoop = oldInLoop;
 };
 
 export default {
     Instantiator: [
         {
             pattern: ["if", type("Boolean"), ":"], // None of these colons need to be here since the parser can handle it but I like them
-            evaluate: ({ tokens: [_, test], childIterator, setContext }) => {
+            evaluate: ({ tokens: [_, test], childIterator, context }) => {
                 const shouldRun = evaluateExpression(test);
                 if (shouldRun) childIterator.iterateToEnd();
-                setContext({ ranIfStatement: shouldRun });
+                context.ranIfStatement = shouldRun;
             },
         },
         {
             pattern: ["else", ":"],
-            evaluate: ({ getContext, childIterator }) => {
-                const ranIfStatement = getContext("ranIfStatement");
+            evaluate: ({ context, childIterator }) => {
+                const ranIfStatement = context.ranIfStatement;
                 if (ranIfStatement === undefined)
                     throw CuttlefishError(
                         "`else` statement must follow an `if` statement!",
                         undefined,
                         "Semantics Error"
                     );
-                if (getContext("ranIfStatement")) return;
+                if (ranIfStatement) return;
                 childIterator.iterateToEnd();
             },
         },
         {
             pattern: ["while", type("Boolean"), ":"],
-            evaluate: ({
-                tokens: [_, test],
-                setContext,
-                getContext,
-                childIterator,
-            }) => {
-                loop(
-                    () => evaluateExpression(test),
-                    setContext,
-                    getContext,
-                    childIterator
-                );
+            evaluate: ({ tokens: [_, test], childIterator, context }) => {
+                loop(() => evaluateExpression(test), context, childIterator);
             },
         },
         {
             pattern: ["repeat", OPTIONAL(type("Integer")), ":"], // NOTE: I am casting to integer here but maybe it should allow non-integers
             evaluate: ({
                 tokens: [_, repeatCount],
-                setContext,
-                getContext,
+                context,
                 childIterator,
             }) => {
                 let i = 0;
                 loop(
                     () => {
                         i++;
+                        // If no number is input, just repeat indefinitely
                         if (repeatCount.length)
-                            return i < evaluateExpression(repeatCount); // If no number is input, just repeat indefinitely
+                            return i < evaluateExpression(repeatCount);
                         return true;
                     },
-                    setContext,
-                    getContext,
+                    context,
                     childIterator
                 );
             },
         },
         {
             pattern: ["for", type("Iterable"), OPTIONAL(":")],
-            evaluate: ({
-                tokens: [_, iterable],
-                context,
-                setContext,
-                setVariable,
-                getContext,
-                childIterator,
-            }) => {
+            evaluate: ({ tokens: [_, iterable], context, childIterator }) => {
                 const iterator = evaluateExpression(iterable).clone();
                 loop(
                     () => {
@@ -107,10 +82,9 @@ export default {
                             getTypeFromValue(value),
                             value
                         );
-                        return true; // TODO: NOT SURE HOW TO DO THIS QUITE YET
+                        return true;
                     },
-                    setContext,
-                    getContext,
+                    context,
                     childIterator
                 );
             },

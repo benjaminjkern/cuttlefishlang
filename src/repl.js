@@ -1,12 +1,13 @@
-import { newContext } from "./parse/context.js";
 import RULES from "./rules/index.js";
-import GENERICS from "./rules/generics.js";
 import { OR, type } from "./parse/ruleUtils.js";
 import { consoleWrite, environment } from "./util/environment.js";
 import { evaluateExpression } from "./evaluate/evaluate.js";
 import { print } from "./rules/statement.js";
 import createIndentTree from "./indentTree/createIndentTree.js";
-import { interpretIndentTree } from "./evaluate/interpret.js";
+import {
+    interpretIndentTree,
+    newInterpretContext,
+} from "./evaluate/interpret.js";
 
 export const startRepl = async (getLine) => {
     environment.exitOnError = false;
@@ -21,7 +22,7 @@ export const startRepl = async (getLine) => {
             consoleWrite("\n");
         },
     });
-    const context = { ...newContext(RULES, GENERICS), vars: [] };
+    const context = newInterpretContext();
 
     consoleWrite("Welcome to Cuttlefish v2.0.a\n");
 

@@ -16,9 +16,18 @@ export default {
                 sourceString.substring(1, sourceString.length - 1),
         },
         {
+            // TODO: Unsure if I want these to be stringlikes or strictly strings (Difference = Automatic casting of numbers and booleans as strings here)
             pattern: [type("stringlike"), "++", type("stringlike")],
             evaluate: ({ tokens: [a, _, b] }) =>
                 `${evaluateExpression(a)}${evaluateExpression(b)}`,
+        },
+        {
+            pattern: [type("stringlike"), "**", type("Integer")],
+            evaluate: ({ tokens: [string, _, n] }) => {
+                const num = evaluateExpression(n);
+                const inputString = evaluateExpression(string);
+                return Array(num).fill(inputString).join("");
+            },
         },
     ],
     stringlike: [
@@ -28,7 +37,7 @@ export default {
                     type("Number"),
                     type("String"),
                     type("Boolean")
-                    // type("Object") (I dont think I need this)
+                    // type("Object") (I dont think I need or want this)
                 ),
             ],
         },

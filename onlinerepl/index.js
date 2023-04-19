@@ -7,11 +7,11 @@ const cursorElement = document.getElementById("cursor");
 environment.consoleWrite = (string) => (terminal.value += string);
 environment.consoleError = (string) => (terminal.value += string + "\n");
 
-const totalCharactersWidth = Math.floor((window.innerWidth - 4) / 8);
-// const totalCharactersHeight = Math.floor((window.innerHeight - 4) / 15.5);
-
 const updateCaret = (currentTerminal) => {
     const selectionStart = Math.max(terminal.selectionStart, currentTerminal);
+
+    const totalCharactersWidth = Math.floor((window.innerWidth - 4) / 8);
+    // const totalCharactersHeight = Math.floor((window.innerHeight - 4) / 15.5);
 
     const totalXPosition = 3 + selectionStart - currentTerminal;
     let x = ((totalXPosition - 1) % totalCharactersWidth) + 1;

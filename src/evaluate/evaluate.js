@@ -1,26 +1,3 @@
-import generateHeuristics from "../parse/heuristics.js";
-import { consoleWarn } from "../util/environment.js";
-
-// UNUSED FOR NOW
-export const evaluateParsedNode = (parsedNode, context) => {
-    const { instantiator, children, lineNumber } = parsedNode;
-
-    if (!children) return evaluateExpression(parsedNode);
-
-    if (!instantiator) return evaluateStatementList(children);
-
-    return instantiator.evaluate({
-        tokens: instantiator.tokens,
-        sourceString: instantiator.sourceString,
-        children,
-        lineNumber,
-    });
-};
-
-export const evaluateStatementList = (expList, context) => {
-    expList.forEach(evaluateParsedNode);
-};
-
 export const evaluateExpression = (
     parsedNode,
     context,
@@ -33,6 +10,8 @@ export const evaluateExpression = (
 
         throw "not sure what happened";
     }
+
+    // Specific code for if statements
     if (["Statement", "Instantiator"].includes(parsedNode.type)) {
         const ranIfStatement = context["ranIfStatement"];
         switch (ranIfStatement) {
@@ -47,8 +26,8 @@ export const evaluateExpression = (
         }
     }
 
+    // Provide an iterator for instantiators
     let index = 0;
-
     const childIterator = parsedNode.unparsedStatements && {
         hasNext: () => parsedNode.unparsedStatements[index],
         next: () => {
@@ -70,13 +49,5 @@ export const evaluateExpression = (
         lineNumber: parsedNode.lineNumber,
         childIterator,
         context,
-        setContext: (newContext) => {
-            for (const key in newContext) {
-                context[key] = newContext[key];
-            }
-        },
-        getContext: (key) => {
-            return context[key];
-        },
     });
 };

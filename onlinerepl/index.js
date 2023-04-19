@@ -11,23 +11,25 @@ const totalCharactersWidth = Math.floor((window.innerWidth - 4) / 8);
 const totalCharactersHeight = Math.floor((window.innerHeight - 4) / 8);
 
 const updateCaret = (currentTerminal) => {
-    let totalXPosition = 3 + terminal.selectionStart - currentTerminal;
-    if (terminal.selectionStart < currentTerminal) totalXPosition = 3;
+    const selectionStart = Math.max(terminal.selectionStart, currentTerminal);
+
+    const totalXPosition = 3 + selectionStart - currentTerminal;
     let x = ((totalXPosition - 1) % totalCharactersWidth) + 1;
     if (x < 0) x += totalCharactersWidth - 1;
 
-    let totalYPosition =
+    const totalYPosition =
         terminal.value
-            .slice(0, terminal.selectionStart)
+            .slice(0, selectionStart)
             .split("\n")
             .reduce(
                 (p, c) => p + Math.ceil(c.length / totalCharactersWidth),
                 0
             ) - 1;
 
-    cursorElement.style.left = 2 + x * 8 + "px";
-    cursorElement.style.top =
-        2 + totalYPosition * 15.5 - terminal.scrollTop + "px";
+    cursorElement.style.left = `${2 + x * 8}px`;
+    cursorElement.style.top = `${
+        2 + totalYPosition * 15.5 - terminal.scrollTop
+    }px`;
 };
 
 startRepl(async () => {
@@ -43,7 +45,9 @@ startRepl(async () => {
             } else if (event.key === "Backspace") {
                 if (terminal.value.length === currentTerminal)
                     event.preventDefault();
-                else if (terminal.selectionStart === terminal.selectionEnd) {
+                else if (terminal.selectionStart < currentTerminal) {
+                    terminal.selectionStart = currentTerminal;
+                } else if (terminal.selectionStart === terminal.selectionEnd) {
                     terminal.selectionStart--;
                 }
             } else if (event.key === "ArrowLeft") {
@@ -60,6 +64,7 @@ startRepl(async () => {
 
         document.onselectionchange = () => updateCaret(currentTerminal);
         window.onresize = () => updateCaret(currentTerminal);
+        terminal.onscroll = () => updateCaret(currentTerminal);
     });
     terminal.scrollTo(0, terminal.scrollHeight);
     return await pressedEnter;

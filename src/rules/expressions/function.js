@@ -19,7 +19,8 @@ export default {
                             },
                         ],
                     },
-                    () => newInterpretContext()
+                    (subcontextToken) =>
+                        newInterpretContext({ [subcontextToken]: true })
                 ),
             ],
             evaluate: ({ tokens: [_1, _2, arg] }) => ({

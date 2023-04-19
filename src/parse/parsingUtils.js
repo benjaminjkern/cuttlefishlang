@@ -52,7 +52,9 @@ export const stringifyPattern = (
                                 );
                             }
                             if (token.max === 1) {
-                                if (token.min !== 0 && !token.ignoreWeirdMulti)
+                                if (token.ignoreWeirdMulti)
+                                    return stringifiedPattern;
+                                if (token.min !== 0)
                                     throw `Weird multi metatype: min=${token.min} max=1`;
                                 return (
                                     stringifiedPattern +

@@ -8,9 +8,9 @@ import { newContext } from "../parse/context.js";
 import { consoleWarn } from "../util/environment.js";
 import generateHeuristics from "../parse/heuristics.js";
 
-export const newInterpretContext = () => {
+export const newInterpretContext = (parentContexts = {}) => {
     const context = {
-        ...newContext(RULES, GENERICS),
+        ...newContext(RULES, GENERICS, parentContexts),
         vars: [],
         setVariable: (varName, type, value) => {
             if (
@@ -36,7 +36,9 @@ export const newInterpretContext = () => {
                 });
                 context.heuristics = generateHeuristics(
                     context.rules,
-                    context.generics
+                    context.generics,
+                    context.parentContexts
+                    // No subcontexts, this should be done from scratch
                 );
             }
             context.vars[varName] = { value, type };

@@ -79,10 +79,13 @@ const isList = (object) =>
 export const combineRulesets = (baseRules, newRules) => {
     // NOTE: Right now in the only place I'm using this, the baserules are already a clone so doing this extra cloning is redundant
     // Make a semi-shallow copy (The rules themselves can be the same object but the ruleset and the rulelists need to be new)
-    const returnRules = Object.keys(baseRules).reduce((p, key) => ({
-        ...p,
-        [key]: [...baseRules[key]],
-    }));
+    const returnRules = Object.keys(baseRules).reduce(
+        (p, key) => ({
+            ...p,
+            [key]: [...baseRules[key]],
+        }),
+        {}
+    );
     for (const key in newRules) {
         if (!(key in returnRules)) returnRules[key] = newRules[key];
         else returnRules[key].push(...newRules[key]);
@@ -96,15 +99,18 @@ export const thisType = () => ({ thisType: true });
 
 export const genericType = (typeName) => ({ genericType: typeName });
 
+let subcontextId = 0;
 export const subcontext = (pattern, rules, createNewContext) => {
     const token = {
         metaType: "subcontext",
         pattern,
+        subcontextId: ++subcontextId,
         getSubcontext: () => {
             if (token.subcontext) return token.subcontext;
-            const newContext = createNewContext();
+            const newContext = createNewContext(token.subcontextId);
             newContext.rules = combineRulesets(newContext.rules, rules);
             token.subcontext = newContext;
+            return token.subcontext;
         },
     };
     return token;

@@ -10,7 +10,7 @@ import {
     isValidToken,
 } from "./tokenDict.js";
 
-const generateHeuristics = (rules, generics) => {
+const generateHeuristics = (rules, generics, parentContexts) => {
     // This is so it can be accessed later by the start and end dict function
     const toAddHeuristics = {};
 
@@ -31,7 +31,7 @@ const generateHeuristics = (rules, generics) => {
         },
     };
 
-    const context = { rules, generics }; // Its easier to toss this around than separately use the rules and generics
+    const context = { rules, generics, parentContexts }; // Its easier to toss this around than separately use the rules and generics
 
     toAddHeuristics.minLength = getMinLengths(context);
     HEURISTICS.typeHeuristics.minLength = (type, expression) =>
@@ -283,6 +283,7 @@ const getMinLengths = (context) => {
             undefined,
             context
         );
+
         if (minLengths[type] >= Number.MAX_SAFE_INTEGER)
             consoleWarn(
                 `Warning: Type "${type}" has a minimum length of ${minLengths[type]} (Probably an unclosed rule loop)`
@@ -304,7 +305,6 @@ const getTypeMinLength = (type, parentCalls = {}, cache = {}, context) => {
         cache,
         context
     );
-    console.log("GETS HERE??");
     return cache[type];
 };
 
@@ -351,11 +351,11 @@ const getPatternMinLength = (pattern, parentCalls, cache, context) => {
                     currentLength += 1;
                     continue;
                 case "subcontext":
-                    currentLength += getPatternMinLength(
-                        token.pattern,
+                    currentLength += getSubcontextMinLength(
+                        token,
                         parentCalls,
                         cache,
-                        token.getSubcontext()
+                        context
                     );
                     break;
             }
@@ -372,6 +372,24 @@ const getPatternMinLength = (pattern, parentCalls, cache, context) => {
         }
     }
     return currentLength;
+};
+const getSubcontextMinLength = (
+    subcontextToken,
+    parentCalls,
+    cache,
+    context
+) => {
+    if (context.parentContexts[subcontextToken.subcontextId])
+        return getPatternMinLength(
+            subcontextToken.pattern,
+            parentCalls,
+            cache,
+            context
+        );
+
+    return subcontextToken
+        .getSubcontext()
+        .heuristics.patternHeuristics.minLength(subcontextToken.pattern);
 };
 
 /*************************
@@ -455,11 +473,11 @@ const getPatternMaxLength = (pattern, parentCalls, cache, context) => {
                     currentLength += 1;
                     continue;
                 case "subcontext":
-                    currentLength += getPatternMaxLength(
-                        token.pattern,
+                    currentLength += getSubcontextMaxLength(
+                        token,
                         parentCalls,
                         cache,
-                        token.getSubcontext()
+                        context
                     );
                     break;
             }
@@ -476,6 +494,25 @@ const getPatternMaxLength = (pattern, parentCalls, cache, context) => {
         }
     }
     return currentLength;
+};
+
+const getSubcontextMaxLength = (
+    subcontextToken,
+    parentCalls,
+    cache,
+    context
+) => {
+    if (context.parentContexts[subcontextToken.subcontextId])
+        return getPatternMaxLength(
+            subcontextToken.pattern,
+            parentCalls,
+            cache,
+            context
+        );
+
+    return subcontextToken
+        .getSubcontext()
+        .heuristics.patternHeuristics.maxLength(subcontextToken.pattern);
 };
 
 /*************************
@@ -555,13 +592,9 @@ const getPatternDict = (pattern, parentCalls, cache, context) => {
                 case "subcontext":
                     dict = addTokenDicts(
                         dict,
-                        getPatternDict(
-                            token.pattern,
-                            parentCalls,
-                            cache,
-                            token.getSubcontext()
-                        )
+                        getSubcontextDict(token, parentCalls, cache, context)
                     );
+                    break;
             }
         } else {
             dict = addTokenDicts(
@@ -571,6 +604,22 @@ const getPatternDict = (pattern, parentCalls, cache, context) => {
         }
     }
     return dict;
+};
+const getSubcontextDict = (subcontextToken, parentCalls, cache, context) => {
+    if (context.parentContexts[subcontextToken.subcontextId])
+        return getPatternDict(
+            subcontextToken.pattern,
+            parentCalls,
+            cache,
+            context
+        );
+
+    return getPatternDict(
+        subcontextToken.pattern,
+        {},
+        {},
+        subcontextToken.getSubcontext()
+    );
 };
 
 /*************************
@@ -694,16 +743,16 @@ const getPatternStartDict = (
                 case "subcontext":
                     startDict = addTokenDicts(
                         startDict,
-                        getPatternStartDict(
-                            token.pattern,
+                        getSubcontextStartDict(
+                            token,
                             parentCalls,
                             cache,
-                            token.getSubcontext(),
+                            context,
                             toAddHeuristics
                         )
                     );
                     // if the minimum length is > 0, no need to check any further
-                    if (getPatternMinLength(token.pattern, {}, {}, context))
+                    if (getSubcontextMinLength(token, {}, {}, context))
                         return startDict;
                     break;
             }
@@ -724,6 +773,31 @@ const getPatternStartDict = (
         }
     }
     return startDict;
+};
+
+const getSubcontextStartDict = (
+    subcontextToken,
+    parentCalls,
+    cache,
+    context,
+    toAddHeuristics
+) => {
+    if (context.parentContexts[subcontextToken.subcontextId])
+        return getPatternStartDict(
+            subcontextToken.pattern,
+            parentCalls,
+            cache,
+            context,
+            toAddHeuristics
+        );
+
+    return getPatternStartDict(
+        subcontextToken.pattern,
+        {},
+        {},
+        subcontextToken.getSubcontext(),
+        makeToAddHeuristics(subcontextToken.getSubcontext().heuristics)
+    );
 };
 
 /*************************
@@ -848,16 +922,16 @@ const getPatternEndDict = (
                 case "subcontext":
                     endDict = addTokenDicts(
                         endDict,
-                        getPatternStartDict(
-                            token.pattern,
+                        getSubcontextEndDict(
+                            token,
                             parentCalls,
                             cache,
-                            token.getSubcontext(),
+                            context,
                             toAddHeuristics
                         )
                     );
                     // if the minimum length is > 0, no need to check any further
-                    if (getPatternMinLength(token.pattern, {}, {}, context))
+                    if (getSubcontextMinLength(token, {}, {}, context))
                         return endDict;
                     break;
             }
@@ -879,5 +953,39 @@ const getPatternEndDict = (
     }
     return endDict;
 };
+const getSubcontextEndDict = (
+    subcontextToken,
+    parentCalls,
+    cache,
+    context,
+    toAddHeuristics
+) => {
+    if (context.parentContexts[subcontextToken.subcontextId])
+        return getPatternEndDict(
+            subcontextToken.pattern,
+            parentCalls,
+            cache,
+            context,
+            toAddHeuristics
+        );
+
+    return getPatternEndDict(
+        subcontextToken.pattern,
+        {},
+        {},
+        subcontextToken.getSubcontext(),
+        makeToAddHeuristics(subcontextToken.getSubcontext().heuristics)
+    );
+};
 
 export default generateHeuristics;
+
+// SORT OF A HACK BUT IT WAS EASY
+const makeToAddHeuristics = (heuristics) => {
+    // Need to take a NORMAl heuristics object and turn it into this form (ALL I NEED IS MINLENGTH HERE)
+    const minLength = {};
+    for (const type in heuristics.types) {
+        minLength[type] = heuristics.types[type].minLength;
+    }
+    return { minLength };
+};

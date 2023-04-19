@@ -1,7 +1,7 @@
 import { consoleWarn } from "../util/environment.js";
 import { debugFunction } from "../util/index.js";
 import { getAllRules } from "./genericUtils.js";
-import { isTerminal } from "./parsingUtils.js";
+import { isTerminal, stringifyPattern } from "./parsingUtils.js";
 
 import {
     newTokenDict,
@@ -59,6 +59,7 @@ const generateHeuristics = (rules, generics) => {
                         context
                     );
                 break;
+            // NOTE: anychar & subcontext are both handled in the checkMetaTypeHeuristics() function
             default:
                 return {
                     error: `Invalid meta-type: ${metaTypeToken.metaType}`,
@@ -66,7 +67,9 @@ const generateHeuristics = (rules, generics) => {
         }
         if (expression.length < minLength)
             return {
-                error: `"${expression}" is shorter than the minimum possible length (${minLength}) for meta-type: ${metaTypeToken}!"`,
+                error: `"${expression}" is shorter than the minimum possible length (${minLength}) for meta-type: ${stringifyPattern(
+                    [metaTypeToken]
+                )}!"`,
             };
         return true;
     };
@@ -99,6 +102,7 @@ const generateHeuristics = (rules, generics) => {
                         context
                     );
                 break;
+            // NOTE: anychar & subcontext are both handled in the checkMetaTypeHeuristics() function
             default:
                 return {
                     error: `Invalid meta-type: ${metaTypeToken.metaType}`,
@@ -106,7 +110,9 @@ const generateHeuristics = (rules, generics) => {
         }
         if (expression.length > maxLength)
             return {
-                error: `"${expression}" is longer than the maximum possible length (${maxLength}) for meta-type: ${metaTypeToken}!`,
+                error: `"${expression}" is longer than the maximum possible length (${maxLength}) for meta-type: ${stringifyPattern(
+                    [metaTypeToken]
+                )}!`,
             };
         return true;
     };
@@ -143,6 +149,7 @@ const generateHeuristics = (rules, generics) => {
                     context
                 );
                 break;
+            // NOTE: anychar & subcontext are both handled in the checkMetaTypeHeuristics() function
             default:
                 return {
                     error: `Invalid meta-type: ${metaTypeToken.metaType}`,
@@ -151,7 +158,9 @@ const generateHeuristics = (rules, generics) => {
         for (const token of expression) {
             if (!isValidToken(dict, token))
                 return {
-                    error: `'${token}' is not in the set of allowed tokens for meta-type: ${metaTypeToken}!`,
+                    error: `'${token}' is not in the set of allowed tokens for meta-type: ${stringifyPattern(
+                        [metaTypeToken]
+                    )}!`,
                 };
         }
         return true;
@@ -184,6 +193,7 @@ const generateHeuristics = (rules, generics) => {
                     toAddHeuristics
                 );
                 break;
+            // NOTE: anychar & subcontext are both handled in the checkMetaTypeHeuristics() function
             default:
                 return {
                     error: `Invalid meta-type: ${metaTypeToken.metaType}`,
@@ -191,7 +201,11 @@ const generateHeuristics = (rules, generics) => {
         }
         return (
             !isValidToken(startDict, expression[0]) && {
-                error: `'${expression[0]}' is not in the set of start tokens for meta-type: ${metaTypeToken}!`,
+                error: `'${
+                    expression[0]
+                }' is not in the set of start tokens for meta-type: ${stringifyPattern(
+                    [metaTypeToken]
+                )}!`,
             }
         );
     };
@@ -228,6 +242,7 @@ const generateHeuristics = (rules, generics) => {
                     toAddHeuristics
                 );
                 break;
+            // NOTE: anychar & subcontext are both handled in the checkMetaTypeHeuristics() function
             default:
                 return {
                     error: `Invalid meta-type: ${metaTypeToken.metaType}`,
@@ -237,7 +252,9 @@ const generateHeuristics = (rules, generics) => {
             !isValidToken(endDict, expression[expression.length - 1]) && {
                 error: `'${
                     expression[expression.length - 1]
-                }' is not in the set of end tokens for meta-type: ${metaTypeToken}!"`,
+                }' is not in the set of end tokens for meta-type: ${stringifyPattern(
+                    [metaTypeToken]
+                )}!"`,
             }
         );
     };
@@ -287,6 +304,7 @@ const getTypeMinLength = (type, parentCalls = {}, cache = {}, context) => {
         cache,
         context
     );
+    console.log("GETS HERE??");
     return cache[type];
 };
 
@@ -332,6 +350,14 @@ const getPatternMinLength = (pattern, parentCalls, cache, context) => {
                 case "anychar":
                     currentLength += 1;
                     continue;
+                case "subcontext":
+                    currentLength += getPatternMinLength(
+                        token.pattern,
+                        parentCalls,
+                        cache,
+                        token.getSubcontext()
+                    );
+                    break;
             }
         } else {
             currentLength += getTypeMinLength(
@@ -428,6 +454,14 @@ const getPatternMaxLength = (pattern, parentCalls, cache, context) => {
                 case "anychar":
                     currentLength += 1;
                     continue;
+                case "subcontext":
+                    currentLength += getPatternMaxLength(
+                        token.pattern,
+                        parentCalls,
+                        cache,
+                        token.getSubcontext()
+                    );
+                    break;
             }
         } else {
             currentLength += getTypeMaxLength(
@@ -518,6 +552,16 @@ const getPatternDict = (pattern, parentCalls, cache, context) => {
                 case "anychar":
                     dict = addTokenDicts(dict, token.tokenDict);
                     break;
+                case "subcontext":
+                    dict = addTokenDicts(
+                        dict,
+                        getPatternDict(
+                            token.pattern,
+                            parentCalls,
+                            cache,
+                            token.getSubcontext()
+                        )
+                    );
             }
         } else {
             dict = addTokenDicts(
@@ -647,6 +691,21 @@ const getPatternStartDict = (
                     break;
                 case "anychar":
                     return addTokenDicts(startDict, token.tokenDict);
+                case "subcontext":
+                    startDict = addTokenDicts(
+                        startDict,
+                        getPatternStartDict(
+                            token.pattern,
+                            parentCalls,
+                            cache,
+                            token.getSubcontext(),
+                            toAddHeuristics
+                        )
+                    );
+                    // if the minimum length is > 0, no need to check any further
+                    if (getPatternMinLength(token.pattern, {}, {}, context))
+                        return startDict;
+                    break;
             }
         } else {
             startDict = addTokenDicts(
@@ -786,6 +845,21 @@ const getPatternEndDict = (
                     break;
                 case "anychar":
                     return addTokenDicts(endDict, token.tokenDict);
+                case "subcontext":
+                    endDict = addTokenDicts(
+                        endDict,
+                        getPatternStartDict(
+                            token.pattern,
+                            parentCalls,
+                            cache,
+                            token.getSubcontext(),
+                            toAddHeuristics
+                        )
+                    );
+                    // if the minimum length is > 0, no need to check any further
+                    if (getPatternMinLength(token.pattern, {}, {}, context))
+                        return endDict;
+                    break;
             }
         } else {
             endDict = addTokenDicts(

@@ -1,4 +1,4 @@
-import { OR, type } from "./ruleUtils.js";
+import { type } from "./ruleUtils.js";
 
 const replaceThisTypeInPattern = (pattern, typeName) => {
     return pattern.map((patternToken) => {
@@ -21,6 +21,14 @@ const replaceThisTypeInPattern = (pattern, typeName) => {
                     };
                 case "anychar":
                     return patternToken;
+                case "subcontext":
+                    return {
+                        ...patternToken,
+                        pattern: replaceThisTypeInPattern(
+                            patternToken.pattern,
+                            typeName
+                        ),
+                    };
             }
             throw `Invalid metatype: ${patternToken.metaType}`;
         }

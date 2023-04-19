@@ -11,7 +11,7 @@ export const evaluateExpression = (
         throw "not sure what happened";
     }
 
-    // Specific code for if statements
+    // Specific code for if statements, this does extra code that keeps the context around for 1 extra line just in case there's an else statement
     if (["Statement", "Instantiator"].includes(parsedNode.type)) {
         const ranIfStatement = context["ranIfStatement"];
         switch (ranIfStatement) {

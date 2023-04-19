@@ -1,3 +1,6 @@
+import { consoleWarn } from "../util/environment.js";
+import { colorString } from "../util/specialUtils.js";
+
 export const isTerminal = (token) => typeof token !== "object";
 
 export const stringifyPattern = (
@@ -6,21 +9,21 @@ export const stringifyPattern = (
     hideSpaces = true
 ) => {
     return (
-        (topLevel ? `[`.magenta : "") +
+        (topLevel ? colorString("[", "magenta") : "") +
         pattern
             .map((token) => {
-                if (token.type) return `{${token.type}}`.red;
+                if (token.type) return colorString(`{${token.type}}`, "red");
                 if (token.metaType) {
                     switch (token.metaType) {
                         case "or":
                             return (
-                                `(`.green +
+                                colorString("(", "green") +
                                 `${token.patterns
                                     .map((pattern) =>
                                         stringifyPattern(pattern, false)
                                     )
-                                    .join(" | ".green)}` +
-                                `)`.green
+                                    .join(colorString(" | ", "green"))}` +
+                                colorString(")", "green")
                             );
                         case "multi":
                             if (token.pattern[0].type === "space" && hideSpaces)
@@ -29,33 +32,59 @@ export const stringifyPattern = (
                                 token.pattern,
                                 false
                             );
-                            if (token.max >= Number.MAX_SAFE_INTEGER) {
+
+                            // NOTE: I'm hoping no one will put in a rule in above Number.MAX_SAFE_INTEGER / 2, lol
+                            // This is so it can be a bit below Number.MAX_SAFE_INTEGER and still render as an asterisk (Parsing sometimes sets it to Number.MAX_SAFE_INTEGER - 1)
+                            if (token.max >= Number.MAX_SAFE_INTEGER / 2) {
                                 if (token.min === 0)
-                                    return stringifiedPattern + "*".yellow;
+                                    return (
+                                        stringifiedPattern +
+                                        colorString("*", "yellow")
+                                    );
                                 if (token.min === 1)
-                                    return stringifiedPattern + "+".yellow;
+                                    return (
+                                        stringifiedPattern +
+                                        colorString("+", "yellow")
+                                    );
                                 return (
-                                    stringifiedPattern + `{${token.min}}`.yellow
+                                    stringifiedPattern +
+                                    colorString(`{${token.min}}`, "yellow")
                                 );
                             }
                             if (token.max === 1) {
-                                if (token.min !== 0)
-                                    throw "Weird multi metatype: min=${token.min} max=1";
-                                return stringifiedPattern + "?".yellow;
+                                if (token.min !== 0 && !token.ignoreWeirdMulti)
+                                    throw `Weird multi metatype: min=${token.min} max=1`;
+                                return (
+                                    stringifiedPattern +
+                                    colorString("?", "yellow")
+                                );
                             }
                             return (
                                 stringifiedPattern +
-                                `{${token.min}, ${token.max}}`.yellow
+                                colorString(
+                                    `{${token.min}, ${token.max}}`,
+                                    "yellow"
+                                )
                             );
                         case "anychar":
-                            return `[${stringifyTokenDict(token.tokenDict)}]`
-                                .blue;
+                            return colorString(
+                                `[${stringifyTokenDict(token.tokenDict)}]`,
+                                "blue"
+                            );
+                        case "subcontext":
+                            return (
+                                colorString("<", "red") +
+                                stringifyPattern(token.pattern) +
+                                colorString(">", "red")
+                            );
+                        default:
+                            throw `Not implemented: Stringify metatype ${token.metaType}`;
                     }
                 }
                 return token;
             })
             .join("") +
-        (topLevel ? `]`.magenta : "")
+        (topLevel ? colorString("]", "magenta") : "")
     );
 };
 

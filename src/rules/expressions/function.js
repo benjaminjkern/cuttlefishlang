@@ -9,14 +9,18 @@ export default {
             pattern: [
                 "fn",
                 ":",
-                subcontext([type("Object")], {
-                    Number: [
-                        {
-                            pattern: ["$"],
-                            evaluate: ({ context }) => context.vars.$.value,
-                        },
-                    ],
-                }),
+                subcontext(
+                    [type("Object")],
+                    {
+                        Number: [
+                            {
+                                pattern: ["$"],
+                                evaluate: ({ context }) => context.vars.$.value,
+                            },
+                        ],
+                    },
+                    () => newInterpretContext()
+                ),
             ],
             evaluate: ({ tokens: [_1, _2, arg] }) => ({
                 call: (input) => {

@@ -23,13 +23,24 @@ export default {
                     );
                 }),
             ],
-            evaluate: ({ tokens: [_1, _2, arg] }) => ({
-                call: (input) => {
-                    const context = newInterpretContext();
-                    context.setVariable("$", getTypeFromValue(input), input);
-                    return context.evaluateExpression(arg);
-                },
-            }),
+            evaluate: ({ tokens: [_1, _2, inside] }) => {
+                return {
+                    asString: makeStringFromFuncInside(inside),
+                    call: (input) => {
+                        const context = newInterpretContext();
+                        context.setVariable(
+                            "$",
+                            getTypeFromValue(input),
+                            input
+                        );
+                        return context.evaluateExpression(inside);
+                    },
+                };
+            },
         },
     ],
+};
+
+const makeStringFromFuncInside = (inside) => {
+    return "(Function)"; // Todo: Implement
 };

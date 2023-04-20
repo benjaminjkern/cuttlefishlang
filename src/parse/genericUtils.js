@@ -49,23 +49,26 @@ const replaceThisTypeInRule = ({ pattern, ...rule }, typeName) => {
  * Generates generic rules on the fly based on the previously established genericParents
  */
 export const getAllRules = (typeName, context) => {
-    // Need this to catch the raw rules that still have thisType() in them
-    const cleanedRules = context.rules[typeName].map((rule) =>
-        replaceThisTypeInRule(rule, typeName)
-    );
-
+    const returnRules = [];
     // Add extra subtype rule to prevent parsing loops
     if (context.generics.genericSubtypeRules[typeName])
-        cleanedRules.push(context.generics.genericSubtypeRules[typeName][0]); // [0]: Take out of list, it was in a list because I needed it to be to get the cleanRuleset to work
+        returnRules.push(context.generics.genericSubtypeRules[typeName][0]); // [0]: Take out of list, it was in a list because I needed it to be to get the cleanRuleset to work
 
-    if (!context.generics.genericParents[typeName]) return cleanedRules;
-    return [
-        // First parse any generic rules, determined by which rules this type falls under (i.e. A -> '(' A ')' ), then parse the others
-        ...context.generics.genericParents[typeName].flatMap((parentType) =>
-            context.rules[parentType].map((rule) =>
-                replaceThisTypeInRule(rule, typeName)
+    returnRules.push(
+        ...context.rules[typeName].map((rule) =>
+            replaceThisTypeInRule(rule, typeName)
+        )
+    );
+
+    // Parse any generic rules, determined by which rules this type falls under (i.e. A -> '(' A ')' ), then parse the others
+    if (context.generics.genericParents[typeName])
+        returnRules.push(
+            ...context.generics.genericParents[typeName].flatMap((parentType) =>
+                context.rules[parentType].map((rule) =>
+                    replaceThisTypeInRule(rule, typeName)
+                )
             )
-        ),
-        ...cleanedRules,
-    ];
+        );
+
+    return returnRules;
 };

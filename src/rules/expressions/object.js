@@ -1,6 +1,9 @@
 import { type, OR, thisType, genericType } from "../../parse/ruleUtils.js";
+import { inspect } from "../../util/specialUtils.js";
 
 export const objectGenerics = [
+    // Needs to be at the top so it grabs as much as possible
+    "Function",
     // Temporarily put these here so that it can catch it, needs to be before number
     "Integer",
     "Number",
@@ -12,7 +15,6 @@ export const objectGenerics = [
     "List",
     "Iterable",
     "Dictionary",
-    "Function",
 ];
 
 export default {
@@ -57,10 +59,11 @@ export default {
             genericTypes: {
                 A: "Object",
             },
-            evaluate: ({ tokens: [func, argument], context }) =>
-                context
+            evaluate: ({ tokens: [func, argument], context }) => {
+                return context
                     .evaluateExpression(func)
-                    .call(context.evaluateExpression(argument)),
+                    .call(context.evaluateExpression(argument));
+            },
         },
     ],
 };

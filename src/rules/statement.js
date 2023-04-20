@@ -2,12 +2,14 @@ import { type, OR, MULTI, ANYCHAR, OPTIONAL } from "../parse/ruleUtils.js";
 import { consoleWrite } from "../util/environment.js";
 import { CuttlefishError } from "../util/index.js";
 import { forceString } from "./expressions/string.js";
-import { getTypeFromValue } from "./instantiator.js";
 
 export default {
     Statement: [
         {
-            pattern: ["print", OR(type("Iterable"), type("stringlike"))],
+            pattern: [
+                "print",
+                OR(type("Function"), type("Iterable"), type("stringlike")),
+            ],
             evaluate: ({ tokens: [_, toPrint], context }) => {
                 print(context.evaluateExpression(toPrint));
                 consoleWrite("\n");
@@ -19,8 +21,7 @@ export default {
                 const evaluated = context.evaluateExpression(obj);
                 context.setVariable(
                     id.sourceString,
-                    // obj.tokens[0][0].type,
-                    getTypeFromValue(evaluated),
+                    obj.tokens[0][0].type,
                     evaluated
                 );
             },
@@ -82,17 +83,25 @@ export default {
 };
 
 export const print = (object) => {
-    if (!object.hasNext) return consoleWrite(forceString(object));
-    // Assume object is an iterator
-    object.restart();
+    if (object.hasNext) {
+        // Assume object is an iterator
+        object.restart();
 
-    // If it has at least one item, then it should have padding (Looks nice)
-    const listPadding = object.hasNext() ? " " : "";
+        // If it has at least one item, then it should have padding (Looks nice)
+        const listPadding = object.hasNext() ? " " : "";
 
-    consoleWrite(`[${listPadding}`);
-    while (object.hasNext()) {
-        print(object.next());
-        if (object.hasNext()) consoleWrite(", ");
+        consoleWrite(`[${listPadding}`);
+        while (object.hasNext()) {
+            print(object.next());
+            if (object.hasNext()) consoleWrite(", ");
+        }
+        consoleWrite(`${listPadding}]`);
+        return;
     }
-    consoleWrite(`${listPadding}]`);
+
+    if (object.call) {
+        consoleWrite(object.asString);
+        return;
+    }
+    return consoleWrite(forceString(object));
 };

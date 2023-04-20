@@ -8,6 +8,7 @@ export const environment = {
     exitOnError: true,
     log: true,
     colors: true,
+    debug: false,
     consoleWrite:
         typeof process !== "undefined"
             ? createLogFunc(process.stdout, "write")

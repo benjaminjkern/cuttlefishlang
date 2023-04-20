@@ -1,5 +1,5 @@
 import { newInterpretContext } from "../../evaluate/interpret.js";
-import { subcontext, type } from "../../parse/ruleUtils.js";
+import { OR, subcontext, type } from "../../parse/ruleUtils.js";
 import { getTypeFromValue } from "../instantiator.js";
 
 export default {
@@ -8,20 +8,23 @@ export default {
             pattern: [
                 "fn",
                 ":",
-                subcontext([type("Object")], (subcontextToken) => {
-                    return newInterpretContext(
-                        {
-                            Number: [
-                                {
-                                    pattern: ["$"],
-                                    evaluate: ({ context }) =>
-                                        context.vars.$.value,
-                                },
-                            ],
-                        },
-                        { [subcontextToken]: true }
-                    );
-                }),
+                subcontext(
+                    [OR(type("Object"), type("Statement"))],
+                    (subcontextToken) => {
+                        return newInterpretContext(
+                            {
+                                Number: [
+                                    {
+                                        pattern: ["$"],
+                                        evaluate: ({ context }) =>
+                                            context.vars.$.value,
+                                    },
+                                ],
+                            },
+                            { [subcontextToken]: true }
+                        );
+                    }
+                ),
             ],
             evaluate: ({ tokens: [_1, _2, inside] }) => {
                 return {

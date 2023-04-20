@@ -1,3 +1,4 @@
+import { newInterpretContext } from "../evaluate/interpret.js";
 import { type, OPTIONAL } from "../parse/ruleUtils.js";
 import { CuttlefishError } from "../util/index.js";
 
@@ -90,6 +91,26 @@ export default {
                     context,
                     childIterator
                 );
+            },
+        },
+
+        {
+            pattern: [type("varName"), "=", "fn", ":"],
+            evaluate: ({ tokens: [id], context, childIterator }) => {
+                context.setVariable(id.sourceString, "Function", {
+                    asString: "(Function)",
+                    call: (input) => {
+                        const insideContext = newInterpretContext();
+                        insideContext.setVariable(
+                            "$",
+                            getTypeFromValue(input),
+                            input
+                        );
+                        insideContext.inFunction = true;
+                        childIterator.restart();
+                        childIterator.iterateToEnd();
+                    },
+                });
             },
         },
     ],

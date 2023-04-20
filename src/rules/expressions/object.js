@@ -65,5 +65,19 @@ export default {
                     .call(context.evaluateExpression(argument));
             },
         },
+        {
+            pattern: [
+                type("Function", genericType("A"), thisType()),
+                "(",
+                ")",
+                // genericType("A"),
+            ], // The A's must match
+            genericTypes: {
+                A: "Object",
+            },
+            evaluate: ({ tokens: [func], context }) => {
+                return context.evaluateExpression(func).call();
+            },
+        },
     ],
 };

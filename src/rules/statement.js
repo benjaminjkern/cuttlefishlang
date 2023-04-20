@@ -74,37 +74,6 @@ export default {
                 context.evaluateExpression(statement, context);
             },
         },
-
-        // NOTE: THESE RULES ARE COPIED
-        {
-            pattern: [
-                type("Function"),
-                type("Object"),
-                // genericType("A"),
-            ], // The A's must match
-            genericTypes: {
-                A: "Object",
-            },
-            evaluate: ({ tokens: [func, argument], context }) => {
-                context
-                    .evaluateExpression(func)
-                    .call(context.evaluateExpression(argument));
-            },
-        },
-        {
-            pattern: [
-                type("Function"),
-                "(",
-                ")",
-                // genericType("A"),
-            ], // The A's must match
-            genericTypes: {
-                A: "Object",
-            },
-            evaluate: ({ tokens: [func], context }) => {
-                context.evaluateExpression(func).call();
-            },
-        },
     ],
     varName: [
         {

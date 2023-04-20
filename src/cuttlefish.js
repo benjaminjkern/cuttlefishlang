@@ -1,15 +1,19 @@
 import { readFileSync, existsSync } from "fs";
 import promptPackage from "prompt-sync";
 import promptHistory from "prompt-sync-history";
-
+import { inspect as utilInspect } from "util";
 import "colors";
 
 import createIndentTree from "./indentTree/createIndentTree.js";
 import { interpretIndentTree } from "./evaluate/interpret.js";
 import { CuttlefishError, colorString } from "./util/index.js";
 import { runTests } from "./test/runTests.js";
-import { consoleWarn } from "./util/environment.js";
+import { consoleWarn, environment } from "./util/environment.js";
 import { startRepl } from "./repl.js";
+
+environment.inspect = (obj) => {
+    console.log(utilInspect(obj, false, null, true)); // eslint-disable-line no-console
+};
 
 // Cuttlefish command (Deal with arguments);
 export const cuttlefishCommandLine = (node, file, ...args) => {

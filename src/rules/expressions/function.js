@@ -41,6 +41,37 @@ export default {
                 };
             },
         },
+        {
+            pattern: [type("Function"), "*", type("Function")],
+            evaluate: ({ tokens: [f1, _, f2], context }) => {
+                const func1 = context.evaluateExpression(f1);
+                const func2 = context.evaluateExpression(f2);
+                return {
+                    asString: "(Composed Function)",
+                    call: (input) => {
+                        return func2.call(func1.call(input));
+                    },
+                };
+            },
+        },
+        {
+            pattern: [type("Function"), "^", type("Integer")],
+            evaluate: ({ tokens: [f1, _, n], context }) => {
+                const func = context.evaluateExpression(f1);
+                let num = context.evaluateExpression(n);
+                return {
+                    asString: "(Composed Function)",
+                    call: (input) => {
+                        let result = input;
+                        while (num > 0) {
+                            result = func.call(result);
+                            num--;
+                        }
+                        return result;
+                    },
+                };
+            },
+        },
     ],
 };
 

@@ -1,4 +1,3 @@
-import { evaluateExpression } from "../../evaluate/evaluate.js";
 import { MULTI, OPTIONAL, OR, type } from "../../parse/ruleUtils.js";
 
 // export const numberGenerics = ["Integer"];
@@ -9,36 +8,41 @@ export default {
             // TODO: Encode the idea that Number + Number -> Number | Integer, but Integer + Integer -> Integer
             pattern: [type("Number"), "+", type("Number")],
             associativityReverseSearchOrder: true,
-            evaluate: ({ tokens: [a, _, b] }) =>
-                evaluateExpression(a) + evaluateExpression(b),
+            evaluate: ({ tokens: [a, _, b], context }) => {
+                return (
+                    context.evaluateExpression(a) +
+                    context.evaluateExpression(b)
+                );
+            },
         },
         {
             pattern: [type("Number"), "-", type("Number")],
             associativityReverseSearchOrder: true,
-            evaluate: ({ tokens: [a, _, b] }) =>
-                evaluateExpression(a) - evaluateExpression(b),
+            evaluate: ({ tokens: [a, _, b], context }) =>
+                context.evaluateExpression(a) - context.evaluateExpression(b),
         },
         {
             pattern: [type("Number"), "*", type("Number")],
             associativityReverseSearchOrder: true,
-            evaluate: ({ tokens: [a, _, b] }) =>
-                evaluateExpression(a) * evaluateExpression(b),
+            evaluate: ({ tokens: [a, _, b], context }) =>
+                context.evaluateExpression(a) * context.evaluateExpression(b),
         },
         {
             pattern: [type("Number"), "/", type("Number")],
             associativityReverseSearchOrder: true,
-            evaluate: ({ tokens: [a, _, b] }) =>
-                evaluateExpression(a) / evaluateExpression(b),
+            evaluate: ({ tokens: [a, _, b], context }) =>
+                context.evaluateExpression(a) / context.evaluateExpression(b),
         },
         {
             pattern: [type("Number"), "^", type("Number")],
             associativityReverseSearchOrder: true,
-            evaluate: ({ tokens: [a, _, b] }) =>
-                evaluateExpression(a) ** evaluateExpression(b),
+            evaluate: ({ tokens: [a, _, b], context }) =>
+                context.evaluateExpression(a) ** context.evaluateExpression(b),
         },
         {
             pattern: ["-", type("Number")],
-            evaluate: ({ tokens: [_, a] }) => -evaluateExpression(a),
+            evaluate: ({ tokens: [_, a], context }) =>
+                -context.evaluateExpression(a),
         },
         {
             pattern: [type("numlit")],
@@ -53,13 +57,13 @@ export default {
         // Should somehow include all the same math rules here
         {
             pattern: ["round", type("Number")],
-            evaluate: ({ tokens: [_, num] }) =>
-                Math.round(evaluateExpression(num)),
+            evaluate: ({ tokens: [_, num], context }) =>
+                Math.round(context.evaluateExpression(num)),
         },
         {
             pattern: [type("Iterable"), ".", "length"],
-            evaluate: ({ tokens: [iterable] }) => {
-                return evaluateExpression(iterable).length;
+            evaluate: ({ tokens: [iterable], context }) => {
+                return context.evaluateExpression(iterable).length;
             },
         },
 
@@ -67,36 +71,37 @@ export default {
         {
             pattern: [type("Integer"), "+", type("Integer")],
             associativityReverseSearchOrder: true,
-            evaluate: ({ tokens: [a, _, b] }) =>
-                evaluateExpression(a) + evaluateExpression(b),
+            evaluate: ({ tokens: [a, _, b], context }) =>
+                context.evaluateExpression(a) + context.evaluateExpression(b),
         },
         {
             pattern: [type("Integer"), "-", type("Integer")],
             associativityReverseSearchOrder: true,
-            evaluate: ({ tokens: [a, _, b] }) =>
-                evaluateExpression(a) - evaluateExpression(b),
+            evaluate: ({ tokens: [a, _, b], context }) =>
+                context.evaluateExpression(a) - context.evaluateExpression(b),
         },
         {
             pattern: [type("Integer"), "*", type("Integer")],
             associativityReverseSearchOrder: true,
-            evaluate: ({ tokens: [a, _, b] }) =>
-                evaluateExpression(a) * evaluateExpression(b),
+            evaluate: ({ tokens: [a, _, b], context }) =>
+                context.evaluateExpression(a) * context.evaluateExpression(b),
         },
         {
             pattern: [type("Integer"), "/", type("Integer")],
             associativityReverseSearchOrder: true,
-            evaluate: ({ tokens: [a, _, b] }) =>
-                evaluateExpression(a) / evaluateExpression(b),
+            evaluate: ({ tokens: [a, _, b], context }) =>
+                context.evaluateExpression(a) / context.evaluateExpression(b),
         },
         {
             pattern: [type("Integer"), "^", type("Integer")],
             associativityReverseSearchOrder: true,
-            evaluate: ({ tokens: [a, _, b] }) =>
-                evaluateExpression(a) ** evaluateExpression(b),
+            evaluate: ({ tokens: [a, _, b], context }) =>
+                context.evaluateExpression(a) ** context.evaluateExpression(b),
         },
         {
             pattern: ["-", type("Integer")],
-            evaluate: ({ tokens: [_, a] }) => -evaluateExpression(a),
+            evaluate: ({ tokens: [_, a], context }) =>
+                -context.evaluateExpression(a),
         },
         {
             pattern: [MULTI(type("digit"), 1)],

@@ -1,5 +1,10 @@
 import { consoleError, consoleWarn, environment } from "./environment.js";
 
+export const colorString = (string, color) => {
+    if (environment.colors) return string[color];
+    return string;
+};
+
 const ALLOWED_ERROR_TYPES = [
     "Error",
     "Parsing Error",
@@ -44,6 +49,7 @@ let debugIndentation = 0;
 export const debugFunction =
     (func, name = "f", includeArgs, resultEnd) =>
     (...args) => {
+        if (!environment.debug) return func(...args);
         const tabWidth = Array(debugIndentation).fill("   ").join("");
         console.log(
             `${tabWidth}${name}`,

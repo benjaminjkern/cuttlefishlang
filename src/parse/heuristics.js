@@ -1,7 +1,7 @@
 import { consoleWarn } from "../util/environment.js";
 import { debugFunction } from "../util/index.js";
 import { getAllRules } from "./genericUtils.js";
-import { isTerminal } from "./parsingUtils.js";
+import { isTerminal, stringifyPattern } from "./parsingUtils.js";
 
 import {
     newTokenDict,
@@ -10,7 +10,7 @@ import {
     isValidToken,
 } from "./tokenDict.js";
 
-const generateHeuristics = (rules, generics) => {
+const generateHeuristics = (rules, generics, parentContexts) => {
     // This is so it can be accessed later by the start and end dict function
     const toAddHeuristics = {};
 
@@ -31,7 +31,7 @@ const generateHeuristics = (rules, generics) => {
         },
     };
 
-    const context = { rules, generics }; // Its easier to toss this around than separately use the rules and generics
+    const context = { rules, generics, parentContexts }; // Its easier to toss this around than separately use the rules and generics
 
     toAddHeuristics.minLength = getMinLengths(context);
     HEURISTICS.typeHeuristics.minLength = (type, expression) =>
@@ -59,6 +59,7 @@ const generateHeuristics = (rules, generics) => {
                         context
                     );
                 break;
+            // NOTE: anychar & subcontext are both handled in the checkMetaTypeHeuristics() function
             default:
                 return {
                     error: `Invalid meta-type: ${metaTypeToken.metaType}`,
@@ -66,7 +67,9 @@ const generateHeuristics = (rules, generics) => {
         }
         if (expression.length < minLength)
             return {
-                error: `"${expression}" is shorter than the minimum possible length (${minLength}) for meta-type: ${metaTypeToken}!"`,
+                error: `"${expression}" is shorter than the minimum possible length (${minLength}) for meta-type: ${stringifyPattern(
+                    [metaTypeToken]
+                )}!"`,
             };
         return true;
     };
@@ -99,6 +102,7 @@ const generateHeuristics = (rules, generics) => {
                         context
                     );
                 break;
+            // NOTE: anychar & subcontext are both handled in the checkMetaTypeHeuristics() function
             default:
                 return {
                     error: `Invalid meta-type: ${metaTypeToken.metaType}`,
@@ -106,7 +110,9 @@ const generateHeuristics = (rules, generics) => {
         }
         if (expression.length > maxLength)
             return {
-                error: `"${expression}" is longer than the maximum possible length (${maxLength}) for meta-type: ${metaTypeToken}!`,
+                error: `"${expression}" is longer than the maximum possible length (${maxLength}) for meta-type: ${stringifyPattern(
+                    [metaTypeToken]
+                )}!`,
             };
         return true;
     };
@@ -143,6 +149,7 @@ const generateHeuristics = (rules, generics) => {
                     context
                 );
                 break;
+            // NOTE: anychar & subcontext are both handled in the checkMetaTypeHeuristics() function
             default:
                 return {
                     error: `Invalid meta-type: ${metaTypeToken.metaType}`,
@@ -151,7 +158,9 @@ const generateHeuristics = (rules, generics) => {
         for (const token of expression) {
             if (!isValidToken(dict, token))
                 return {
-                    error: `'${token}' is not in the set of allowed tokens for meta-type: ${metaTypeToken}!`,
+                    error: `'${token}' is not in the set of allowed tokens for meta-type: ${stringifyPattern(
+                        [metaTypeToken]
+                    )}!`,
                 };
         }
         return true;
@@ -184,6 +193,7 @@ const generateHeuristics = (rules, generics) => {
                     toAddHeuristics
                 );
                 break;
+            // NOTE: anychar & subcontext are both handled in the checkMetaTypeHeuristics() function
             default:
                 return {
                     error: `Invalid meta-type: ${metaTypeToken.metaType}`,
@@ -191,7 +201,11 @@ const generateHeuristics = (rules, generics) => {
         }
         return (
             !isValidToken(startDict, expression[0]) && {
-                error: `'${expression[0]}' is not in the set of start tokens for meta-type: ${metaTypeToken}!`,
+                error: `'${
+                    expression[0]
+                }' is not in the set of start tokens for meta-type: ${stringifyPattern(
+                    [metaTypeToken]
+                )}!`,
             }
         );
     };
@@ -228,6 +242,7 @@ const generateHeuristics = (rules, generics) => {
                     toAddHeuristics
                 );
                 break;
+            // NOTE: anychar & subcontext are both handled in the checkMetaTypeHeuristics() function
             default:
                 return {
                     error: `Invalid meta-type: ${metaTypeToken.metaType}`,
@@ -237,7 +252,9 @@ const generateHeuristics = (rules, generics) => {
             !isValidToken(endDict, expression[expression.length - 1]) && {
                 error: `'${
                     expression[expression.length - 1]
-                }' is not in the set of end tokens for meta-type: ${metaTypeToken}!"`,
+                }' is not in the set of end tokens for meta-type: ${stringifyPattern(
+                    [metaTypeToken]
+                )}!"`,
             }
         );
     };
@@ -266,6 +283,7 @@ const getMinLengths = (context) => {
             undefined,
             context
         );
+
         if (minLengths[type] >= Number.MAX_SAFE_INTEGER)
             consoleWarn(
                 `Warning: Type "${type}" has a minimum length of ${minLengths[type]} (Probably an unclosed rule loop)`
@@ -332,6 +350,14 @@ const getPatternMinLength = (pattern, parentCalls, cache, context) => {
                 case "anychar":
                     currentLength += 1;
                     continue;
+                case "subcontext":
+                    currentLength += getSubcontextMinLength(
+                        token,
+                        parentCalls,
+                        cache,
+                        context
+                    );
+                    break;
             }
         } else {
             currentLength += getTypeMinLength(
@@ -346,6 +372,24 @@ const getPatternMinLength = (pattern, parentCalls, cache, context) => {
         }
     }
     return currentLength;
+};
+const getSubcontextMinLength = (
+    subcontextToken,
+    parentCalls,
+    cache,
+    context
+) => {
+    if (context.parentContexts[subcontextToken.subcontextId])
+        return getPatternMinLength(
+            subcontextToken.pattern,
+            parentCalls,
+            cache,
+            context
+        );
+
+    return subcontextToken
+        .getSubcontext()
+        .heuristics.patternHeuristics.minLength(subcontextToken.pattern);
 };
 
 /*************************
@@ -428,6 +472,14 @@ const getPatternMaxLength = (pattern, parentCalls, cache, context) => {
                 case "anychar":
                     currentLength += 1;
                     continue;
+                case "subcontext":
+                    currentLength += getSubcontextMaxLength(
+                        token,
+                        parentCalls,
+                        cache,
+                        context
+                    );
+                    break;
             }
         } else {
             currentLength += getTypeMaxLength(
@@ -442,6 +494,25 @@ const getPatternMaxLength = (pattern, parentCalls, cache, context) => {
         }
     }
     return currentLength;
+};
+
+const getSubcontextMaxLength = (
+    subcontextToken,
+    parentCalls,
+    cache,
+    context
+) => {
+    if (context.parentContexts[subcontextToken.subcontextId])
+        return getPatternMaxLength(
+            subcontextToken.pattern,
+            parentCalls,
+            cache,
+            context
+        );
+
+    return subcontextToken
+        .getSubcontext()
+        .heuristics.patternHeuristics.maxLength(subcontextToken.pattern);
 };
 
 /*************************
@@ -518,6 +589,12 @@ const getPatternDict = (pattern, parentCalls, cache, context) => {
                 case "anychar":
                     dict = addTokenDicts(dict, token.tokenDict);
                     break;
+                case "subcontext":
+                    dict = addTokenDicts(
+                        dict,
+                        getSubcontextDict(token, parentCalls, cache, context)
+                    );
+                    break;
             }
         } else {
             dict = addTokenDicts(
@@ -527,6 +604,22 @@ const getPatternDict = (pattern, parentCalls, cache, context) => {
         }
     }
     return dict;
+};
+const getSubcontextDict = (subcontextToken, parentCalls, cache, context) => {
+    if (context.parentContexts[subcontextToken.subcontextId])
+        return getPatternDict(
+            subcontextToken.pattern,
+            parentCalls,
+            cache,
+            context
+        );
+
+    return getPatternDict(
+        subcontextToken.pattern,
+        {},
+        {},
+        subcontextToken.getSubcontext()
+    );
 };
 
 /*************************
@@ -647,6 +740,21 @@ const getPatternStartDict = (
                     break;
                 case "anychar":
                     return addTokenDicts(startDict, token.tokenDict);
+                case "subcontext":
+                    startDict = addTokenDicts(
+                        startDict,
+                        getSubcontextStartDict(
+                            token,
+                            parentCalls,
+                            cache,
+                            context,
+                            toAddHeuristics
+                        )
+                    );
+                    // if the minimum length is > 0, no need to check any further
+                    if (getSubcontextMinLength(token, {}, {}, context))
+                        return startDict;
+                    break;
             }
         } else {
             startDict = addTokenDicts(
@@ -665,6 +773,31 @@ const getPatternStartDict = (
         }
     }
     return startDict;
+};
+
+const getSubcontextStartDict = (
+    subcontextToken,
+    parentCalls,
+    cache,
+    context,
+    toAddHeuristics
+) => {
+    if (context.parentContexts[subcontextToken.subcontextId])
+        return getPatternStartDict(
+            subcontextToken.pattern,
+            parentCalls,
+            cache,
+            context,
+            toAddHeuristics
+        );
+
+    return getPatternStartDict(
+        subcontextToken.pattern,
+        {},
+        {},
+        subcontextToken.getSubcontext(),
+        makeToAddHeuristics(subcontextToken.getSubcontext().heuristics)
+    );
 };
 
 /*************************
@@ -786,6 +919,21 @@ const getPatternEndDict = (
                     break;
                 case "anychar":
                     return addTokenDicts(endDict, token.tokenDict);
+                case "subcontext":
+                    endDict = addTokenDicts(
+                        endDict,
+                        getSubcontextEndDict(
+                            token,
+                            parentCalls,
+                            cache,
+                            context,
+                            toAddHeuristics
+                        )
+                    );
+                    // if the minimum length is > 0, no need to check any further
+                    if (getSubcontextMinLength(token, {}, {}, context))
+                        return endDict;
+                    break;
             }
         } else {
             endDict = addTokenDicts(
@@ -805,5 +953,39 @@ const getPatternEndDict = (
     }
     return endDict;
 };
+const getSubcontextEndDict = (
+    subcontextToken,
+    parentCalls,
+    cache,
+    context,
+    toAddHeuristics
+) => {
+    if (context.parentContexts[subcontextToken.subcontextId])
+        return getPatternEndDict(
+            subcontextToken.pattern,
+            parentCalls,
+            cache,
+            context,
+            toAddHeuristics
+        );
+
+    return getPatternEndDict(
+        subcontextToken.pattern,
+        {},
+        {},
+        subcontextToken.getSubcontext(),
+        makeToAddHeuristics(subcontextToken.getSubcontext().heuristics)
+    );
+};
 
 export default generateHeuristics;
+
+// SORT OF A HACK BUT IT WAS EASY
+const makeToAddHeuristics = (heuristics) => {
+    // Need to take a NORMAl heuristics object and turn it into this form (ALL I NEED IS MINLENGTH HERE)
+    const minLength = {};
+    for (const type in heuristics.types) {
+        minLength[type] = heuristics.types[type].minLength;
+    }
+    return { minLength };
+};

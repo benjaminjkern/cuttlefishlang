@@ -1,7 +1,9 @@
-import { evaluateExpression } from "../../evaluate/evaluate.js";
 import { type, OR, thisType, genericType } from "../../parse/ruleUtils.js";
+import { inspect } from "../../util/specialUtils.js";
 
 export const objectGenerics = [
+    // Needs to be at the top so it grabs as much as possible
+    "Function",
     // Temporarily put these here so that it can catch it, needs to be before number
     "Integer",
     "Number",
@@ -19,12 +21,15 @@ export default {
     Object: [
         {
             pattern: ["(", thisType(), ")"],
-            evaluate: ({ tokens: [_, token] }) => evaluateExpression(token),
+            evaluate: ({ tokens: [_, token], context }) =>
+                context.evaluateExpression(token),
         },
         {
             pattern: [type("Dictionary", thisType()), ".", type("varName")],
-            evaluate: ({ tokens: [dict, _, variable] }) =>
-                evaluateExpression(dict)[evaluateExpression(variable)],
+            evaluate: ({ tokens: [dict, _, variable], context }) =>
+                context.evaluateExpression(dict)[
+                    context.evaluateExpression(variable)
+                ],
         },
         {
             pattern: [
@@ -33,26 +38,32 @@ export default {
                 OR(type("String"), type("Number")),
                 "]",
             ],
-            evaluate: ({ tokens: [dict, _, exp] }) =>
-                evaluateExpression(dict)[evaluateExpression(exp)],
+            evaluate: ({ tokens: [dict, _, exp], context }) =>
+                context.evaluateExpression(dict)[
+                    context.evaluateExpression(exp)
+                ],
         },
         {
             pattern: [type("Iterable", thisType()), "[", type("Integer"), "]"],
-            evaluate: ({ tokens: [iterable, _, index] }) =>
-                evaluateExpression(iterable).getIndex(
-                    evaluateExpression(index)
-                ),
+            evaluate: ({ tokens: [iterable, _, index], context }) =>
+                context
+                    .evaluateExpression(iterable)
+                    .getIndex(context.evaluateExpression(index)),
         },
-        // {
-        //     pattern: [
-        //         type("Function", genericType("A"), thisType()),
-        //         genericType("A"),
-        //     ], // The A's must match
-        //     genericTypes: {
-        //         A: "Object",
-        //     },
-        //     evaluate: ({ tokens: [iterable, _, index] }) =>
-        //         evaluateExpression(iterable)[evaluateExpression(index)],
-        // },
+        {
+            pattern: [
+                type("Function", genericType("A"), thisType()),
+                type("Object"),
+                // genericType("A"),
+            ], // The A's must match
+            genericTypes: {
+                A: "Object",
+            },
+            evaluate: ({ tokens: [func, argument], context }) => {
+                return context
+                    .evaluateExpression(func)
+                    .call(context.evaluateExpression(argument));
+            },
+        },
     ],
 };

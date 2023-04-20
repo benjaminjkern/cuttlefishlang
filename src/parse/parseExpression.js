@@ -1,48 +1,52 @@
 import { debugFunction } from "../util/index.js";
 import { getAllRules } from "./genericUtils.js";
-import { isTerminal, stringifyPattern } from "./parsingUtils.js";
+import {
+    isTerminal,
+    stringifyPattern,
+    stringifyToken,
+} from "./parsingUtils.js";
 import { isValidToken } from "./tokenDict.js";
 
 /**********************
  * Parse functions
  **********************/
 
-export const parseExpressionAsType = (
-    type,
-    expression,
-    lineNumber,
-    context
-) => {
-    if (typeof type !== "string")
-        throw "Complex types are not allowed quite yet! But also this could just be an error with the typeType() or genericType() stuff cuz that shouldnt ever get here";
-    // TODO: Allow complex types & generic types (Actually maybe wont ever run into generic types, not sure)
-    if (!context.rules[type]) return { error: `Invalid type: ${type}` };
-    const typeHeuristics = checkTypeHeuristics(type, expression, context);
-    if (typeHeuristics.error) return typeHeuristics;
+export const parseExpressionAsType = debugFunction(
+    (type, expression, lineNumber, context) => {
+        if (typeof type !== "string")
+            throw "Complex types are not allowed quite yet! But also this could just be an error with the typeType() or genericType() stuff cuz that shouldnt ever get here";
+        // TODO: Allow complex types & generic types (Actually maybe wont ever run into generic types, not sure)
+        if (!context.rules[type]) return { error: `Invalid type: ${type}` };
+        const typeHeuristics = checkTypeHeuristics(type, expression, context);
+        if (typeHeuristics.error) return typeHeuristics;
 
-    for (const rule of getAllRules(type, context)) {
-        const parse = parseExpressionAsPattern(
-            rule.pattern,
-            expression,
-            rule,
-            lineNumber,
-            context
-        );
-        if (parse.error) continue;
-        const obj = {
-            type,
-            tokens: parse,
-            evaluate: rule.evaluate,
-            sourceString: expression,
-            lineNumber,
+        for (const rule of getAllRules(type, context)) {
+            const parse = parseExpressionAsPattern(
+                rule.pattern,
+                expression,
+                rule,
+                lineNumber,
+                context
+            );
+            if (parse.error) continue;
+            const obj = {
+                type,
+                tokens: parse,
+                evaluate: rule.evaluate,
+                sourceString: expression,
+                lineNumber,
+            };
+            if (rule.onParse) rule.onParse(obj, context);
+            return obj;
+        }
+        return {
+            error: `"${expression}" did not match any pattern of type: ${type}!`,
         };
-        if (rule.onParse) rule.onParse(obj, context);
-        return obj;
-    }
-    return {
-        error: `"${expression}" did not match any pattern of type: ${type}!`,
-    };
-};
+    },
+    "parseExpressionAsType",
+    [true, true],
+    stringifyToken
+);
 
 const parseExpressionAsMetaType = (
     metaTypePatternToken,
@@ -96,71 +100,83 @@ const parseExpressionAsMetaType = (
                     )}!`,
                 };
             return expression;
+        case "subcontext":
+            return parseExpressionAsPattern(
+                metaTypePatternToken.pattern,
+                expression,
+                undefined,
+                lineNumber,
+                metaTypePatternToken.getSubcontext()
+            );
     }
     return { error: `Invalid metaType: ${metaTypePatternToken.metaType}` };
 };
 
-const parseExpressionAsPattern = (
-    pattern,
-    expression,
-    rule,
-    lineNumber,
-    context
-) => {
-    const possibleMatches = getPossibleMatches(pattern, expression, context);
-    if (possibleMatches.length === 0)
-        return {
-            error: `There do not exist any possible matches of "${expression}" on pattern ${stringifyPattern(
-                pattern
-            )}!`,
-        };
+const parseExpressionAsPattern = debugFunction(
+    (pattern, expression, rule, lineNumber, context) => {
+        const possibleMatches = getPossibleMatches(
+            pattern,
+            expression,
+            context
+        );
+        if (possibleMatches.length === 0)
+            return {
+                error: `There do not exist any possible matches of "${expression}" on pattern ${stringifyPattern(
+                    pattern
+                )}!`,
+            };
 
-    if (rule && rule.associativityReverseSearchOrder) possibleMatches.reverse();
+        if (rule && rule.associativityReverseSearchOrder)
+            possibleMatches.reverse();
 
-    nextBreakPoint: for (const breakpointList of possibleMatches) {
-        const match = [];
-        for (const [i, patternToken] of pattern.entries()) {
-            const subExpression = expression.slice(
-                breakpointList[i - 1] || 0,
-                breakpointList[i]
-            );
+        nextBreakPoint: for (const breakpointList of possibleMatches) {
+            const match = [];
+            for (const [i, patternToken] of pattern.entries()) {
+                const subExpression = expression.slice(
+                    breakpointList[i - 1] || 0,
+                    breakpointList[i]
+                );
 
-            // This should be redundant
-            if (isTerminal(patternToken)) {
-                if (patternToken !== subExpression) continue nextBreakPoint;
-                match.push(patternToken);
-                continue;
-            }
-            if (patternToken.metaType) {
-                const parse = parseExpressionAsMetaType(
-                    patternToken,
+                // This should be redundant
+                if (isTerminal(patternToken)) {
+                    if (patternToken !== subExpression) continue nextBreakPoint;
+                    match.push(patternToken);
+                    continue;
+                }
+                if (patternToken.metaType) {
+                    const parse = parseExpressionAsMetaType(
+                        patternToken,
+                        subExpression,
+                        lineNumber,
+                        context
+                    );
+                    if (parse.error) continue nextBreakPoint;
+                    match.push(parse);
+                    continue;
+                }
+
+                const parse = parseExpressionAsType(
+                    patternToken.type,
                     subExpression,
                     lineNumber,
                     context
                 );
                 if (parse.error) continue nextBreakPoint;
                 match.push(parse);
-                continue;
             }
 
-            const parse = parseExpressionAsType(
-                patternToken.type,
-                subExpression,
-                lineNumber,
-                context
-            );
-            if (parse.error) continue nextBreakPoint;
-            match.push(parse);
+            return match;
         }
-
-        return match;
-    }
-    return {
-        error: `All possible matches of "${expression}" on pattern ${stringifyPattern(
-            pattern
-        )} failed.`,
-    };
-};
+        return {
+            error: `All possible matches of "${expression}" on pattern ${stringifyPattern(
+                pattern
+            )} failed.`,
+        };
+    },
+    "parseExpressionAsPattern",
+    [stringifyPattern, true],
+    stringifyPattern
+);
 
 const checkTypeHeuristics = (type, expression, context) => {
     for (const heuristic in context.heuristics.typeHeuristics) {
@@ -174,30 +190,48 @@ const checkTypeHeuristics = (type, expression, context) => {
     return {};
 };
 
-const checkMetaTypeHeuristics = (metaTypePatternToken, expression, context) => {
-    if (metaTypePatternToken.metaType === "anychar") {
-        if (
-            expression.length !== 1 ||
-            !isValidToken(metaTypePatternToken.tokenDict, expression)
-        )
-            return {
-                error: `There do not exist any possible matches of "${expression}" on pattern ${stringifyPattern(
-                    [metaTypePatternToken]
-                )}!`,
-            };
-        return {};
-    }
+const checkMetaTypeHeuristics =
+    // debugFunction(
+    (metaTypePatternToken, expression, context) => {
+        if (metaTypePatternToken.metaType === "anychar") {
+            if (
+                expression.length !== 1 ||
+                !isValidToken(metaTypePatternToken.tokenDict, expression)
+            )
+                return {
+                    error: `There do not exist any possible matches of "${expression}" on pattern ${stringifyPattern(
+                        [metaTypePatternToken]
+                    )}!`,
+                };
+            return {};
+        }
+        if (metaTypePatternToken.metaType === "subcontext") {
+            return checkMetaTypeHeuristics(
+                {
+                    ...metaTypePatternToken,
+                    metaType: "multi",
+                    min: 1,
+                    max: 1,
+                    ignoreWeirdMulti: true,
+                },
+                expression,
+                metaTypePatternToken.getSubcontext()
+            );
+        }
 
-    // I marked this as slow at one point but it saved on a certain type of parsing at one point so I think its good to leave in
-    for (const heuristic in context.heuristics.metaTypeHeuristics) {
-        const heuristicCheck = context.heuristics.metaTypeHeuristics[heuristic](
-            metaTypePatternToken,
-            expression
-        );
-        if (heuristicCheck.error) return heuristicCheck;
-    }
-    return {};
-};
+        // I marked this as slow at one point but it saved on a certain type of parsing at one point so I think its good to leave in
+        for (const heuristic in context.heuristics.metaTypeHeuristics) {
+            const heuristicCheck = context.heuristics.metaTypeHeuristics[
+                heuristic
+            ](metaTypePatternToken, expression);
+            if (heuristicCheck.error) return heuristicCheck;
+        }
+        return {};
+    };
+// ,
+//     "checkMetaTypeHeuritics",
+//     [(t) => stringifyPattern([t]), true]
+// );
 
 const patternMinLength = (pattern, context) => {
     return context.heuristics.patternHeuristics.minLength(pattern);

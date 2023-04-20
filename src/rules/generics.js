@@ -20,7 +20,13 @@ const generateGenericSubtypeRules = (allGenerics) => {
         genericTypes[genericType] = [
             // Needs to be in list so the cleanRuleSet works
             {
-                pattern: [OR(...allGenerics[genericType].map(type))],
+                pattern: [
+                    OR(
+                        ...allGenerics[genericType].map((typeName) =>
+                            type(typeName)
+                        )
+                    ),
+                ],
             },
         ];
     }

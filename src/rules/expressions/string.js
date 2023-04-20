@@ -1,4 +1,3 @@
-import { evaluateExpression } from "../../evaluate/evaluate.js";
 import { NOTCHAR, MULTI, type, OR } from "../../parse/ruleUtils.js";
 
 export default {
@@ -18,14 +17,16 @@ export default {
         {
             // TODO: Unsure if I want these to be stringlikes or strictly strings (Difference = Automatic casting of numbers and booleans as strings here)
             pattern: [type("stringlike"), "++", type("stringlike")],
-            evaluate: ({ tokens: [a, _, b] }) =>
-                `${evaluateExpression(a)}${evaluateExpression(b)}`,
+            evaluate: ({ tokens: [a, _, b], context }) =>
+                `${context.evaluateExpression(a)}${context.evaluateExpression(
+                    b
+                )}`,
         },
         {
             pattern: [type("stringlike"), "**", type("Integer")],
-            evaluate: ({ tokens: [string, _, n] }) => {
-                const num = evaluateExpression(n);
-                const inputString = evaluateExpression(string);
+            evaluate: ({ tokens: [string, _, n], context }) => {
+                const num = context.evaluateExpression(n);
+                const inputString = context.evaluateExpression(string);
                 return Array(num).fill(inputString).join("");
             },
         },

@@ -1,5 +1,4 @@
 import { MULTI, type } from "../parse/ruleUtils.js";
-import { evaluateExpression } from "../evaluate/evaluate.js";
 import { consoleWarn } from "../util/environment.js";
 
 /**
@@ -22,12 +21,12 @@ const cleanRuleSet = (rules) => {
             // Force spaces, associativity, and evaluation functions
             const {
                 spaces = "ignore",
-                evaluate = ({ tokens }) => {
+                evaluate = ({ tokens, context }) => {
                     if (tokens.length > 1)
                         consoleWarn(
                             `Warning: Evaluating rule ${i} in type "${typeName}" with default evaluation, ignoring all tokens aside from the first.`
                         );
-                    return evaluateExpression(tokens[0]);
+                    return context.evaluateExpression(tokens[0]);
                 },
                 onParse,
             } = rule;

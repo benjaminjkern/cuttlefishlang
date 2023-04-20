@@ -1,4 +1,3 @@
-import { evaluateExpression } from "../evaluate/evaluate.js";
 import { type, OPTIONAL } from "../parse/ruleUtils.js";
 import { CuttlefishError } from "../util/index.js";
 
@@ -23,7 +22,7 @@ export default {
         {
             pattern: ["if", type("Boolean"), ":"], // None of these colons need to be here since the parser can handle it but I like them
             evaluate: ({ tokens: [_, test], childIterator, context }) => {
-                const shouldRun = evaluateExpression(test);
+                const shouldRun = context.evaluateExpression(test);
                 if (shouldRun) childIterator.iterateToEnd();
                 context.ranIfStatement = shouldRun;
             },
@@ -45,7 +44,11 @@ export default {
         {
             pattern: ["while", type("Boolean"), ":"],
             evaluate: ({ tokens: [_, test], childIterator, context }) => {
-                loop(() => evaluateExpression(test), context, childIterator);
+                loop(
+                    () => context.evaluateExpression(test),
+                    context,
+                    childIterator
+                );
             },
         },
         {
@@ -61,7 +64,7 @@ export default {
                         i++;
                         // If no number is input, just repeat indefinitely
                         if (repeatCount.length)
-                            return i < evaluateExpression(repeatCount);
+                            return i < context.evaluateExpression(repeatCount);
                         return true;
                     },
                     context,
@@ -72,7 +75,7 @@ export default {
         {
             pattern: ["for", type("Iterable"), OPTIONAL(":")],
             evaluate: ({ tokens: [_, iterable], context, childIterator }) => {
-                const iterator = evaluateExpression(iterable).clone();
+                const iterator = context.evaluateExpression(iterable).clone();
                 loop(
                     () => {
                         if (!iterator.hasNext()) return false;

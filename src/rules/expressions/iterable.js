@@ -1,7 +1,5 @@
-import { evaluateExpression } from "../../evaluate/evaluate.js";
 import { type, OPTIONAL, MULTI } from "../../parse/ruleUtils.js";
 import { consoleWarn } from "../../util/environment.js";
-import { CuttlefishError } from "../../util/index.js";
 
 const discreteRangeIterator = ({
     start,
@@ -116,31 +114,31 @@ export default {
     Iterable: [
         {
             pattern: [type("DiscreteRange")],
-            evaluate: ({ tokens: [range] }) =>
-                discreteRangeIterator(evaluateExpression(range)),
+            evaluate: ({ tokens: [range], context }) =>
+                discreteRangeIterator(context.evaluateExpression(range)),
         },
         {
             pattern: [type("List")],
-            evaluate: ({ tokens: [list] }) =>
-                makeListIterator(evaluateExpression(list)),
+            evaluate: ({ tokens: [list], context }) =>
+                makeListIterator(context.evaluateExpression(list)),
         },
         {
             pattern: [type("Iterable"), "++", type("Iterable")],
             // TODO: Need output types to be a union of the two input types
-            evaluate: ({ tokens: [a, _, b] }) => {
+            evaluate: ({ tokens: [a, _, b], context }) => {
                 return concatenateIterators(
-                    evaluateExpression(a).clone(),
-                    evaluateExpression(b).clone()
+                    context.evaluateExpression(a).clone(),
+                    context.evaluateExpression(b).clone()
                 );
             },
         },
         {
             pattern: [type("Iterable"), "**", type("Integer")],
             // TODO: Need output types to be a union of the two input types
-            evaluate: ({ tokens: [iter, _, n] }) => {
-                let num = evaluateExpression(n);
+            evaluate: ({ tokens: [iter, _, n], context }) => {
+                let num = context.evaluateExpression(n);
                 if (num <= 0) return makeListIterator([]);
-                const inputIterator = evaluateExpression(iter);
+                const inputIterator = context.evaluateExpression(iter);
                 let outputIterator = inputIterator.clone();
                 while (--num > 0)
                     outputIterator = concatenateIterators(
@@ -155,19 +153,19 @@ export default {
         {
             pattern: [type("List"), "++", type("List")],
             // TODO: Need output types to be a union of the two input types
-            evaluate: ({ tokens: [a, _, b] }) => [
+            evaluate: ({ tokens: [a, _, b], context }) => [
                 // This will have issues when it comes to non-list iterables
-                ...evaluateExpression(a),
-                ...evaluateExpression(b),
+                ...context.evaluateExpression(a),
+                ...context.evaluateExpression(b),
             ],
         },
         {
             pattern: [type("List"), "**", type("Integer")],
             // TODO: Need output types to be a union of the two input types
-            evaluate: ({ tokens: [list, _, n] }) => {
-                let num = evaluateExpression(n);
+            evaluate: ({ tokens: [list, _, n], context }) => {
+                let num = context.evaluateExpression(n);
                 if (num <= 0) return [];
-                const inputList = evaluateExpression(list);
+                const inputList = context.evaluateExpression(list);
                 const outputList = [...inputList];
                 while (--num > 0) outputList.push(...inputList);
                 return outputList;
@@ -178,9 +176,9 @@ export default {
     listlit: [
         {
             pattern: ["[", OPTIONAL(type("commaSeparatedObjects")), "]"],
-            evaluate: ({ tokens: [_, a] }) => {
+            evaluate: ({ tokens: [_, a], context }) => {
                 if (a.length === 0) return [];
-                return evaluateExpression(a);
+                return context.evaluateExpression(a);
             },
         },
     ],
@@ -196,10 +194,10 @@ export default {
                 ]),
                 OPTIONAL(","),
             ],
-            evaluate: ({ tokens: [head, [commas, spaces, rest]] }) => {
+            evaluate: ({ tokens: [head, [commas, spaces, rest]], context }) => {
                 return [
-                    evaluateExpression(head),
-                    ...(rest ? rest.map(evaluateExpression) : []),
+                    context.evaluateExpression(head),
+                    ...(rest ? rest.map(context.evaluateExpression) : []),
                 ];
             },
         },
@@ -207,24 +205,24 @@ export default {
     DiscreteRange: [
         {
             pattern: ["[", type("Number"), "..", "]"],
-            evaluate: ({ tokens: [_, start] }) => ({
-                start: evaluateExpression(start),
+            evaluate: ({ tokens: [_, start], context }) => ({
+                start: context.evaluateExpression(start),
                 step: 1,
             }),
         },
         {
             pattern: ["[", type("Number"), "..", type("Number"), "]"],
-            evaluate: ({ tokens: [_1, start, _2, end] }) => ({
-                start: evaluateExpression(start),
+            evaluate: ({ tokens: [_1, start, _2, end], context }) => ({
+                start: context.evaluateExpression(start),
                 step: 1,
-                end: evaluateExpression(end),
+                end: context.evaluateExpression(end),
             }),
         },
         {
             pattern: ["[", type("Number"), "..", type("Number"), "..", "]"],
-            evaluate: ({ tokens: [_1, start, _2, step] }) => ({
-                start: evaluateExpression(start),
-                step: evaluateExpression(step),
+            evaluate: ({ tokens: [_1, start, _2, step], context }) => ({
+                start: context.evaluateExpression(start),
+                step: context.evaluateExpression(step),
             }),
         },
         {
@@ -237,10 +235,13 @@ export default {
                 type("Number"),
                 "]",
             ],
-            evaluate: ({ tokens: [_1, start, _2, step, _3, end] }) => ({
-                start: evaluateExpression(start),
-                step: evaluateExpression(step),
-                end: evaluateExpression(end),
+            evaluate: ({
+                tokens: [_1, start, _2, step, _3, end],
+                context,
+            }) => ({
+                start: context.evaluateExpression(start),
+                step: context.evaluateExpression(step),
+                end: context.evaluateExpression(end),
             }),
         },
     ],

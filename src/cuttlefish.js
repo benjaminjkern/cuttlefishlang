@@ -1,11 +1,12 @@
 import { readFileSync, existsSync } from "fs";
 import promptPackage from "prompt-sync";
 import promptHistory from "prompt-sync-history";
+
 import "colors";
 
 import createIndentTree from "./indentTree/createIndentTree.js";
 import { interpretIndentTree } from "./evaluate/interpret.js";
-import { CuttlefishError } from "./util/index.js";
+import { CuttlefishError, colorString } from "./util/index.js";
 import { runTests } from "./test/runTests.js";
 import { consoleWarn } from "./util/environment.js";
 import { startRepl } from "./repl.js";
@@ -17,7 +18,7 @@ export const cuttlefishCommandLine = (node, file, ...args) => {
             sigint: true,
             history: promptHistory(),
         });
-        return startRepl(() => prompt("$".red + "> "));
+        return startRepl(() => prompt(colorString("$", "red") + "> "));
     }
 
     if (args[0] === "test") return runTests();

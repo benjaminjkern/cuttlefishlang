@@ -1,4 +1,3 @@
-import { evaluateExpression } from "../evaluate/evaluate.js";
 import { type, OR, MULTI, ANYCHAR, OPTIONAL } from "../parse/ruleUtils.js";
 import { consoleWrite } from "../util/environment.js";
 import { CuttlefishError } from "../util/index.js";
@@ -7,19 +6,23 @@ import { forceString } from "./expressions/string.js";
 export default {
     Statement: [
         {
-            pattern: ["print", OR(type("Iterable"), type("stringlike"))],
-            evaluate: ({ tokens: [_, toPrint] }) => {
-                print(evaluateExpression(toPrint));
+            pattern: [
+                "print",
+                OR(type("Function"), type("Iterable"), type("stringlike")),
+            ],
+            evaluate: ({ tokens: [_, toPrint], context }) => {
+                print(context.evaluateExpression(toPrint));
                 consoleWrite("\n");
             },
         },
         {
             pattern: [type("varName"), "=", type("Object")],
             evaluate: ({ tokens: [id, _, obj], context }) => {
+                const evaluated = context.evaluateExpression(obj);
                 context.setVariable(
                     id.sourceString,
                     obj.tokens[0][0].type,
-                    evaluateExpression(obj)
+                    evaluated
                 );
             },
         },
@@ -52,8 +55,8 @@ export default {
         {
             pattern: ["if", type("Boolean"), ":", OPTIONAL(type("Statement"))],
             evaluate: ({ tokens: [_1, test, _2, statement], context }) => {
-                const shouldRun = evaluateExpression(test);
-                if (shouldRun) evaluateExpression(statement, context);
+                const shouldRun = context.evaluateExpression(test);
+                if (shouldRun) context.evaluateExpression(statement, context);
                 context.ranIfStatement = shouldRun;
             },
         },
@@ -68,7 +71,7 @@ export default {
                         "Semantics Error"
                     );
                 if (ranIfStatement) return;
-                evaluateExpression(statement, context);
+                context.evaluateExpression(statement, context);
             },
         },
     ],
@@ -80,17 +83,25 @@ export default {
 };
 
 export const print = (object) => {
-    if (!object.hasNext) return consoleWrite(forceString(object));
-    // Assume object is an iterator
-    object.restart();
+    if (object.hasNext) {
+        // Assume object is an iterator
+        object.restart();
 
-    // If it has at least one item, then it should have padding (Looks nice)
-    const listPadding = object.hasNext() ? " " : "";
+        // If it has at least one item, then it should have padding (Looks nice)
+        const listPadding = object.hasNext() ? " " : "";
 
-    consoleWrite(`[${listPadding}`);
-    while (object.hasNext()) {
-        print(object.next());
-        if (object.hasNext()) consoleWrite(", ");
+        consoleWrite(`[${listPadding}`);
+        while (object.hasNext()) {
+            print(object.next());
+            if (object.hasNext()) consoleWrite(", ");
+        }
+        consoleWrite(`${listPadding}]`);
+        return;
     }
-    consoleWrite(`${listPadding}]`);
+
+    if (object.call) {
+        consoleWrite(object.asString);
+        return;
+    }
+    return consoleWrite(forceString(object));
 };

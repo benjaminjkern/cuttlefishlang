@@ -1,8 +1,6 @@
 import RULES from "./rules/index.js";
-import { OR, type } from "./parse/ruleUtils.js";
+import { OPTIONAL } from "./parse/ruleUtils.js";
 import { consoleWrite, environment } from "./util/environment.js";
-import { evaluateExpression } from "./evaluate/evaluate.js";
-import { print } from "./rules/statement.js";
 import createIndentTree from "./indentTree/createIndentTree.js";
 import {
     interpretIndentTree,
@@ -15,13 +13,8 @@ export const startRepl = async (getLine) => {
         pattern: ["exit"],
         evaluate: () => process.exit(0),
     });
-    RULES.Statement.push({
-        pattern: [OR(type("Iterable"), type("stringlike"))],
-        evaluate: ({ tokens: [toPrint] }) => {
-            print(evaluateExpression(toPrint));
-            consoleWrite("\n");
-        },
-    });
+    // Slightly hacky! Change the print statement to be optional
+    RULES.Statement[0].pattern[0] = OPTIONAL("print");
     const context = newInterpretContext();
 
     consoleWrite("Welcome to Cuttlefish v2.0.a\n");

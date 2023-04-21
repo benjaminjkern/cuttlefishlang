@@ -80,3 +80,6 @@ export const debugFunction =
         );
         return result;
     };
+
+export const runFunctionOrValue = (f, ...args) =>
+    typeof f === "function" ? f(...args) : f;

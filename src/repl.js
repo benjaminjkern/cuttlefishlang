@@ -26,7 +26,7 @@ export const startRepl = async (getLine) => {
             interpretIndentTree(createIndentTree(line), context);
         } catch (error) {
             // SHouldnt need to since the inside is already printing
-            // console.error(error);
+            console.error(error);
         }
     }
 };

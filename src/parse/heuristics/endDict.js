@@ -2,7 +2,7 @@ import { newHeuristic } from "./heuristic.js";
 import { addTokenDicts, isValidToken, newTokenDict } from "./tokenDict.js";
 
 export const allowedEndCharactersHeuristic = newHeuristic((context) => ({
-    heuristicName: "allowedEndharacters",
+    heuristicName: "allowedEndCharacters",
     initialTokenValue: newTokenDict,
     initialPatternValue: newTokenDict,
     unresolvedValue: newTokenDict,

@@ -5,9 +5,7 @@ import { minLengthHeuristic } from "./minLength.js";
 import { allowedStartCharactersHeuristic } from "./startDict.js";
 
 export const generateHeuristics = (rules, generics, parentContexts) => {
-    const context = { rules, generics, parentContexts };
-
-    const heuristics = {};
+    const context = { rules, generics, parentContexts, heuristics: {} };
     for (const heuristic of [
         minLengthHeuristic,
         maxLengthHeuristic,
@@ -16,8 +14,8 @@ export const generateHeuristics = (rules, generics, parentContexts) => {
         allowedEndCharactersHeuristic,
     ]) {
         const heuristicObject = heuristic(context);
-        heuristics[heuristicObject.heuristicName] = heuristicObject;
+        context.heuristics[heuristicObject.heuristicName] = heuristicObject;
         delete heuristicObject.heuristicName; // Don't really need this anymore
     }
-    return heuristics;
+    return context.heuristics;
 };

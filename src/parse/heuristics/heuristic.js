@@ -19,6 +19,7 @@ export const newHeuristic = (contextWrapper) => (context) => {
         killPattern = () => false,
         patternReverseOrder = false,
         finalCheck = () => {},
+        allowAllEmptyExpressions = true,
     } = runFunctionOrValue(contextWrapper, context);
 
     const typeValues = {};
@@ -69,7 +70,6 @@ export const newHeuristic = (contextWrapper) => (context) => {
             },
             fromPattern: (pattern) => {
                 let currentValue = runFunctionOrValue(initialPatternValue);
-                console.log(currentValue);
                 for (let i = 0; i < pattern.length; i++) {
                     // End tokendict needs to go in opposite direction
                     const token =
@@ -104,13 +104,16 @@ export const newHeuristic = (contextWrapper) => (context) => {
 
                 return subcontextToken
                     .getSubcontext()
-                    .heuristics.minLength.values.fromPattern(
+                    .heuristics[heuristicName].values.fromPattern(
                         subcontextToken.pattern
                     );
             },
         },
         tests: {
             fromType: (type, expression) => {
+                // Wasnt in original heuristic check but might as well be?
+                if (allowAllEmptyExpressions && expression.length === 0)
+                    return true;
                 return (
                     test(expression, typeValues[type]) || {
                         error: `"${expression}" failed the heuristic test ${heuristicName} for type: ${type}!`,
@@ -118,6 +121,8 @@ export const newHeuristic = (contextWrapper) => (context) => {
                 );
             },
             fromPattern: (pattern, expression) => {
+                if (allowAllEmptyExpressions && expression.length === 0)
+                    return true;
                 return (
                     test(
                         expression,

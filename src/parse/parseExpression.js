@@ -180,7 +180,7 @@ const parseExpressionAsPattern = debugFunction(
 
 const checkTypeHeuristics = (type, expression, context) => {
     for (const heuristic in context.heuristics) {
-        const heuristicCheck = context.heuristics[heuristic].fromType(
+        const heuristicCheck = context.heuristics[heuristic].tests.fromType(
             type,
             expression
         );
@@ -219,7 +219,7 @@ const checkMetaTypeHeuristics = (metaTypePatternToken, expression, context) => {
 
     // I marked this as slow at one point but it saved on a certain type of parsing at one point so I think its good to leave in
     for (const heuristic in context.heuristics) {
-        const heuristicCheck = context.heuristics[heuristic].fromPattern(
+        const heuristicCheck = context.heuristics[heuristic].tests.fromPattern(
             [metaTypePatternToken],
             expression
         );

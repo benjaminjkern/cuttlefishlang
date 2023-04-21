@@ -23,4 +23,5 @@ export const minLengthHeuristic = newHeuristic({
                 `Warning: Type "${type}" has a minimum length of ${minLength} (Probably an unclosed rule loop)`
             );
     },
+    allowAllEmptyExpressions: false,
 });

@@ -5,6 +5,7 @@ export const newTokenDict = () => {
 };
 
 export const addTokenDicts = (a, b) => {
+    if (typeof b === "string") return addToTokenDict(a, b);
     if (a.whitelist) {
         if (b.whitelist)
             return { whitelist: { ...a.whitelist, ...b.whitelist } };
@@ -14,7 +15,7 @@ export const addTokenDicts = (a, b) => {
     return { blacklist: intersect(a.blacklist, b.blacklist) };
 };
 
-export const addToTokenDict = (dict, terminalToken) => {
+const addToTokenDict = (dict, terminalToken) => {
     return addTokenDicts(dict, { whitelist: makeSet(terminalToken.split("")) });
 };
 

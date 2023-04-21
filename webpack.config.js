@@ -16,7 +16,7 @@ const __dirname = path.dirname(__filename);
 const config = {
     entry: "./onlinerepl/index.js",
     output: {
-        path: path.resolve(__dirname, "dist"),
+        path: path.resolve(__dirname, "build"),
     },
     devServer: {
         open: true,

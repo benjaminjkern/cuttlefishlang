@@ -10,7 +10,8 @@
     "scripts": {
         "test": "node src/test/index.js",
         "start": "node src/index.js",
-        "deploy": "gh-pages -d onlinerepl",
+        "predeploy": "yarn build",
+        "deploy": "gh-pages -d build",
         "build": "webpack --mode=production --node-env=production",
         "build:dev": "webpack --mode=development",
         "build:prod": "webpack --mode=production --node-env=production",

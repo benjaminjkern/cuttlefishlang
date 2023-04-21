@@ -129,20 +129,20 @@ export const newHeuristic = (contextWrapper) => (context) => {
                             `{${type}}`,
                             "red"
                         )}!`,
+                        value: typeValues[type],
                     }
                 );
             },
             fromPattern: (pattern, expression) => {
                 if (allowAllEmptyExpressions && expression.length === 0)
                     return true;
+                const value = heuristicObject.values.fromPattern(pattern);
                 return (
-                    test(
-                        expression,
-                        heuristicObject.values.fromPattern(pattern)
-                    ) || {
+                    test(expression, value) || {
                         error: `"${expression}" failed the heuristic test "${heuristicName}" for meta-type: ${stringifyPattern(
                             pattern
                         )}!"`,
+                        value,
                     }
                 );
             },

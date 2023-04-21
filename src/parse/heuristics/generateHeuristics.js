@@ -17,5 +17,6 @@ export const generateHeuristics = (rules, generics, parentContexts) => {
         context.heuristics[heuristicObject.heuristicName] = heuristicObject;
         delete heuristicObject.heuristicName; // Don't really need this anymore
     }
+    context.heuristicsGenerated = true;
     return context.heuristics;
 };

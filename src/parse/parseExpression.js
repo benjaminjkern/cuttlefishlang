@@ -44,73 +44,74 @@ export const parseExpressionAsType = debugFunction(
         };
     },
     "parseExpressionAsType",
-    [true, true],
+    [(typeName) => stringifyToken({ type: typeName }), stringifyToken],
     stringifyToken
 );
 
-const parseExpressionAsMetaType = (
-    metaTypePatternToken,
-    expression,
-    lineNumber,
-    context
-) => {
-    switch (metaTypePatternToken.metaType) {
-        case "or":
-            for (const pattern of metaTypePatternToken.patterns) {
+const parseExpressionAsMetaType = debugFunction(
+    (metaTypePatternToken, expression, lineNumber, context) => {
+        switch (metaTypePatternToken.metaType) {
+            case "or":
+                for (const pattern of metaTypePatternToken.patterns) {
+                    const parse = parseExpressionAsPattern(
+                        pattern,
+                        expression,
+                        undefined,
+                        lineNumber,
+                        context
+                    );
+                    if (parse.error) continue;
+                    return parse;
+                }
+                return {
+                    error: `"${expression}" did not match any pattern in list: ${stringifyToken(
+                        metaTypePatternToken
+                    )}!`,
+                };
+            case "multi":
+                if (metaTypePatternToken.min <= 0 && expression === "")
+                    return [];
+                if (metaTypePatternToken.max <= 0 && expression !== "")
+                    return { error: "Maximum length reached" };
                 const parse = parseExpressionAsPattern(
-                    pattern,
+                    [
+                        ...metaTypePatternToken.pattern,
+                        {
+                            ...metaTypePatternToken,
+                            min: Math.max(metaTypePatternToken.min - 1, 0),
+                            max: Math.max(metaTypePatternToken.max - 1, 0),
+                        },
+                    ],
                     expression,
                     undefined,
                     lineNumber,
                     context
                 );
-                if (parse.error) continue;
-                return parse;
-            }
-            return {
-                error: `"${expression}" did not match any pattern in list: ${stringifyToken(
-                    metaTypePatternToken
-                )}!`,
-            };
-        case "multi":
-            if (metaTypePatternToken.min <= 0 && expression === "") return [];
-            if (metaTypePatternToken.max <= 0 && expression !== "")
-                return { error: "Maximum length reached" };
-            const parse = parseExpressionAsPattern(
-                [
-                    ...metaTypePatternToken.pattern,
-                    {
-                        ...metaTypePatternToken,
-                        min: Math.max(metaTypePatternToken.min - 1, 0),
-                        max: Math.max(metaTypePatternToken.max - 1, 0),
-                    },
-                ],
-                expression,
-                undefined,
-                lineNumber,
-                context
-            );
-            if (parse.error) return parse;
-            return compactifyMulti(metaTypePatternToken.pattern, parse);
-        case "anychar":
-            if (!isValidToken(metaTypePatternToken.tokenDict, expression))
-                return {
-                    error: `There do not exist any possible matches of "${expression}" on pattern ${stringifyPattern(
-                        [metaTypePatternToken]
-                    )}!`,
-                };
-            return expression;
-        case "subcontext":
-            return parseExpressionAsPattern(
-                metaTypePatternToken.pattern,
-                expression,
-                undefined,
-                lineNumber,
-                metaTypePatternToken.getSubcontext()
-            );
-    }
-    return { error: `Invalid metaType: ${metaTypePatternToken.metaType}` };
-};
+                if (parse.error) return parse;
+                return compactifyMulti(metaTypePatternToken.pattern, parse);
+            case "anychar":
+                if (!isValidToken(metaTypePatternToken.tokenDict, expression))
+                    return {
+                        error: `There do not exist any possible matches of "${expression}" on pattern ${stringifyPattern(
+                            [metaTypePatternToken]
+                        )}!`,
+                    };
+                return expression;
+            case "subcontext":
+                return parseExpressionAsPattern(
+                    metaTypePatternToken.pattern,
+                    expression,
+                    undefined,
+                    lineNumber,
+                    metaTypePatternToken.getSubcontext()
+                );
+        }
+        return { error: `Invalid metaType: ${metaTypePatternToken.metaType}` };
+    },
+    "parseExpressionAsMetatype",
+    [stringifyToken, stringifyToken],
+    "Parsed"
+);
 
 const parseExpressionAsPattern = debugFunction(
     (pattern, expression, rule, lineNumber, context) => {
@@ -174,7 +175,7 @@ const parseExpressionAsPattern = debugFunction(
         };
     },
     "parseExpressionAsPattern",
-    [stringifyPattern, true],
+    [stringifyPattern, stringifyToken],
     stringifyPattern
 );
 
@@ -228,60 +229,68 @@ const checkMetaTypeHeuristics = (metaTypePatternToken, expression, context) => {
     return {};
 };
 
-const getPossibleMatches = (pattern, expression, context) => {
-    // If the pattern doesnt have any tokens left, either the expression should also be empty or there should be no matches
-    if (pattern.length === 0) return expression.length === 0 ? [[]] : [];
+const getPossibleMatches = debugFunction(
+    (pattern, expression, context) => {
+        // If the pattern doesnt have any tokens left, either the expression should also be empty or there should be no matches
+        if (pattern.length === 0) return expression.length === 0 ? [[]] : [];
 
-    if (
-        expression.length <
-        context.heuristics.minLength.values.fromPattern(pattern)
-    )
-        return [];
-
-    const firstPatternToken = pattern[0];
-    if (isTerminal(firstPatternToken)) {
-        // This is checked again later but it at least saves us on some memory and time
-        if (expression.slice(0, firstPatternToken.length) !== firstPatternToken)
+        if (
+            expression.length <
+            context.heuristics.minLength.values.fromPattern(pattern)
+        )
             return [];
 
-        return getPossibleMatches(
-            pattern.slice(1),
-            expression.slice(firstPatternToken.length),
-            context
-        ).map((match) => [
-            firstPatternToken.length,
-            ...match.map((len) => len + firstPatternToken.length),
-        ]);
-    }
+        const firstPatternToken = pattern[0];
+        if (isTerminal(firstPatternToken)) {
+            // This is checked again later but it at least saves us on some memory and time
+            if (
+                expression.slice(0, firstPatternToken.length) !==
+                firstPatternToken
+            )
+                return [];
 
-    const matches = [];
-    for (let i = 0; i <= expression.length; i++) {
-        if (firstPatternToken.type) {
-            const typeHeuristics = checkTypeHeuristics(
-                firstPatternToken.type,
-                expression.slice(0, i),
+            return getPossibleMatches(
+                pattern.slice(1),
+                expression.slice(firstPatternToken.length),
                 context
-            );
-            if (typeHeuristics.error) continue;
-        } else {
-            const typeHeuristics = checkMetaTypeHeuristics(
-                firstPatternToken,
-                expression.slice(0, i),
-                context
-            );
-            if (typeHeuristics.error) continue;
+            ).map((match) => [
+                firstPatternToken.length,
+                ...match.map((len) => len + firstPatternToken.length),
+            ]);
         }
 
-        matches.push(
-            ...getPossibleMatches(
-                pattern.slice(1),
-                expression.slice(i),
-                context
-            ).map((match) => [i, ...match.map((len) => len + i)])
-        );
-    }
-    return matches;
-};
+        const matches = [];
+        for (let i = 0; i <= expression.length; i++) {
+            if (firstPatternToken.type) {
+                const typeHeuristics = checkTypeHeuristics(
+                    firstPatternToken.type,
+                    expression.slice(0, i),
+                    context
+                );
+                if (typeHeuristics.error) continue;
+            } else {
+                const typeHeuristics = checkMetaTypeHeuristics(
+                    firstPatternToken,
+                    expression.slice(0, i),
+                    context
+                );
+                if (typeHeuristics.error) continue;
+            }
+
+            matches.push(
+                ...getPossibleMatches(
+                    pattern.slice(1),
+                    expression.slice(i),
+                    context
+                ).map((match) => [i, ...match.map((len) => len + i)])
+            );
+        }
+        return matches;
+    },
+    "getPossibleMatches",
+    [stringifyPattern, stringifyToken],
+    (r) => r.length
+);
 
 /**
  * Used exclusively in parsing an expression as a multi-metatype,

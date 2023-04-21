@@ -8,7 +8,7 @@ export default {
         {
             pattern: [
                 "print",
-                OR(type("stringlike"), type("Iterable")), // type("Function")
+                OR(type("Function"), type("Iterable"), type("stringlike")),
             ],
             evaluate: ({ tokens: [_, toPrint], context }) => {
                 print(context.evaluateExpression(toPrint));

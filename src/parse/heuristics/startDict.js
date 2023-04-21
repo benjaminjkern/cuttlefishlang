@@ -1,5 +1,5 @@
-import { newHeuristic } from "./heuristic";
-import { addTokenDicts, isValidToken, newTokenDict } from "./tokenDict";
+import { newHeuristic } from "./heuristic.js";
+import { addTokenDicts, isValidToken, newTokenDict } from "./tokenDict.js";
 
 export const allowedStartCharactersHeuristic = newHeuristic((context) => ({
     heuristicName: "allowedStartCharacters",

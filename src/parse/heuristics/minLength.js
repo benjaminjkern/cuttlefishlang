@@ -1,5 +1,5 @@
-import { consoleWarn } from "../../util/environment";
-import { newHeuristic } from "./heuristic";
+import { consoleWarn } from "../../util/environment.js";
+import { newHeuristic } from "./heuristic.js";
 
 export const minLengthHeuristic = newHeuristic({
     heuristicName: "minLength",

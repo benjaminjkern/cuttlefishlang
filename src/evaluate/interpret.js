@@ -1,4 +1,4 @@
-import { CuttlefishError, deepCopy } from "../util/index.js";
+import { CuttlefishError } from "../util/index.js";
 import { parseExpressionAsType } from "../parse/parseExpression.js";
 import RULES from "../rules/index.js";
 import GENERICS from "../rules/generics.js";
@@ -6,7 +6,7 @@ import GENERICS from "../rules/generics.js";
 import { evaluateExpression } from "./evaluate.js";
 import { newContext } from "../parse/context.js";
 import { consoleWarn } from "../util/environment.js";
-import generateHeuristics from "../parse/heuristics.js";
+import { generateHeuristics } from "../parse/heuristics/generateHeuristics.js";
 import { combineRulesets } from "../parse/ruleUtils.js";
 
 export const newInterpretContext = (extraRules = {}, parentContexts = {}) => {

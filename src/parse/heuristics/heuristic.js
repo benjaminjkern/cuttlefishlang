@@ -1,6 +1,6 @@
-import { getAllRules } from "./genericUtils.js";
+import { getAllRules } from "../genericUtils.js";
 import { isTerminal, stringifyPattern } from "../parsingUtils.js";
-import { runFunctionOrValue } from "../../util";
+import { runFunctionOrValue } from "../../util/index.js";
 
 export const newHeuristic = (contextWrapper) => (context) => {
     // Needed to be able to give the newHeuristic access to the context so that it can depend on other heuristics if it wants to
@@ -47,12 +47,12 @@ export const newHeuristic = (contextWrapper) => (context) => {
                 // Assume metatype
                 switch (token.metaType) {
                     case "or":
-                        return heuristicObject.values.patternList(
+                        return heuristicObject.values.fromPatternList(
                             token.patterns
                         );
                     case "multi":
                         const getValue = () =>
-                            heuristicObject.values.pattern(token.pattern);
+                            heuristicObject.values.fromPattern(token.pattern);
                         // Max and min had extra rules here that I didnt wanna get rid of,
                         //   passing this in as a function is only a slight optimization.
                         // (Doesn't need to run if the min/max is == 0)
@@ -69,6 +69,7 @@ export const newHeuristic = (contextWrapper) => (context) => {
             },
             fromPattern: (pattern) => {
                 let currentValue = runFunctionOrValue(initialPatternValue);
+                console.log(currentValue);
                 for (let i = 0; i < pattern.length; i++) {
                     // End tokendict needs to go in opposite direction
                     const token =

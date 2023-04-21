@@ -1,4 +1,4 @@
-import { subtract, intersect, makeSet } from "../util/sets.js";
+import { subtract, intersect, makeSet } from "../../util/sets.js";
 
 export const newTokenDict = () => {
     return { whitelist: {} };

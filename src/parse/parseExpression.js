@@ -5,7 +5,7 @@ import {
     stringifyPattern,
     stringifyToken,
 } from "./parsingUtils.js";
-import { isValidToken } from "./tokenDict.js";
+import { isValidToken } from "./heuristics/tokenDict.js";
 
 /**********************
  * Parse functions
@@ -68,8 +68,8 @@ const parseExpressionAsMetaType = (
                 return parse;
             }
             return {
-                error: `"${expression}" did not match any pattern in list: ${stringifyPattern(
-                    [metaTypePatternToken]
+                error: `"${expression}" did not match any pattern in list: ${stringifyToken(
+                    metaTypePatternToken
                 )}!`,
             };
         case "multi":
@@ -179,8 +179,8 @@ const parseExpressionAsPattern = debugFunction(
 );
 
 const checkTypeHeuristics = (type, expression, context) => {
-    for (const heuristic in context.heuristics.typeHeuristics) {
-        const heuristicCheck = context.heuristics.typeHeuristics[heuristic](
+    for (const heuristic in context.heuristics) {
+        const heuristicCheck = context.heuristics[heuristic].fromType(
             type,
             expression
         );
@@ -190,58 +190,53 @@ const checkTypeHeuristics = (type, expression, context) => {
     return {};
 };
 
-const checkMetaTypeHeuristics =
-    // debugFunction(
-    (metaTypePatternToken, expression, context) => {
-        if (metaTypePatternToken.metaType === "anychar") {
-            if (
-                expression.length !== 1 ||
-                !isValidToken(metaTypePatternToken.tokenDict, expression)
-            )
-                return {
-                    error: `There do not exist any possible matches of "${expression}" on pattern ${stringifyPattern(
-                        [metaTypePatternToken]
-                    )}!`,
-                };
-            return {};
-        }
-        if (metaTypePatternToken.metaType === "subcontext") {
-            return checkMetaTypeHeuristics(
-                {
-                    ...metaTypePatternToken,
-                    metaType: "multi",
-                    min: 1,
-                    max: 1,
-                    ignoreWeirdMulti: true,
-                },
-                expression,
-                metaTypePatternToken.getSubcontext()
-            );
-        }
-
-        // I marked this as slow at one point but it saved on a certain type of parsing at one point so I think its good to leave in
-        for (const heuristic in context.heuristics.metaTypeHeuristics) {
-            const heuristicCheck = context.heuristics.metaTypeHeuristics[
-                heuristic
-            ](metaTypePatternToken, expression);
-            if (heuristicCheck.error) return heuristicCheck;
-        }
+const checkMetaTypeHeuristics = (metaTypePatternToken, expression, context) => {
+    if (metaTypePatternToken.metaType === "anychar") {
+        if (
+            expression.length !== 1 ||
+            !isValidToken(metaTypePatternToken.tokenDict, expression)
+        )
+            return {
+                error: `There do not exist any possible matches of "${expression}" on pattern ${stringifyPattern(
+                    [metaTypePatternToken]
+                )}!`,
+            };
         return {};
-    };
-// ,
-//     "checkMetaTypeHeuritics",
-//     [(t) => stringifyPattern([t]), true]
-// );
+    }
+    if (metaTypePatternToken.metaType === "subcontext") {
+        return checkMetaTypeHeuristics(
+            {
+                ...metaTypePatternToken,
+                metaType: "multi",
+                min: 1,
+                max: 1,
+                ignoreWeirdMulti: true,
+            },
+            expression,
+            metaTypePatternToken.getSubcontext()
+        );
+    }
 
-const patternMinLength = (pattern, context) => {
-    return context.heuristics.patternHeuristics.minLength(pattern);
+    // I marked this as slow at one point but it saved on a certain type of parsing at one point so I think its good to leave in
+    for (const heuristic in context.heuristics) {
+        const heuristicCheck = context.heuristics[heuristic].fromPattern(
+            [metaTypePatternToken],
+            expression
+        );
+        if (heuristicCheck.error) return heuristicCheck;
+    }
+    return {};
 };
 
 const getPossibleMatches = (pattern, expression, context) => {
     // If the pattern doesnt have any tokens left, either the expression should also be empty or there should be no matches
     if (pattern.length === 0) return expression.length === 0 ? [[]] : [];
 
-    if (expression.length < patternMinLength(pattern, context)) return [];
+    if (
+        expression.length <
+        context.heuristics.minLength.values.fromPattern(pattern)
+    )
+        return [];
 
     const firstPatternToken = pattern[0];
     if (isTerminal(firstPatternToken)) {

@@ -1,8 +1,8 @@
-import { allowedCharactersHeuristic } from "./allowedDict";
-import { allowedEndCharactersHeuristic } from "./endDict";
-import { maxLengthHeuristic } from "./maxLength";
-import { minLengthHeuristic } from "./minLength";
-import { allowedStartCharactersHeuristic } from "./startDict";
+import { allowedCharactersHeuristic } from "./allowedDict.js";
+import { allowedEndCharactersHeuristic } from "./endDict.js";
+import { maxLengthHeuristic } from "./maxLength.js";
+import { minLengthHeuristic } from "./minLength.js";
+import { allowedStartCharactersHeuristic } from "./startDict.js";
 
 export const generateHeuristics = (rules, generics, parentContexts) => {
     const context = { rules, generics, parentContexts };

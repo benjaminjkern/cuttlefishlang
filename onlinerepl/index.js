@@ -44,7 +44,7 @@ startRepl(async () => {
                 event.preventDefault();
                 return resolve(terminal.value.slice(currentTerminal, -1));
             } else if (event.key === "Backspace") {
-                if (terminal.value.length === currentTerminal)
+                if (terminal.selectionStart === currentTerminal)
                     event.preventDefault();
                 else if (terminal.selectionStart < currentTerminal) {
                     terminal.selectionStart = currentTerminal;
@@ -52,7 +52,7 @@ startRepl(async () => {
                     terminal.selectionStart--;
                 }
             } else if (event.key === "ArrowLeft") {
-                if (terminal.value.length === currentTerminal)
+                if (terminal.selectionStart === currentTerminal)
                     event.preventDefault();
             } else if (event.key === "ArrowUp") {
                 // Should go back in history

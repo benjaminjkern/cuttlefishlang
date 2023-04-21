@@ -5,6 +5,8 @@ export const colorString = (string, color) => {
     return string;
 };
 
+export const inspect = (...args) => environment.inspect(...args);
+
 const ALLOWED_ERROR_TYPES = [
     "Error",
     "Parsing Error",

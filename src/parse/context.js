@@ -1,4 +1,4 @@
-import generateHeuristics from "../parse/heuristics.js";
+import { generateHeuristics } from "../parse/heuristics/generateHeuristics.js";
 import { deepCopy } from "../util/index.js";
 
 export const newContext = (rules, generics, parentContexts = {}) => {

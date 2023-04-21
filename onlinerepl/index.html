@@ -1,8 +1,10 @@
+<!DOCTYPE html>
+
 <html>
 
 <head>
+    <meta charset="utf-8" />
     <title>Cuttlefish!</title>
-    <script type="module" src="index.js"></script>
     <style>
         body {
             margin: 0;
@@ -42,5 +44,21 @@
     <textarea id="terminal" autofocus spellcheck="false" wrap="hard"></textarea>
     <div id="cursor"></div>
 </body>
+
+
+<script>
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+            navigator.serviceWorker
+                .register("service-worker.js")
+                .then((registration) => {
+                    console.log("Service Worker registered: ", registration);
+                })
+                .catch((registrationError) => {
+                    console.error("Service Worker registration failed: ", registrationError);
+                });
+        });
+    }
+</script>
 
 </html>

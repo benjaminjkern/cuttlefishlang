@@ -1,5 +1,4 @@
 import { type, OR, thisType, genericType } from "../../parse/ruleUtils.js";
-import { inspect } from "../../util/specialUtils.js";
 
 export const objectGenerics = [
     // Needs to be at the top so it grabs as much as possible

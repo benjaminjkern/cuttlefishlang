@@ -1,4 +1,5 @@
 import { colorString } from "../util/index.js";
+import { newTokenDict } from "./heuristics/tokenDict.js";
 
 export const isTerminal = (token) => typeof token !== "object";
 
@@ -14,7 +15,7 @@ export const stringifyPattern = (
     );
 };
 
-export const stringifyToken = (token, hideSpaces = true) => {
+export const stringifyToken = (token, hideSpaces = false) => {
     if (Array.isArray(token)) return stringifyPattern(token, false, hideSpaces);
 
     if (token.type) return colorString(`{${token.type}}`, "red");
@@ -61,10 +62,7 @@ export const stringifyToken = (token, hideSpaces = true) => {
                     colorString(`{${token.min}, ${token.max}}`, "yellow")
                 );
             case "anychar":
-                return colorString(
-                    `[${stringifyTokenDict(token.tokenDict)}]`,
-                    "blue"
-                );
+                return stringifyTokenDict(token.tokenDict);
             case "subcontext":
                 return (
                     colorString("<", "red") +
@@ -75,10 +73,20 @@ export const stringifyToken = (token, hideSpaces = true) => {
                 throw `Not implemented: Stringify metatype ${token.metaType}`;
         }
     }
-    return token;
+    return `"${token}"`;
 };
 
 export const stringifyTokenDict = (tokenDict) => {
-    if (tokenDict.whitelist) return Object.keys(tokenDict.whitelist).join("");
-    return `NOT ${Object.keys(tokenDict.blacklist).join("")}`;
+    if (tokenDict.whitelist)
+        return colorString(
+            `[${Object.keys(tokenDict.whitelist).join("")}]`,
+            "blue"
+        );
+    if (tokenDict.blacklist)
+        return colorString(
+            `[${`NOT ${Object.keys(tokenDict.blacklist).join("")}`}]`,
+            "blue"
+        );
+    // Assume its a string
+    return stringifyTokenDict(newTokenDict(tokenDict));
 };

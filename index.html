@@ -1,4 +1,11 @@
-<!doctype html><html><head><meta charset="utf-8"/><title>Cuttlefish!</title><style>body {
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Cuttlefish!</title>
+    <style>
+        body {
             margin: 0;
             height: 100vh;
             overflow: hidden;
@@ -28,7 +35,15 @@
             height: 16px;
             background: rgba(227, 179, 91, 0.3);
             position: absolute;
-        }</style><script defer="defer" src="main.js"></script></head><body><textarea id="terminal" autofocus spellcheck="false" wrap="hard"></textarea><div id="cursor"></div></body><script>if ("serviceWorker" in navigator) {
+        }
+    </style>
+    <script defer="defer" src="main.js"></script>
+</head>
+
+<body><textarea id="terminal" autofocus spellcheck="false" wrap="hard"></textarea>
+    <div id="cursor"></div>
+</body>
+<script>if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
             navigator.serviceWorker
                 .register("service-worker.js")
@@ -39,4 +54,7 @@
                     console.error("Service Worker registration failed: ", registrationError);
                 });
         });
-    }</script></html>
+    }
+</script>
+
+</html>

@@ -3,7 +3,7 @@ import { inspect } from "../../util/specialUtils.js";
 
 export const objectGenerics = [
     // Needs to be at the top so it grabs as much as possible
-    "Function",
+    // "Function",
     // Temporarily put these here so that it can catch it, needs to be before number
     "Integer",
     "Number",

@@ -47,10 +47,10 @@ export const deepCopy = (object) => {
 
 let debugIndentation = 0;
 export const debugFunction =
-    (func, name = "f", includeArgs, resultEnd) =>
+    (func, name = "f", includeArgs, resultEnd, active = true) =>
     (...args) => {
-        if (!environment.debug) return func(...args);
-        const tabWidth = Array(debugIndentation).fill("   ").join("");
+        if (!environment.debug || !active) return func(...args);
+        const tabWidth = Array(debugIndentation).fill("  ").join("");
         console.log(
             `${tabWidth}${name}`,
             ...args

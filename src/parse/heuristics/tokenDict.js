@@ -1,7 +1,7 @@
 import { subtract, intersect, makeSet } from "../../util/sets.js";
 
-export const newTokenDict = () => {
-    return { whitelist: {} };
+export const newTokenDict = (terminalToken = "") => {
+    return { whitelist: makeSet(terminalToken.split("")) };
 };
 
 export const addTokenDicts = (a, b) => {
@@ -16,7 +16,7 @@ export const addTokenDicts = (a, b) => {
 };
 
 const addToTokenDict = (dict, terminalToken) => {
-    return addTokenDicts(dict, { whitelist: makeSet(terminalToken.split("")) });
+    return addTokenDicts(dict, newTokenDict(terminalToken));
 };
 
 export const isValidToken = (tokenDict, token) => {

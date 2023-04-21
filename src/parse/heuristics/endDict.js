@@ -12,7 +12,11 @@ export const allowedEndCharactersHeuristic = newHeuristic((context) => ({
     getTokenDictValue: (token) => token.tokenDict,
     test: (expression, dict) =>
         isValidToken(dict, expression[expression.length - 1]),
-    killPattern: (_, token) =>
-        context.heuristics.minLength.values.fromToken(token) === 0,
+    killPatternList: (dict) =>
+        dict.blacklist && !Object.keys(dict.blacklist).length, // If already accepting all possible characters stop looking
+    killPattern: (dict, token) => {
+        if (dict.blacklist && !Object.keys(dict.blacklist).length) return true;
+        return context.heuristics.minLength.values.fromToken(token) > 0;
+    },
     patternReverseOrder: true,
 }));

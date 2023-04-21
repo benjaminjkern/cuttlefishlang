@@ -1,6 +1,15 @@
 import { getAllRules } from "../genericUtils.js";
-import { isTerminal, stringifyPattern } from "../parsingUtils.js";
-import { runFunctionOrValue } from "../../util/index.js";
+import {
+    isTerminal,
+    stringifyPattern,
+    stringifyToken,
+    stringifyTokenDict,
+} from "../parsingUtils.js";
+import {
+    colorString,
+    debugFunction,
+    runFunctionOrValue,
+} from "../../util/index.js";
 
 export const newHeuristic = (contextWrapper) => (context) => {
     // Needed to be able to give the newHeuristic access to the context so that it can depend on other heuristics if it wants to
@@ -23,22 +32,22 @@ export const newHeuristic = (contextWrapper) => (context) => {
     } = runFunctionOrValue(contextWrapper, context);
 
     const typeValues = {};
-    const unresolved = {};
+    let cache = {};
+    let unresolved = {};
 
     const heuristicObject = {
         heuristicName,
         values: {
             fromType: (type) => {
-                if (typeValues[type] !== undefined) return typeValues[type];
+                if (cache[type] !== undefined) return cache[type];
                 if (unresolved[type]) {
-                    typeValues[type] = runFunctionOrValue(unresolvedValue);
-                    return typeValues[type];
+                    return runFunctionOrValue(unresolvedValue);
                 }
                 unresolved[type] = true;
-                typeValues[type] = heuristicObject.values.fromPatternList(
+                cache[type] = heuristicObject.values.fromPatternList(
                     getAllRules(type, context).map(({ pattern }) => pattern)
                 );
-                return typeValues[type];
+                return cache[type];
             },
             fromToken: (token) => {
                 if (isTerminal(token)) return getTerminalTokenValue(token);
@@ -116,7 +125,10 @@ export const newHeuristic = (contextWrapper) => (context) => {
                     return true;
                 return (
                     test(expression, typeValues[type]) || {
-                        error: `"${expression}" failed the heuristic test ${heuristicName} for type: ${type}!`,
+                        error: `"${expression}" failed the heuristic test "${heuristicName}" for type: ${colorString(
+                            `{${type}}`,
+                            "red"
+                        )}!`,
                     }
                 );
             },
@@ -128,17 +140,20 @@ export const newHeuristic = (contextWrapper) => (context) => {
                         expression,
                         heuristicObject.values.fromPattern(pattern)
                     ) || {
-                        error: `"${expression}" failed the heuristic test ${heuristicName} for meta-type: ${stringifyPattern(
+                        error: `"${expression}" failed the heuristic test "${heuristicName}" for meta-type: ${stringifyPattern(
                             pattern
                         )}!"`,
                     }
                 );
             },
         },
+        typeValues,
     };
 
     // Fetch all
     for (const type in context.rules) {
+        cache = { ...typeValues };
+        unresolved = {};
         typeValues[type] = heuristicObject.values.fromType(type);
 
         // Check and warn of any issues (Only really used by minLength)

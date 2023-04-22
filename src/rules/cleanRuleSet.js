@@ -6,12 +6,16 @@ import { consoleWarn } from "../util/environment.js";
  * It also attaches an evaluate function to the pattern if one wasn't already defined.
  *
  * Rules for spaces:
- * - ignore (default):
+ * - optional (default):
  *      Assume there can be an optional space (or many) in between every token. (Not on the outsides)
- * - require:
+ * - (NOT IMPLEMENTED) optional-outside (default):
+ *      Assume there can be an optional space (or many) in between every token and on the outside of the pattern.
+ * - required:
  *      Assume there will always be at least one space between every token. (Not on the outsides)
- * - specify:
- *      You must specify in the pattern itself if you want spaces to be included in the pattern.
+ * - (NOT IMPLEMENTED) required-outside:
+ *      Assume there will always be at least one space between every token and on the outside of the pattern.
+ * - none:
+ *      No extra spaces are added. You must specify in the pattern itself if you want spaces to be included in the pattern.
  */
 
 const cleanRuleSet = (rules) => {
@@ -20,7 +24,7 @@ const cleanRuleSet = (rules) => {
         ruleSet.forEach((rule, i) => {
             // Force spaces, associativity, and evaluation functions
             const {
-                spaces = "ignore",
+                spaces = "optional",
                 evaluate = ({ tokens, context }) => {
                     if (tokens.length > 1)
                         consoleWarn(
@@ -34,10 +38,10 @@ const cleanRuleSet = (rules) => {
             switch (spaces) {
                 default: // eslint-disable-line default-case-last
                     consoleWarn(
-                        `Warning: Rule ${i} in type "${typeName}" has invalid spaces configuration: "${spaces}", defaulting to default (ignore).`
+                        `Warning: Rule ${i} in type "${typeName}" has invalid spaces configuration: "${spaces}", defaulting to default (optional).`
                     );
-                case "require":
-                case "ignore":
+                case "required":
+                case "optional":
                     rule.pattern = rule.pattern.flatMap((token, j) =>
                         j === rule.pattern.length - 1
                             ? token
@@ -45,7 +49,7 @@ const cleanRuleSet = (rules) => {
                                   token,
                                   MULTI(
                                       type("space"),
-                                      spaces === "require" ? 1 : 0
+                                      spaces === "required" ? 1 : 0
                                   ),
                               ]
                     );
@@ -63,7 +67,7 @@ const cleanRuleSet = (rules) => {
                             ...args,
                         });
                     };
-                case "specify":
+                case "none":
                     break;
             }
         });

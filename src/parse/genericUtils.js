@@ -68,7 +68,7 @@ const replaceGenericTypesInRule = (
 
             // Only do the replacement if this generic type shows up multiple times in the pattern
             if (
-                context.generics.genericChildren[typeName] &&
+                context.generics.genericChildren[matchType] &&
                 pattern.filter((token) => token.genericType === genericType)
                     .length > 1
             )
@@ -122,8 +122,6 @@ export const getAllRules = (typeName, context) => {
                 )
             )
         );
-
-    console.log(returnRules);
 
     return returnRules;
 };

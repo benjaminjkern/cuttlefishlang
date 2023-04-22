@@ -42,6 +42,7 @@ const genericChildren = {
 };
 
 export default {
+    genericChildren,
     genericSubtypeRules: cleanRuleSet(
         generateGenericSubtypeRules(genericChildren)
     ),

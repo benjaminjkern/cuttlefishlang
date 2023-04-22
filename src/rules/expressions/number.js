@@ -1,4 +1,10 @@
-import { MULTI, OPTIONAL, OR, type } from "../../parse/ruleUtils.js";
+import {
+    MULTI,
+    OPTIONAL,
+    OR,
+    genericType,
+    type,
+} from "../../parse/ruleUtils.js";
 
 // export const numberGenerics = ["Integer"];
 export default {
@@ -14,6 +20,13 @@ export default {
                     context.evaluateExpression(b)
                 );
             },
+        },
+        {
+            pattern: [genericType("A"), "poop", genericType("A")],
+            genericTypes: {
+                A: "Object",
+            },
+            evaluate: () => Math.random(),
         },
         {
             pattern: [type("Number"), "-", type("Number")],

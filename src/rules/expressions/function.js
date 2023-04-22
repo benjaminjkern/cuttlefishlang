@@ -1,5 +1,5 @@
 import { newInterpretContext } from "../../evaluate/interpret.js";
-import { OR, subcontext, type } from "../../parse/ruleUtils.js";
+import { OR, genericType, subcontext, type } from "../../parse/ruleUtils.js";
 import { getTypeFromValue } from "../instantiator.js";
 
 export default {
@@ -42,7 +42,21 @@ export default {
             },
         },
         {
-            pattern: [type("Function"), "*", type("Function")],
+            pattern: [
+                type("Function", genericType("A"), genericType("B")),
+                "*",
+                type("Function", genericType("B"), genericType("C")),
+            ],
+            genericTypes: {
+                A: "Object",
+                B: "Object",
+                C: "Object",
+            },
+            returnSubtypes: type(
+                "Function",
+                genericType("A"),
+                genericType("B")
+            ),
             evaluate: ({ tokens: [f1, _, f2], context }) => {
                 const func1 = context.evaluateExpression(f1);
                 const func2 = context.evaluateExpression(f2);
@@ -55,7 +69,15 @@ export default {
             },
         },
         {
-            pattern: [type("Function"), "^", type("Integer")],
+            pattern: [
+                type("Function", genericType("A"), genericType("A")),
+                "^",
+                type("Integer"),
+            ],
+            genericTypes: {
+                A: "Object",
+            },
+            returnType: type("Function", genericType("A"), genericType("A")),
             evaluate: ({ tokens: [f1, _, n], context }) => {
                 const func = context.evaluateExpression(f1);
                 let num = context.evaluateExpression(n);

@@ -1,5 +1,6 @@
 import { type, OPTIONAL, MULTI } from "../../parse/ruleUtils.js";
 import { consoleWarn } from "../../util/environment.js";
+import { union } from "../../util/sets.js";
 
 const discreteRangeIterator = ({
     start,
@@ -114,17 +115,24 @@ export default {
     Iterable: [
         {
             pattern: [type("DiscreteRange")],
+            returnType: ([range]) =>
+                // TODO: Make this able to say when its just integers
+                type("Iterable", union(type("Number"), type("Integer"))),
             evaluate: ({ tokens: [range], context }) =>
                 discreteRangeIterator(context.evaluateExpression(range)),
         },
         {
             pattern: [type("List")],
+            returnType: ([list]) => type("Iterable", getType(list).subtypes),
             evaluate: ({ tokens: [list], context }) =>
                 makeListIterator(context.evaluateExpression(list)),
         },
         {
             pattern: [type("Iterable"), "++", type("Iterable")],
-            // TODO: Need output types to be a union of the two input types
+            returnType: ([a, _, b]) =>
+                type("Iterable", [
+                    union(getType(a).subtypes[0], getType(b).subtypes[0]),
+                ]),
             evaluate: ({ tokens: [a, _, b], context }) => {
                 return concatenateIterators(
                     context.evaluateExpression(a).clone(),
@@ -134,7 +142,7 @@ export default {
         },
         {
             pattern: [type("Iterable"), "**", type("Integer")],
-            // TODO: Need output types to be a union of the two input types
+            returnType: ([iter]) => getType(iter),
             evaluate: ({ tokens: [iter, _, n], context }) => {
                 let num = context.evaluateExpression(n);
                 if (num <= 0) return makeListIterator([]);
@@ -152,16 +160,18 @@ export default {
     List: [
         {
             pattern: [type("List"), "++", type("List")],
-            // TODO: Need output types to be a union of the two input types
+            returnType: ([a, _, b]) =>
+                type("Iterable", [
+                    union(getType(a).subtypes[0], getType(b).subtypes[0]),
+                ]),
             evaluate: ({ tokens: [a, _, b], context }) => [
-                // This will have issues when it comes to non-list iterables
                 ...context.evaluateExpression(a),
                 ...context.evaluateExpression(b),
             ],
         },
         {
             pattern: [type("List"), "**", type("Integer")],
-            // TODO: Need output types to be a union of the two input types
+            returnType: ([iter]) => getType(iter),
             evaluate: ({ tokens: [list, _, n], context }) => {
                 let num = context.evaluateExpression(n);
                 if (num <= 0) return [];
@@ -171,11 +181,15 @@ export default {
                 return outputList;
             },
         },
-        { pattern: [type("listlit")] },
+        {
+            pattern: [type("listlit")],
+            returnType: ([listlit]) => type("List", getType(iter)),
+        },
     ],
     listlit: [
         {
             pattern: ["[", OPTIONAL(type("commaSeparatedObjects")), "]"],
+            returnType: ([_, a]) => getType(a),
             evaluate: ({ tokens: [_, a], context }) => {
                 if (a.length === 0) return [];
                 return context.evaluateExpression(a);
@@ -194,6 +208,8 @@ export default {
                 ]),
                 OPTIONAL(","),
             ],
+            returnType: ([head, [commas, spaces, rest]]) =>
+                union(getType(head), ...rest.map(getType)),
             evaluate: ({ tokens: [head, [commas, spaces, rest]], context }) => {
                 return [
                     context.evaluateExpression(head),

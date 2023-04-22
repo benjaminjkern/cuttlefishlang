@@ -22,7 +22,7 @@ export const startRepl = async (getLine) => {
     });
     const context = newInterpretContext();
 
-    consoleWrite(`Welcome to Cuttlefish v${process.env.npm_package_version}\n`);
+    consoleWrite(`Welcome to Cuttlefish v2.0.a\n`);
 
     // eslint-disable-next-line no-constant-condition
     while (true) {

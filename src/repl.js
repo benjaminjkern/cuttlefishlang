@@ -17,13 +17,12 @@ export const startRepl = async (getLine) => {
         pattern: RULES.Statement[0].pattern.slice(2),
         evaluate: ({ tokens: [obj], context }) => {
             print(context.evaluateExpression(obj));
-
             consoleWrite("\n");
         },
     });
     const context = newInterpretContext();
 
-    consoleWrite("Welcome to Cuttlefish v2.0.a\n");
+    consoleWrite(`Welcome to Cuttlefish v${process.env.npm_package_version}\n`);
 
     // eslint-disable-next-line no-constant-condition
     while (true) {

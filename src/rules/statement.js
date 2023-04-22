@@ -6,10 +6,7 @@ import { forceString } from "./expressions/string.js";
 export default {
     Statement: [
         {
-            pattern: [
-                "print",
-                OR(type("Function"), type("Iterable"), type("stringlike")),
-            ],
+            pattern: ["print", type("printable")],
             evaluate: ({ tokens: [_, toPrint], context }) => {
                 print(context.evaluateExpression(toPrint));
                 consoleWrite("\n");
@@ -78,6 +75,17 @@ export default {
     varName: [
         {
             pattern: [MULTI(ANYCHAR("abcdefghijklmnopqrstuvwxyz_", true), 1)],
+        },
+    ],
+    printable: [
+        {
+            pattern: [
+                OR(
+                    type("Function"),
+                    type("Iterable", type("printable")),
+                    type("stringlike")
+                ),
+            ],
         },
     ],
 };

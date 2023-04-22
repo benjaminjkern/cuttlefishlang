@@ -103,9 +103,10 @@ export default {
             evaluate: ({ tokens: [_, a], context }) =>
                 -context.evaluateExpression(a),
         },
+
         {
             pattern: [MULTI(type("digit"), 1)],
-            spaces: "specify",
+            spaces: "none",
             evaluate: ({ sourceString }) => +sourceString,
         },
     ],
@@ -115,7 +116,7 @@ export default {
                 MULTI(type("digit"), 1),
                 OPTIONAL(".", OPTIONAL(type("endbit"))),
             ],
-            spaces: "specify",
+            spaces: "none",
         },
         {
             pattern: [
@@ -124,7 +125,7 @@ export default {
                 MULTI(type("digit"), 1),
                 OPTIONAL(type("endbit")),
             ],
-            spaces: "specify",
+            spaces: "none",
         },
     ],
     endbit: [{ pattern: [OR("e", "E"), MULTI(type("digit"), 1)] }],

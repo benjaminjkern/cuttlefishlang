@@ -4,13 +4,13 @@ export default {
     String: [
         {
             pattern: ['"', MULTI(NOTCHAR('"')), '"'],
-            spaces: "specify",
+            spaces: "none",
             evaluate: ({ sourceString }) =>
                 sourceString.substring(1, sourceString.length - 1),
         },
         {
             pattern: ["'", MULTI(NOTCHAR('"')), "'"],
-            spaces: "specify",
+            spaces: "none",
             evaluate: ({ sourceString }) =>
                 sourceString.substring(1, sourceString.length - 1),
         },

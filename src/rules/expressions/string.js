@@ -9,7 +9,7 @@ export default {
                 sourceString.substring(1, sourceString.length - 1),
         },
         {
-            pattern: ["'", MULTI(NOTCHAR('"')), "'"],
+            pattern: ["'", MULTI(NOTCHAR("'")), "'"],
             spaces: "none",
             evaluate: ({ sourceString }) =>
                 sourceString.substring(1, sourceString.length - 1),

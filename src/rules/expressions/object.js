@@ -52,7 +52,6 @@ export default {
         {
             pattern: [
                 type("Function", genericType("A"), thisType()),
-                // type("Object"),
                 genericType("A"),
             ], // The A's must match
             genericTypes: {

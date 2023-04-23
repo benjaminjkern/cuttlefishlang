@@ -1,59 +1,75 @@
 import { consoleWarn } from "../util/environment.js";
+import { inspect } from "../util/index.js";
 import { type } from "./ruleUtils.js";
+
+const replaceGenericTypesInToken = (patternToken, typeName, genericTypeMap) => {
+    if (patternToken.metaType) {
+        switch (patternToken.metaType) {
+            case "or":
+                return {
+                    ...patternToken,
+                    patterns: patternToken.patterns.map((orPattern) =>
+                        replaceGenericTypesInPattern(
+                            orPattern,
+                            typeName,
+                            genericTypeMap
+                        )
+                    ),
+                };
+            case "multi":
+                return {
+                    ...patternToken,
+                    pattern: replaceGenericTypesInPattern(
+                        patternToken.pattern,
+                        typeName,
+                        genericTypeMap
+                    ),
+                };
+            case "anychar":
+                return patternToken;
+            case "subcontext":
+                return {
+                    ...patternToken,
+                    pattern: replaceGenericTypesInPattern(
+                        patternToken.pattern,
+                        typeName,
+                        genericTypeMap
+                    ),
+                };
+        }
+        throw `Invalid metatype: ${patternToken.metaType}`;
+    }
+
+    if (patternToken.genericType) {
+        if (!genericTypeMap[patternToken.genericType])
+            throw `Error: Replacing generic type ${patternToken.genericType}, which isnt listed in genericTypeMap`;
+        return type(genericTypeMap[patternToken.genericType]);
+    }
+    if (patternToken.thisType) return type(typeName);
+    if (patternToken.subtypes)
+        return {
+            ...patternToken,
+            subtypes: patternToken.subtypes.map((subtypeToken) =>
+                replaceGenericTypesInToken(
+                    subtypeToken,
+                    typeName,
+                    genericTypeMap
+                )
+            ),
+        };
+
+    // This includes raw types and terminal tokens
+    return patternToken;
+};
 
 const replaceGenericTypesInPattern = (
     pattern,
     typeName,
     genericTypeMap = {}
 ) => {
-    return pattern.map((patternToken) => {
-        if (patternToken.metaType) {
-            switch (patternToken.metaType) {
-                case "or":
-                    return {
-                        ...patternToken,
-                        patterns: patternToken.patterns.map((orPattern) =>
-                            replaceGenericTypesInPattern(
-                                orPattern,
-                                typeName,
-                                genericTypeMap
-                            )
-                        ),
-                    };
-                case "multi":
-                    return {
-                        ...patternToken,
-                        pattern: replaceGenericTypesInPattern(
-                            patternToken.pattern,
-                            typeName,
-                            genericTypeMap
-                        ),
-                    };
-                case "anychar":
-                    return patternToken;
-                case "subcontext":
-                    return {
-                        ...patternToken,
-                        pattern: replaceGenericTypesInPattern(
-                            patternToken.pattern,
-                            typeName,
-                            genericTypeMap
-                        ),
-                    };
-            }
-            throw `Invalid metatype: ${patternToken.metaType}`;
-        }
-
-        if (patternToken.genericType) {
-            if (!genericTypeMap[patternToken.genericType])
-                throw `Error: Replacing generic type ${patternToken.genericType}, which isnt listed in genericTypeMap`;
-            return type(genericTypeMap[patternToken.genericType]);
-        }
-        if (patternToken.thisType) return type(typeName);
-
-        // This includes raw types and terminal tokens
-        return patternToken;
-    });
+    return pattern.map((token) =>
+        replaceGenericTypesInToken(token, typeName, genericTypeMap)
+    );
 };
 
 const replaceGenericTypesInRule = (
@@ -69,8 +85,13 @@ const replaceGenericTypesInRule = (
             // Only do the replacement if this generic type shows up multiple times in the pattern
             if (
                 context.generics.genericChildren[matchType] &&
-                pattern.filter((token) => token.genericType === genericType)
-                    .length > 1
+                pattern.reduce(
+                    (count, token) =>
+                        count +
+                        (token.genericType === genericType ||
+                            token.subtypes?.filter(subtype)),
+                    0
+                ).length > 1
             )
                 genericsToReplace[genericType] =
                     context.generics.genericChildren[matchType];
@@ -122,6 +143,8 @@ export const getAllRules = (typeName, context) => {
                 )
             )
         );
+
+    inspect(returnRules);
 
     return returnRules;
 };

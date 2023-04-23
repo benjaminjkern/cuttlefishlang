@@ -52,11 +52,7 @@ export default {
                 B: "Object",
                 C: "Object",
             },
-            returnSubtypes: type(
-                "Function",
-                genericType("A"),
-                genericType("B")
-            ),
+            returnType: type("Function", genericType("A"), genericType("B")),
             evaluate: ({ tokens: [f1, _, f2], context }) => {
                 const func1 = context.evaluateExpression(f1);
                 const func2 = context.evaluateExpression(f2);

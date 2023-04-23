@@ -72,6 +72,59 @@ const replaceGenericTypesInPattern = (
     );
 };
 
+const atLeast2GenericsInToken = (patternToken, genericType) => {
+    if (patternToken.metaType) {
+        switch (patternToken.metaType) {
+            case "or":
+                // Just for optimization, should count separately
+                let max = 0;
+                for (const pattern of patternToken.patterns) {
+                    max = Math.max(
+                        atLeast2GenericsInPattern(pattern, genericType),
+                        max
+                    );
+                    if (max >= 2) break;
+                }
+                return max;
+            case "multi":
+                return atLeast2GenericsInPattern(
+                    patternToken.pattern,
+                    genericType
+                );
+            case "anychar":
+                return 0;
+            case "subcontext":
+                // Honestly shouldnt really use generics across subcontexts but eh
+                return atLeast2GenericsInPattern(
+                    patternToken.pattern,
+                    genericType
+                );
+        }
+        throw `Invalid metatype: ${patternToken.metaType}`;
+    }
+
+    if (patternToken.genericType === genericType) return 1;
+    if (patternToken.subtypes) {
+        let count = 0;
+        for (const token of patternToken.subtypes) {
+            count += atLeast2GenericsInToken(token, genericType);
+            if (count >= 2) break;
+        }
+        return count;
+    }
+
+    return 0;
+};
+
+const atLeast2GenericsInPattern = (pattern, genericType) => {
+    let count = 0;
+    for (const token of pattern) {
+        count += atLeast2GenericsInToken(token, genericType);
+        if (count >= 2) break;
+    }
+    return count;
+};
+
 const replaceGenericTypesInRule = (
     { pattern, genericTypes, ...rule },
     typeName,
@@ -85,13 +138,7 @@ const replaceGenericTypesInRule = (
             // Only do the replacement if this generic type shows up multiple times in the pattern
             if (
                 context.generics.genericChildren[matchType] &&
-                pattern.reduce(
-                    (count, token) =>
-                        count +
-                        (token.genericType === genericType ||
-                            token.subtypes?.filter(subtype)),
-                    0
-                ).length > 1
+                atLeast2GenericsInPattern(pattern, genericType) >= 2
             )
                 genericsToReplace[genericType] =
                     context.generics.genericChildren[matchType];
@@ -143,8 +190,6 @@ export const getAllRules = (typeName, context) => {
                 )
             )
         );
-
-    inspect(returnRules);
 
     return returnRules;
 };

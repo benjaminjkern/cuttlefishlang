@@ -11,7 +11,8 @@ import iterable from "./expressions/iterable.js";
 import number from "./expressions/number.js";
 import object from "./expressions/object.js";
 import string from "./expressions/string.js";
-import functions from "./expressions/function.js";
+import functions from "./expressions/function.js"; // "function" is a js keyword
+import tuple from "./expressions/tuple.js";
 
 export default cleanRuleSet({
     space: [{ pattern: [" "] }],
@@ -26,4 +27,5 @@ export default cleanRuleSet({
     ...object,
     ...string,
     ...functions,
+    ...tuple,
 });

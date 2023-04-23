@@ -123,16 +123,17 @@ export default {
         },
         {
             pattern: [type("List")],
-            returnType: ([list]) => type("Iterable", getType(list).subtypes),
+            returnType: ([list]) => type("Iterable", getType(list).subtypes[0]),
             evaluate: ({ tokens: [list], context }) =>
                 makeListIterator(context.evaluateExpression(list)),
         },
         {
             pattern: [type("Iterable"), "++", type("Iterable")],
             returnType: ([a, _, b]) =>
-                type("Iterable", [
-                    union(getType(a).subtypes[0], getType(b).subtypes[0]),
-                ]),
+                type(
+                    "Iterable",
+                    union(getType(a).subtypes[0], getType(b).subtypes[0])
+                ),
             evaluate: ({ tokens: [a, _, b], context }) => {
                 return concatenateIterators(
                     context.evaluateExpression(a).clone(),
@@ -161,9 +162,10 @@ export default {
         {
             pattern: [type("List"), "++", type("List")],
             returnType: ([a, _, b]) =>
-                type("Iterable", [
-                    union(getType(a).subtypes[0], getType(b).subtypes[0]),
-                ]),
+                type(
+                    "Iterable",
+                    union(getType(a).subtypes[0], getType(b).subtypes[0])
+                ),
             evaluate: ({ tokens: [a, _, b], context }) => [
                 ...context.evaluateExpression(a),
                 ...context.evaluateExpression(b),

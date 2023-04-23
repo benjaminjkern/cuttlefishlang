@@ -8,6 +8,7 @@ export const objectGenerics = [
     "Number",
     "String",
     "Boolean",
+    "Tuple",
     // Temporarily put these here so that it can catch it, needs to be before iterable
     "DiscreteRange",
     // Temporarily put these here so that it can catch it, needs to be before iterable
@@ -61,20 +62,6 @@ export default {
                 return context
                     .evaluateExpression(func)
                     .call(context.evaluateExpression(argument));
-            },
-        },
-        {
-            pattern: [
-                type("Function", genericType("A"), thisType()),
-                "(",
-                ")",
-                // genericType("A"),
-            ], // The A's must match
-            genericTypes: {
-                A: "Object",
-            },
-            evaluate: ({ tokens: [func], context }) => {
-                return context.evaluateExpression(func).call();
             },
         },
     ],

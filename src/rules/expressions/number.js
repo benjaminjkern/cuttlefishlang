@@ -62,7 +62,7 @@ export default {
             evaluate: ({ sourceString }) => +sourceString,
         },
         {
-            pattern: ["rand", "(", ")"],
+            pattern: ["rand", type("Tuple")],
             evaluate: () => Math.random(),
         },
     ],

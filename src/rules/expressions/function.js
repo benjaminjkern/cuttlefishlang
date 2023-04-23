@@ -9,7 +9,8 @@ export default {
                 "fn",
                 ":",
                 subcontext(
-                    [OR(type("Object"), type("Statement"))],
+                    [type("Number")],
+                    // [OR(type("Object"), type("Statement"))],
                     (subcontextToken) => {
                         return newInterpretContext(
                             {
@@ -40,6 +41,7 @@ export default {
                     },
                 };
             },
+            returnType: () => type("Function", type("Number"), type("Number")),
         },
         {
             pattern: [
@@ -52,7 +54,8 @@ export default {
                 B: "Object",
                 C: "Object",
             },
-            returnType: type("Function", genericType("A"), genericType("B")),
+            returnType: () =>
+                type("Function", genericType("A"), genericType("C")),
             evaluate: ({ tokens: [f1, _, f2], context }) => {
                 const func1 = context.evaluateExpression(f1);
                 const func2 = context.evaluateExpression(f2);
@@ -73,7 +76,8 @@ export default {
             genericTypes: {
                 A: "Object",
             },
-            returnType: type("Function", genericType("A"), genericType("A")),
+            returnType: () =>
+                type("Function", genericType("A"), genericType("A")),
             evaluate: ({ tokens: [f1, _, n], context }) => {
                 const func = context.evaluateExpression(f1);
                 let num = context.evaluateExpression(n);

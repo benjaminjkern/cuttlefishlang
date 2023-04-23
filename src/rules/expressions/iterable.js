@@ -1,4 +1,10 @@
-import { type, OPTIONAL, MULTI, thisType } from "../../parse/ruleUtils.js";
+import {
+    type,
+    OPTIONAL,
+    MULTI,
+    thisType,
+    thisSubtype,
+} from "../../parse/ruleUtils.js";
 import { consoleWarn } from "../../util/environment.js";
 import { union } from "../../util/sets.js";
 
@@ -110,6 +116,8 @@ const concatenateIterators = (iteratorA, iteratorB) => {
     };
     return returnIterator;
 };
+
+const iterableDefaultSubtypes = ["Object"];
 
 export default {
     Iterable: [

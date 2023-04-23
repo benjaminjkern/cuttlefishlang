@@ -7,6 +7,7 @@ import { evaluateExpression } from "./evaluate.js";
 import { newContext } from "../parse/context.js";
 import { consoleWarn } from "../util/environment.js";
 import { generateHeuristics } from "../parse/heuristics/generateHeuristics.js";
+import { makeTypeKey } from "../parse/genericUtils.js";
 import { combineRulesets, type } from "../parse/ruleUtils.js";
 
 export const newInterpretContext = (extraRules = {}, parentContexts = {}) => {
@@ -17,13 +18,14 @@ export const newInterpretContext = (extraRules = {}, parentContexts = {}) => {
             parentContexts
         ),
         vars: [],
-        setVariable: (varName, type, value) => {
+        setVariable: (varName, typeToken, value) => {
+            const typeKey = makeTypeKey(typeToken);
             if (
-                context.vars[varName]?.type &&
-                context.vars[varName].type !== type
+                context.vars[varName]?.typeKey &&
+                context.vars[varName].typeKey !== typeKey
             ) {
                 consoleWarn(
-                    `Warning: Changing type of variable ${varName} (${context.vars[varName].type} -> ${type})`
+                    `Warning: Changing type of variable ${varName} (${context.vars[varName].typeKey} -> ${typeKey})`
                 );
                 context.rules[context.vars[varName].type] = context.rules[
                     context.vars[varName].type
@@ -35,7 +37,8 @@ export const newInterpretContext = (extraRules = {}, parentContexts = {}) => {
             }
 
             if (context.vars[varName] === undefined) {
-                context.rules[type].push({
+                context.rules[typeToken.type].push({
+                    allowedSubtypes: typeToken.subtypes,
                     pattern: [varName],
                     evaluate: () => context.vars[varName].value,
                 });
@@ -46,7 +49,7 @@ export const newInterpretContext = (extraRules = {}, parentContexts = {}) => {
                     // No subcontexts, this should be done from scratch
                 );
             }
-            context.vars[varName] = { value, type };
+            context.vars[varName] = { value, typeKey };
         },
     };
     context.evaluateExpression = evaluateExpression(context);

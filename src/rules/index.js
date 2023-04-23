@@ -21,7 +21,7 @@ export default cleanRuleSet({
     ...instantiator,
 
     ...boolean,
-    // ...dictionary,
+    ...dictionary,
     ...iterable,
     ...number,
     ...object,

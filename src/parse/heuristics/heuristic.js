@@ -1,6 +1,11 @@
-import { getAllRules } from "../genericUtils.js";
-import { isTerminal, stringifyPattern } from "../parsingUtils.js";
+import { getAllRules, makeTypeKey } from "../genericUtils.js";
+import {
+    isTerminal,
+    stringifyPattern,
+    stringifyToken,
+} from "../parsingUtils.js";
 import { colorString, runFunctionOrValue } from "../../util/index.js";
+import { type } from "../ruleUtils.js";
 
 export const newHeuristic = (contextWrapper) => (context) => {
     // Needed to be able to give the newHeuristic access to the context so that it can depend on other heuristics if it wants to
@@ -29,21 +34,24 @@ export const newHeuristic = (contextWrapper) => (context) => {
     const heuristicObject = {
         heuristicName,
         values: {
-            fromType: (type) => {
-                if (cache[type] !== undefined) return cache[type];
-                if (unresolved[type]) {
+            fromType: (typeToken) => {
+                const typeKey = makeTypeKey(typeToken);
+                if (cache[typeKey] !== undefined) return cache[typeKey];
+                if (unresolved[typeKey]) {
                     return runFunctionOrValue(unresolvedValue);
                 }
-                unresolved[type] = true;
-                cache[type] = heuristicObject.values.fromPatternList(
-                    getAllRules(type, context).map(({ pattern }) => pattern)
+                unresolved[typeKey] = true;
+                cache[typeKey] = heuristicObject.values.fromPatternList(
+                    getAllRules(typeToken, context).map(
+                        ({ pattern }) => pattern
+                    )
                 );
-                return cache[type];
+                return cache[typeKey];
             },
             fromToken: (token) => {
                 if (isTerminal(token)) return getTerminalTokenValue(token);
                 if (!token.metaType)
-                    return heuristicObject.values.fromType(token.type);
+                    return heuristicObject.values.fromType(token);
 
                 // Assume metatype
                 switch (token.metaType) {
@@ -110,17 +118,18 @@ export const newHeuristic = (contextWrapper) => (context) => {
             },
         },
         tests: {
-            fromType: (type, expression) => {
+            fromType: (typeToken, expression) => {
                 // Wasnt in original heuristic check but might as well be?
                 if (allowAllEmptyExpressions && expression.length === 0)
                     return true;
+
+                const typeKey = makeTypeKey(typeToken);
                 return (
-                    test(expression, typeValues[type]) || {
-                        error: `"${expression}" failed the heuristic test "${heuristicName}" for type: ${colorString(
-                            `{${type}}`,
-                            "red"
+                    test(expression, typeValues[typeKey]) || {
+                        error: `"${expression}" failed the heuristic test "${heuristicName}" for type: ${stringifyToken(
+                            typeToken
                         )}!`,
-                        value: typeValues[type],
+                        value: typeValues[typeKey],
                     }
                 );
             },
@@ -142,13 +151,13 @@ export const newHeuristic = (contextWrapper) => (context) => {
     };
 
     // Fetch all
-    for (const type in context.rules) {
+    for (const typeName in context.rules) {
         cache = { ...typeValues };
         unresolved = {};
-        typeValues[type] = heuristicObject.values.fromType(type);
+        typeValues[typeName] = heuristicObject.values.fromType(type(typeName));
 
         // Check and warn of any issues (Only really used by minLength)
-        finalCheck(typeValues[type], type);
+        finalCheck(typeValues[typeName], typeName);
     }
     return heuristicObject;
 };

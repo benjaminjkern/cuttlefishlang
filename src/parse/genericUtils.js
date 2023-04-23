@@ -2,7 +2,11 @@ import { consoleWarn } from "../util/environment.js";
 import { inspect } from "../util/index.js";
 import { type } from "./ruleUtils.js";
 
-const replaceGenericTypesInToken = (patternToken, typeName, genericTypeMap) => {
+const replaceGenericTypesInToken = (
+    patternToken,
+    typeToken,
+    genericTypeMap
+) => {
     if (patternToken.metaType) {
         switch (patternToken.metaType) {
             case "or":
@@ -11,7 +15,7 @@ const replaceGenericTypesInToken = (patternToken, typeName, genericTypeMap) => {
                     patterns: patternToken.patterns.map((orPattern) =>
                         replaceGenericTypesInPattern(
                             orPattern,
-                            typeName,
+                            typeToken,
                             genericTypeMap
                         )
                     ),
@@ -21,7 +25,7 @@ const replaceGenericTypesInToken = (patternToken, typeName, genericTypeMap) => {
                     ...patternToken,
                     pattern: replaceGenericTypesInPattern(
                         patternToken.pattern,
-                        typeName,
+                        typeToken,
                         genericTypeMap
                     ),
                 };
@@ -32,7 +36,7 @@ const replaceGenericTypesInToken = (patternToken, typeName, genericTypeMap) => {
                     ...patternToken,
                     pattern: replaceGenericTypesInPattern(
                         patternToken.pattern,
-                        typeName,
+                        typeToken,
                         genericTypeMap
                     ),
                 };
@@ -45,14 +49,16 @@ const replaceGenericTypesInToken = (patternToken, typeName, genericTypeMap) => {
             throw `Error: Replacing generic type ${patternToken.genericType}, which isnt listed in genericTypeMap`;
         return type(genericTypeMap[patternToken.genericType]);
     }
-    if (patternToken.thisType) return type(typeName);
+    if (patternToken.thisType) return typeToken;
+    if (patternToken.thisSubtype !== undefined)
+        return typeToken.subtypes[typeToken.] || type("Object"); // TODO: getDefaultSubtype(typeToken.type);
     if (patternToken.subtypes)
         return {
             ...patternToken,
             subtypes: patternToken.subtypes.map((subtypeToken) =>
                 replaceGenericTypesInToken(
                     subtypeToken,
-                    typeName,
+                    typeToken,
                     genericTypeMap
                 )
             ),
@@ -64,11 +70,11 @@ const replaceGenericTypesInToken = (patternToken, typeName, genericTypeMap) => {
 
 const replaceGenericTypesInPattern = (
     pattern,
-    typeName,
+    typeToken,
     genericTypeMap = {}
 ) => {
     return pattern.map((token) =>
-        replaceGenericTypesInToken(token, typeName, genericTypeMap)
+        replaceGenericTypesInToken(token, typeToken, genericTypeMap)
     );
 };
 
@@ -127,7 +133,7 @@ const atLeast2GenericsInPattern = (pattern, genericType) => {
 
 const replaceGenericTypesInRule = (
     { pattern, genericTypes, ...rule },
-    typeName,
+    typeToken,
     context
 ) => {
     if (genericTypes) {
@@ -145,7 +151,7 @@ const replaceGenericTypesInRule = (
             else {
                 if (!context.generics.genericChildren[matchType])
                     consoleWarn(
-                        `Warning: ${matchType} was listed as a possible match type for generic ${genericType} in type ${typeName}, but it is not listed as a generic type`
+                        `Warning: ${matchType} was listed as a possible match type for generic ${genericType} in type ${typeToken.type}, but it is not listed as a generic type`
                     );
                 genericsToReplace[genericType] = [matchType];
             }
@@ -154,30 +160,32 @@ const replaceGenericTypesInRule = (
             ...rule,
             pattern: replaceGenericTypesInPattern(
                 pattern,
-                typeName,
+                typeToken,
                 genericTypeMap
             ),
         }));
     }
     return {
         ...rule,
-        pattern: replaceGenericTypesInPattern(pattern, typeName),
+        pattern: replaceGenericTypesInPattern(pattern, typeToken),
     };
 };
 
 /**
  * Generates generic rules on the fly based on the previously established genericParents
  */
-export const getAllRules = (typeName, context) => {
+export const getAllRules = (typeToken, context) => {
+    const typeName = typeToken.type;
+
     const returnRules = [];
-    // Add extra subtype rule to prevent parsing loops
+    // Add extra generic children rule to prevent parsing loops
     if (context.generics.genericSubtypeRules[typeName])
         returnRules.push(context.generics.genericSubtypeRules[typeName][0]); // [0]: Take out of list, it was in a list because I needed it to be to get the cleanRuleset to work
 
     // Add in the normal rules for this type, replace all thistypes and generic types
     returnRules.push(
         ...context.rules[typeName].flatMap((rule) =>
-            replaceGenericTypesInRule(rule, typeName, context)
+            replaceGenericTypesInRule(rule, typeToken, context)
         )
     );
 
@@ -186,7 +194,7 @@ export const getAllRules = (typeName, context) => {
         returnRules.push(
             ...context.generics.genericParents[typeName].flatMap((parentType) =>
                 context.rules[parentType].flatMap((rule) =>
-                    replaceGenericTypesInRule(rule, typeName, context)
+                    replaceGenericTypesInRule(rule, typeToken, context)
                 )
             )
         );
@@ -205,4 +213,11 @@ const allMapCombinations = (mapPossibilities) => {
             [keys[0]]: item,
         }))
     );
+};
+
+export const makeTypeKey = (typeToken) => {
+    if (!typeToken.subtypes.length) return typeToken.type;
+    return `${typeToken.type}<${typeToken.subtypes
+        .map(makeTypeKey)
+        .join(",")}>`;
 };

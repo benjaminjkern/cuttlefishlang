@@ -97,13 +97,13 @@ export default {
         {
             pattern: [type("varName"), "=", "fn", ":"],
             evaluate: ({ tokens: [id], context, childIterator }) => {
-                context.setVariable(id.sourceString, "Function", {
+                context.setVariable(id.sourceString, type("Function"), {
                     asString: "(Function)",
                     call: (input) => {
                         const insideContext = newInterpretContext();
                         insideContext.setVariable(
                             "$",
-                            getTypeFromValue(input),
+                            type(getTypeFromValue(input)),
                             input
                         );
                         insideContext.inFunction = true;

@@ -96,6 +96,7 @@ export const combineRulesets = (baseRules, newRules) => {
 export const type = (typeName, ...subtypes) => ({ type: typeName, subtypes });
 
 export const thisType = () => ({ thisType: true });
+export const thisSubtype = (index) => ({ thisSubtype: index });
 export const genericType = (typeName) => ({ genericType: typeName });
 
 let subcontextId = 0;

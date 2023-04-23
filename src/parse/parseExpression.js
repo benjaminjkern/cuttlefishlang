@@ -1,5 +1,5 @@
 import { debugFunction } from "../util/index.js";
-import { getAllRules } from "./genericUtils.js";
+import { getAllRules, makeTypeKey } from "./genericUtils.js";
 import {
     isTerminal,
     stringifyPattern,
@@ -13,14 +13,17 @@ import { isValidToken } from "./heuristics/tokenDict.js";
 
 export const parseExpressionAsType = debugFunction(
     (typeToken, expression, lineNumber, context) => {
-        const type = typeToken.type;
+        if (!context.rules[typeToken.type])
+            return { error: `Invalid type: ${typeToken.type}` };
 
-        if (!context.rules[type]) return { error: `Invalid type: ${type}` };
-
-        const typeHeuristics = checkTypeHeuristics(type, expression, context);
+        const typeHeuristics = checkTypeHeuristics(
+            typeToken,
+            expression,
+            context
+        );
         if (typeHeuristics.error) return typeHeuristics;
 
-        for (const rule of getAllRules(type, context)) {
+        for (const rule of getAllRules(typeToken, context)) {
             const parse = parseExpressionAsPattern(
                 rule.pattern,
                 expression,
@@ -30,7 +33,7 @@ export const parseExpressionAsType = debugFunction(
             );
             if (parse.error) continue;
             const obj = {
-                type,
+                type: typeToken,
                 tokens: parse,
                 evaluate: rule.evaluate,
                 sourceString: expression,
@@ -40,7 +43,9 @@ export const parseExpressionAsType = debugFunction(
             return obj;
         }
         return {
-            error: `"${expression}" did not match any pattern of type: ${type}!`,
+            error: `"${expression}" did not match any pattern of type: ${makeTypeKey(
+                typeToken
+            )}!`,
         };
     },
     "parseExpressionAsType",
@@ -179,10 +184,10 @@ const parseExpressionAsPattern = debugFunction(
     stringifyPattern
 );
 
-const checkTypeHeuristics = (type, expression, context) => {
+const checkTypeHeuristics = (typeToken, expression, context) => {
     for (const heuristic in context.heuristics) {
         const heuristicCheck = context.heuristics[heuristic].tests.fromType(
-            type,
+            typeToken,
             expression
         );
         if (heuristicCheck.error) return heuristicCheck;

@@ -1,6 +1,14 @@
 import { newInterpretContext } from "../../evaluate/interpret.js";
-import { OR, genericType, subcontext, type } from "../../parse/ruleUtils.js";
+import {
+    OR,
+    genericType,
+    subcontext,
+    thisSubtype,
+    type,
+} from "../../parse/ruleUtils.js";
 import { getTypeFromValue } from "../instantiator.js";
+
+const iterableDefaultSubtypes = ["Number", "Number"];
 
 export default {
     Function: [
@@ -35,7 +43,7 @@ export default {
                         const context = newInterpretContext();
                         context.setVariable(
                             "$",
-                            getTypeFromValue(input),
+                            type(getTypeFromValue(input)),
                             input
                         );
                         return context.evaluateExpression(inside);

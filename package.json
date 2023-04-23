@@ -1,6 +1,6 @@
 {
     "name": "cuttlefishlang",
-    "version": "0.1",
+    "version": "2.0.a",
     "type": "module",
     "description": "![cuttlefish](etc/cuttlefish.png \"Cuttlefish!\")",
     "main": "src/index.js",

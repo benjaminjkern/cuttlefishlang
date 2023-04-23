@@ -14,7 +14,7 @@ export const objectGenerics = [
     // Temporarily put these here so that it can catch it, needs to be before iterable
     "List",
     "Iterable",
-    "Dictionary",
+    // "Dictionary",
 ];
 
 export default {

@@ -12,11 +12,11 @@ import { isValidToken } from "./heuristics/tokenDict.js";
  **********************/
 
 export const parseExpressionAsType = debugFunction(
-    (type, expression, lineNumber, context) => {
-        if (typeof type !== "string")
-            throw "Complex types are not allowed quite yet! But also this could just be an error with the typeType() or genericType() stuff cuz that shouldnt ever get here";
-        // TODO: Allow complex types & generic types (Actually maybe wont ever run into generic types, not sure)
+    (typeToken, expression, lineNumber, context) => {
+        const type = typeToken.type;
+
         if (!context.rules[type]) return { error: `Invalid type: ${type}` };
+
         const typeHeuristics = checkTypeHeuristics(type, expression, context);
         if (typeHeuristics.error) return typeHeuristics;
 
@@ -157,7 +157,7 @@ const parseExpressionAsPattern = debugFunction(
                 }
 
                 const parse = parseExpressionAsType(
-                    patternToken.type,
+                    patternToken,
                     subExpression,
                     lineNumber,
                     context

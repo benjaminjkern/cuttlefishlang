@@ -27,6 +27,7 @@ export default {
                     }
                 ),
             ],
+            allowedSubtypes: ["Number", "Number"],
             evaluate: ({ tokens: [_1, _2, inside] }) => {
                 return {
                     asString: makeStringFromFuncInside(inside),
@@ -45,17 +46,13 @@ export default {
         },
         {
             pattern: [
-                type("Function", genericType("A"), genericType("B")),
+                type("Function", thisSubtype(0), genericType("B")),
                 "*",
-                type("Function", genericType("B"), genericType("C")),
+                type("Function", genericType("B"), thisSubtype(1)),
             ],
             genericTypes: {
-                A: "Object",
                 B: "Object",
-                C: "Object",
             },
-            returnType: () =>
-                type("Function", genericType("A"), genericType("C")),
             evaluate: ({ tokens: [f1, _, f2], context }) => {
                 const func1 = context.evaluateExpression(f1);
                 const func2 = context.evaluateExpression(f2);
@@ -76,8 +73,8 @@ export default {
             genericTypes: {
                 A: "Object",
             },
-            returnType: () =>
-                type("Function", genericType("A"), genericType("A")),
+            // returnType: () =>
+            //     type("Function", genericType("A"), genericType("A")),
             evaluate: ({ tokens: [f1, _, n], context }) => {
                 const func = context.evaluateExpression(f1);
                 let num = context.evaluateExpression(n);

@@ -7,7 +7,7 @@ import { evaluateExpression } from "./evaluate.js";
 import { newContext } from "../parse/context.js";
 import { consoleWarn } from "../util/environment.js";
 import { generateHeuristics } from "../parse/heuristics/generateHeuristics.js";
-import { combineRulesets } from "../parse/ruleUtils.js";
+import { combineRulesets, type } from "../parse/ruleUtils.js";
 
 export const newInterpretContext = (extraRules = {}, parentContexts = {}) => {
     const context = {
@@ -67,7 +67,7 @@ export const interpretIndentTree = (
             const parse =
                 parsedNode ||
                 parseExpressionAsType(
-                    "Instantiator",
+                    type("Instantiator"),
                     instantiatorStatement.line,
                     lineNumber,
                     context
@@ -86,7 +86,7 @@ export const interpretIndentTree = (
     }
     const parse =
         parsedNode ||
-        parseExpressionAsType("Statement", line, lineNumber, context);
+        parseExpressionAsType(type("Statement"), line, lineNumber, context);
     if (parse.error)
         throw CuttlefishError(parse.error, lineNumber, "Parsing Error");
     treeNode.parsedNode = parse;

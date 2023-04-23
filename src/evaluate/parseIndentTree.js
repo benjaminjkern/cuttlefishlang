@@ -1,5 +1,6 @@
 import { CuttlefishError, deepCopy } from "../util/index.js";
 import { parseExpressionAsType } from "../parse/parseExpression.js";
+import { type } from "../parse/ruleUtils.js";
 
 const parseIndentTree = ({
     instantiatorStatement,
@@ -11,7 +12,7 @@ const parseIndentTree = ({
         const parsedTree = {};
         if (instantiatorStatement) {
             parsedTree.instantiator = parseExpressionAsType(
-                "Instantiator",
+                type("Instantiator"),
                 instantiatorStatement.line,
                 lineNumber
             );

@@ -32,21 +32,35 @@ export const newHeuristic = (contextWrapper) => (context) => {
     } = runFunctionOrValue(contextWrapper, context);
 
     const typeValues = {};
-    let cache = {};
-    let unresolved = {};
+    let unresolved, cache; // NOTE: Need cache since its only calculating the FULL value when at top level, many sub cases it is only checking if it is "worth" checking
+    let topLevel = true;
 
     const heuristicObject = {
         heuristicName,
         values: {
             fromType: (type) => {
-                if (cache[type] !== undefined) return cache[type];
-                if (unresolved[type]) {
-                    return runFunctionOrValue(unresolvedValue);
+                const scopeTopLevel = topLevel;
+                if (scopeTopLevel) {
+                    topLevel = false;
+                    unresolved = {};
+                    cache = { ...typeValues };
                 }
+
+                if (cache[type] !== undefined) return cache[type];
+                if (unresolved[type])
+                    return runFunctionOrValue(unresolvedValue);
                 unresolved[type] = true;
                 cache[type] = heuristicObject.values.fromPatternList(
                     getAllRules(type, context).map(({ pattern }) => pattern)
                 );
+
+                if (scopeTopLevel) {
+                    typeValues[type] = cache[type];
+                    // Check and warn of any issues (Only really used by minLength)
+                    finalCheck(typeValues[type], type);
+                    topLevel = true;
+                }
+
                 return cache[type];
             },
             fromToken: (token) => {
@@ -123,13 +137,14 @@ export const newHeuristic = (contextWrapper) => (context) => {
                 // Wasnt in original heuristic check but might as well be?
                 if (allowAllEmptyExpressions && expression.length === 0)
                     return true;
+                const value = heuristicObject.values.fromType(type);
                 return (
-                    test(expression, typeValues[type]) || {
+                    test(expression, value) || {
                         error: `"${expression}" failed the heuristic test "${heuristicName}" for type: ${colorString(
                             `{${type}}`,
                             "red"
                         )}!`,
-                        value: typeValues[type],
+                        value,
                     }
                 );
             },
@@ -147,17 +162,6 @@ export const newHeuristic = (contextWrapper) => (context) => {
                 );
             },
         },
-        typeValues,
     };
-
-    // Fetch all
-    for (const type in context.rules) {
-        cache = { ...typeValues };
-        unresolved = {};
-        typeValues[type] = heuristicObject.values.fromType(type);
-
-        // Check and warn of any issues (Only really used by minLength)
-        finalCheck(typeValues[type], type);
-    }
     return heuristicObject;
 };

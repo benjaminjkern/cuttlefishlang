@@ -7,8 +7,8 @@ const createLogFunc =
 export const environment = {
     exitOnError: true,
     log: true,
-    colors: true,
-    debug: false,
+    colors: false,
+    debug: true,
     inspect: console.log,
     consoleWrite:
         typeof process !== "undefined"

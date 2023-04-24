@@ -1,4 +1,5 @@
 import { colorString } from "../util/index.js";
+import { makeTypeKey } from "./genericUtils.js";
 import { newTokenDict } from "./heuristics/tokenDict.js";
 
 export const isTerminal = (token) => typeof token !== "object";
@@ -18,7 +19,12 @@ export const stringifyPattern = (
 export const stringifyToken = (token, hideSpaces = false) => {
     if (Array.isArray(token)) return stringifyPattern(token, false, hideSpaces);
 
-    if (token.type) return colorString(`{${token.type}}`, "red");
+    if (token.type) return colorString(`{${makeTypeKey(token)}}`, "red");
+    if (token.genericType) return colorString(`{${token.genericType}}`, "red");
+    if (token.thisType) return colorString(`{this}`, "red");
+    if (token.thisSubtype !== undefined)
+        return colorString(`{this[${token.thisSubtype}]}`, "red");
+
     if (token.metaType) {
         switch (token.metaType) {
             case "or":

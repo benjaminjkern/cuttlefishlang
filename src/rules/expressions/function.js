@@ -8,7 +8,7 @@ import {
 } from "../../parse/ruleUtils.js";
 import { getTypeFromValue } from "../instantiator.js";
 
-const iterableDefaultSubtypes = ["Number", "Number"];
+const functionDefaultSubtypes = ["Number", "Number"];
 
 export default {
     Function: [
@@ -59,7 +59,7 @@ export default {
                 type("Function", genericType("B"), thisSubtype(1)),
             ],
             genericTypes: {
-                B: "Object",
+                B: type("Object"),
             },
             evaluate: ({ tokens: [f1, _, f2], context }) => {
                 const func1 = context.evaluateExpression(f1);
@@ -79,10 +79,8 @@ export default {
                 type("Integer"),
             ],
             genericTypes: {
-                A: "Object",
+                A: thisSubtype(0), // Shouldnt matter if this is 0 or 1
             },
-            // returnType: () =>
-            //     type("Function", genericType("A"), genericType("A")),
             evaluate: ({ tokens: [f1, _, n], context }) => {
                 const func = context.evaluateExpression(f1);
                 let num = context.evaluateExpression(n);

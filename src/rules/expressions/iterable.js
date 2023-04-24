@@ -123,16 +123,13 @@ export default {
     Iterable: [
         {
             pattern: [type("DiscreteRange")],
-            allowedSubtypes: ["Number"],
-            // returnType: ([range]) =>
             //     // TODO: Make this able to say when its just integers
-            //     type("Iterable", union(type("Number"), type("Integer"))),
+            allowedSubtypes: ["Number"],
             evaluate: ({ tokens: [range], context }) =>
                 discreteRangeIterator(context.evaluateExpression(range)),
         },
         {
             pattern: [type("List", thisSubtype(0))],
-            // returnType: ([list]) => type("Iterable", getType(list).subtypes[0]),
             evaluate: ({ tokens: [list], context }) =>
                 makeListIterator(context.evaluateExpression(list)),
         },
@@ -142,11 +139,6 @@ export default {
                 "++",
                 type("Iterable", thisSubtype(0)),
             ],
-            // returnType: ([a, _, b]) =>
-            //     type(
-            //         "Iterable",
-            //         union(getType(a).subtypes[0], getType(b).subtypes[0])
-            //     ),
             evaluate: ({ tokens: [a, _, b], context }) => {
                 return concatenateIterators(
                     context.evaluateExpression(a).clone(),
@@ -156,7 +148,6 @@ export default {
         },
         {
             pattern: [type("Iterable", thisSubtype(0)), "**", type("Integer")],
-            // returnType: ([iter]) => getType(iter),
             evaluate: ({ tokens: [iter, _, n], context }) => {
                 let num = context.evaluateExpression(n);
                 if (num <= 0) return makeListIterator([]);
@@ -178,11 +169,6 @@ export default {
                 "++",
                 type("List", thisSubtype(0)),
             ],
-            // returnType: ([a, _, b]) =>
-            //     type(
-            //         "Iterable",
-            //         union(getType(a).subtypes[0], getType(b).subtypes[0])
-            //     ),
             evaluate: ({ tokens: [a, _, b], context }) => [
                 ...context.evaluateExpression(a),
                 ...context.evaluateExpression(b),
@@ -190,7 +176,6 @@ export default {
         },
         {
             pattern: [type("List", thisSubtype(0)), "**", type("Integer")],
-            // returnType: ([iter]) => getType(iter),
             evaluate: ({ tokens: [list, _, n], context }) => {
                 let num = context.evaluateExpression(n);
                 if (num <= 0) return [];
@@ -202,7 +187,6 @@ export default {
         },
         {
             pattern: [type("listlit", thisSubtype(0))],
-            // returnType: ([listlit]) => type("List", getType(iter)),
         },
     ],
     listlit: [
@@ -212,7 +196,6 @@ export default {
                 OPTIONAL(type("commaSeparatedObjects", thisSubtype(0))),
                 "]",
             ],
-            // returnType: ([_, a]) => getType(a),
             evaluate: ({ tokens: [_, a], context }) => {
                 if (a.length === 0) return [];
                 return context.evaluateExpression(a);
@@ -222,19 +205,15 @@ export default {
     commaSeparatedObjects: [
         {
             pattern: [
-                // type("Object"),
                 thisSubtype(0),
                 MULTI([
                     ",",
                     MULTI(type("space")),
-                    // type("Object"),
                     thisSubtype(0),
                     MULTI(type("space")),
                 ]),
                 OPTIONAL(","),
             ],
-            // returnType: ([head, [commas, spaces, rest]]) =>
-            //     union(getType(head), ...rest.map(getType)),
             evaluate: ({ tokens: [head, [commas, spaces, rest]], context }) => {
                 return [
                     context.evaluateExpression(head),

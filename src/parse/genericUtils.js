@@ -1,5 +1,6 @@
 import { consoleWarn } from "../util/environment.js";
 import { inspect } from "../util/index.js";
+import { stringifyPattern } from "./parsingUtils.js";
 import { type } from "./ruleUtils.js";
 
 const replaceGenericTypesInToken = (
@@ -47,11 +48,11 @@ const replaceGenericTypesInToken = (
     if (patternToken.genericType) {
         if (!genericTypeMap[patternToken.genericType])
             throw `Error: Replacing generic type ${patternToken.genericType}, which isnt listed in genericTypeMap`;
-        return type(genericTypeMap[patternToken.genericType]);
+        return genericTypeMap[patternToken.genericType];
     }
     if (patternToken.thisType) return typeToken;
     if (patternToken.thisSubtype !== undefined)
-        return typeToken.subtypes[typeToken.] || type("Object"); // TODO: getDefaultSubtype(typeToken.type);
+        return typeToken.subtypes[typeToken.index] || patternToken; // TODO: getDefaultSubtype(typeToken.type);
     if (patternToken.subtypes)
         return {
             ...patternToken,
@@ -182,24 +183,30 @@ export const getAllRules = (typeToken, context) => {
     if (context.generics.genericSubtypeRules[typeName])
         returnRules.push(context.generics.genericSubtypeRules[typeName][0]); // [0]: Take out of list, it was in a list because I needed it to be to get the cleanRuleset to work
 
+    console.log(makeTypeKey(typeToken));
+
     // Add in the normal rules for this type, replace all thistypes and generic types
-    returnRules.push(
-        ...context.rules[typeName].flatMap((rule) =>
-            replaceGenericTypesInRule(rule, typeToken, context)
-        )
-    );
+    returnRules.push(...context.rules[typeName]);
 
     // Parse any generic rules, determined by which rules this type falls under (i.e. A -> '(' A ')' )
     if (context.generics.genericParents[typeName])
         returnRules.push(
-            ...context.generics.genericParents[typeName].flatMap((parentType) =>
-                context.rules[parentType].flatMap((rule) =>
-                    replaceGenericTypesInRule(rule, typeToken, context)
-                )
+            ...context.generics.genericParents[typeName].flatMap(
+                (parentType) => context.rules[parentType]
             )
         );
 
-    return returnRules;
+    console.log(
+        returnRules
+            .flatMap((rule) =>
+                replaceGenericTypesInRule(rule, typeToken, context)
+            )
+            .map((rule) => stringifyPattern(rule.pattern, false))
+    );
+
+    return returnRules.flatMap((rule) =>
+        replaceGenericTypesInRule(rule, typeToken, context)
+    );
 };
 
 const allMapCombinations = (mapPossibilities) => {
@@ -216,7 +223,13 @@ const allMapCombinations = (mapPossibilities) => {
 };
 
 export const makeTypeKey = (typeToken) => {
-    if (!typeToken.subtypes.length) return typeToken.type;
+    if (!typeToken.subtypes?.length) {
+        if (typeToken.genericType) return typeToken.genericType;
+        if (typeToken.thisType) return "this";
+        if (typeToken.thisSubtype !== undefined)
+            return `this[${typeToken.thisSubtype}]`;
+        return typeToken.type;
+    }
     return `${typeToken.type}<${typeToken.subtypes
         .map(makeTypeKey)
         .join(",")}>`;

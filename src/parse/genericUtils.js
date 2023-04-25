@@ -183,8 +183,6 @@ export const getAllRules = (typeToken, context) => {
     if (context.generics.genericSubtypeRules[typeName])
         returnRules.push(context.generics.genericSubtypeRules[typeName][0]); // [0]: Take out of list, it was in a list because I needed it to be to get the cleanRuleset to work
 
-    console.log(makeTypeKey(typeToken));
-
     // Add in the normal rules for this type, replace all thistypes and generic types
     returnRules.push(...context.rules[typeName]);
 

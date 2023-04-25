@@ -1,11 +1,6 @@
 import { getAllRules, makeTypeKey } from "../genericUtils.js";
-import {
-    isTerminal,
-    stringifyPattern,
-    stringifyToken,
-} from "../parsingUtils.js";
+import { isTerminal, stringifyPattern } from "../parsingUtils.js";
 import { colorString, runFunctionOrValue } from "../../util/index.js";
-import { type } from "../ruleUtils.js";
 
 export const newHeuristic = (contextWrapper) => (context) => {
     // Needed to be able to give the newHeuristic access to the context so that it can depend on other heuristics if it wants to
@@ -28,24 +23,42 @@ export const newHeuristic = (contextWrapper) => (context) => {
     } = runFunctionOrValue(contextWrapper, context);
 
     const typeValues = {};
-    let cache = {};
-    let unresolved = {};
+    let unresolved, cache; // NOTE: Need cache since its only calculating the FULL value when at top level, many sub cases it is only checking if it is "worth" checking
+    let topLevel = true;
 
     const heuristicObject = {
         heuristicName,
         values: {
             fromType: (typeToken) => {
-                const typeKey = makeTypeKey(typeToken);
-                if (cache[typeKey] !== undefined) return cache[typeKey];
-                if (unresolved[typeKey]) {
-                    return runFunctionOrValue(unresolvedValue);
+                // (Maybe can be done in a different way in the future, but this is to prevent passing the unresolved and cache down every single call)
+                const scopeTopLevel = topLevel;
+
+                if (scopeTopLevel) {
+                    topLevel = false;
+                    unresolved = {};
+                    cache = { ...typeValues };
                 }
+
+                const typeKey = makeTypeKey(typeToken);
+
+                if (cache[typeKey] !== undefined) {
+                    if (scopeTopLevel) topLevel = true;
+                    return cache[typeKey];
+                }
+                if (unresolved[typeKey])
+                    return runFunctionOrValue(unresolvedValue);
                 unresolved[typeKey] = true;
                 cache[typeKey] = heuristicObject.values.fromPatternList(
-                    getAllRules(typeToken, context).map(
-                        ({ pattern }) => pattern
-                    )
+                    getAllRules(typeKey, context).map(({ pattern }) => pattern)
                 );
+
+                if (scopeTopLevel) {
+                    typeValues[typeKey] = cache[typeKey];
+                    // Check and warn of any issues (Only really used by minLength)
+                    finalCheck(typeValues[typeKey], typeKey);
+                    topLevel = true;
+                }
+
                 return cache[typeKey];
             },
             fromToken: (token) => {
@@ -122,14 +135,13 @@ export const newHeuristic = (contextWrapper) => (context) => {
                 // Wasnt in original heuristic check but might as well be?
                 if (allowAllEmptyExpressions && expression.length === 0)
                     return true;
-
-                const typeKey = makeTypeKey(typeToken);
+                const value = heuristicObject.values.fromType(typeToken);
                 return (
-                    test(expression, typeValues[typeKey]) || {
+                    test(expression, value) || {
                         error: `"${expression}" failed the heuristic test "${heuristicName}" for type: ${stringifyToken(
                             typeToken
                         )}!`,
-                        value: typeValues[typeKey],
+                        value,
                     }
                 );
             },
@@ -147,17 +159,6 @@ export const newHeuristic = (contextWrapper) => (context) => {
                 );
             },
         },
-        typeValues,
     };
-
-    // Fetch all
-    for (const typeName in context.rules) {
-        cache = { ...typeValues };
-        unresolved = {};
-        typeValues[typeName] = heuristicObject.values.fromType(type(typeName));
-
-        // Check and warn of any issues (Only really used by minLength)
-        finalCheck(typeValues[typeName], typeName);
-    }
     return heuristicObject;
 };

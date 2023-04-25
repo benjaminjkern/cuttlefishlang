@@ -240,8 +240,8 @@ const getPossibleMatches = debugFunction(
         if (pattern.length === 0) return expression.length === 0 ? [[]] : [];
 
         if (
-            expression.length <
-            context.heuristics.minLength.values.fromPattern(pattern)
+            context.heuristics.minLength.tests.fromPattern(pattern, expression)
+                .error
         )
             return [];
 

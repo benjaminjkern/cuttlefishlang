@@ -1,6 +1,10 @@
 import { getAllRules, makeTypeKey } from "../genericUtils.js";
-import { isTerminal, stringifyPattern } from "../parsingUtils.js";
-import { colorString, runFunctionOrValue } from "../../util/index.js";
+import {
+    isTerminal,
+    stringifyPattern,
+    stringifyToken,
+} from "../parsingUtils.js";
+import { runFunctionOrValue } from "../../util/index.js";
 
 export const newHeuristic = (contextWrapper) => (context) => {
     // Needed to be able to give the newHeuristic access to the context so that it can depend on other heuristics if it wants to
@@ -49,7 +53,9 @@ export const newHeuristic = (contextWrapper) => (context) => {
                     return runFunctionOrValue(unresolvedValue);
                 unresolved[typeKey] = true;
                 cache[typeKey] = heuristicObject.values.fromPatternList(
-                    getAllRules(typeKey, context).map(({ pattern }) => pattern)
+                    getAllRules(typeToken, context).map(
+                        ({ pattern }) => pattern
+                    )
                 );
 
                 if (scopeTopLevel) {

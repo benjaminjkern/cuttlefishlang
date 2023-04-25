@@ -52,7 +52,11 @@ const replaceGenericTypesInToken = (
     }
     if (patternToken.thisType) return typeToken;
     if (patternToken.thisSubtype !== undefined)
-        return typeToken.subtypes[typeToken.index] || patternToken; // TODO: getDefaultSubtype(typeToken.type);
+        return (
+            typeToken.subtypes[typeToken.index] ||
+            type("Object") ||
+            patternToken
+        ); // TODO: getDefaultSubtype(typeToken.type);
     if (patternToken.subtypes)
         return {
             ...patternToken,
@@ -183,6 +187,7 @@ export const getAllRules = (typeToken, context) => {
     if (context.generics.genericSubtypeRules[typeName])
         returnRules.push(context.generics.genericSubtypeRules[typeName][0]); // [0]: Take out of list, it was in a list because I needed it to be to get the cleanRuleset to work
 
+    console.log(typeToken);
     // Add in the normal rules for this type, replace all thistypes and generic types
     returnRules.push(...context.rules[typeName]);
 
@@ -194,13 +199,13 @@ export const getAllRules = (typeToken, context) => {
             )
         );
 
-    console.log(
-        returnRules
-            .flatMap((rule) =>
-                replaceGenericTypesInRule(rule, typeToken, context)
-            )
-            .map((rule) => stringifyPattern(rule.pattern, false))
-    );
+    // console.log(
+    //     returnRules
+    //         .flatMap((rule) =>
+    //             replaceGenericTypesInRule(rule, typeToken, context)
+    //         )
+    //         .map((rule) => stringifyPattern(rule.pattern, false))
+    // );
 
     return returnRules.flatMap((rule) =>
         replaceGenericTypesInRule(rule, typeToken, context)

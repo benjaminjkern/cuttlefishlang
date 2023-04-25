@@ -2,11 +2,12 @@ import { colorString } from "../util/index.js";
 import { newTokenDict } from "./heuristics/tokenDict.js";
 
 export const isTerminal = (token) => typeof token !== "object";
+const HIDE_SPACES_DEFAULT = false;
 
 export const stringifyPattern = (
     pattern,
     topLevel = true,
-    hideSpaces = true
+    hideSpaces = HIDE_SPACES_DEFAULT
 ) => {
     return (
         (topLevel ? colorString("[", "magenta") : "") +
@@ -15,7 +16,7 @@ export const stringifyPattern = (
     );
 };
 
-export const stringifyToken = (token, hideSpaces = false) => {
+export const stringifyToken = (token, hideSpaces = HIDE_SPACES_DEFAULT) => {
     if (Array.isArray(token)) return stringifyPattern(token, false, hideSpaces);
 
     if (token.type) return colorString(`{${token.type}}`, "red");

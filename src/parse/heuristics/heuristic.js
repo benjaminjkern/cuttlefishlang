@@ -1,15 +1,6 @@
 import { getAllRules } from "../genericUtils.js";
-import {
-    isTerminal,
-    stringifyPattern,
-    stringifyToken,
-    stringifyTokenDict,
-} from "../parsingUtils.js";
-import {
-    colorString,
-    debugFunction,
-    runFunctionOrValue,
-} from "../../util/index.js";
+import { isTerminal, stringifyPattern } from "../parsingUtils.js";
+import { colorString, runFunctionOrValue } from "../../util/index.js";
 
 export const newHeuristic = (contextWrapper) => (context) => {
     // Needed to be able to give the newHeuristic access to the context so that it can depend on other heuristics if it wants to
@@ -39,14 +30,19 @@ export const newHeuristic = (contextWrapper) => (context) => {
         heuristicName,
         values: {
             fromType: (type) => {
+                // (Maybe can be done in a different way in the future, but this is to prevent passing the unresolved and cache down every single call)
                 const scopeTopLevel = topLevel;
+
                 if (scopeTopLevel) {
                     topLevel = false;
                     unresolved = {};
                     cache = { ...typeValues };
                 }
 
-                if (cache[type] !== undefined) return cache[type];
+                if (cache[type] !== undefined) {
+                    if (scopeTopLevel) topLevel = true;
+                    return cache[type];
+                }
                 if (unresolved[type])
                     return runFunctionOrValue(unresolvedValue);
                 unresolved[type] = true;

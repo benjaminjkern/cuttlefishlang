@@ -59,7 +59,7 @@ export default {
                 type("Function", genericType("B"), thisSubtype(1)),
             ],
             genericTypes: {
-                B: type("Object"),
+                B: "Object",
             },
             evaluate: ({ tokens: [f1, _, f2], context }) => {
                 const func1 = context.evaluateExpression(f1);
@@ -74,13 +74,11 @@ export default {
         },
         {
             pattern: [
-                type("Function", genericType("A"), genericType("A")),
+                type("Function", thisSubtype(0), thisSubtype(0)),
                 "^",
                 type("Integer"),
             ],
-            genericTypes: {
-                A: thisSubtype(0), // Shouldnt matter if this is 0 or 1
-            },
+            allowedSubtypes: ([a, b]) => a.type === b.type,
             evaluate: ({ tokens: [f1, _, n], context }) => {
                 const func = context.evaluateExpression(f1);
                 let num = context.evaluateExpression(n);

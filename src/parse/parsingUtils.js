@@ -3,7 +3,7 @@ import { makeTypeKey } from "./genericUtils.js";
 import { newTokenDict } from "./heuristics/tokenDict.js";
 
 export const isTerminal = (token) => typeof token !== "object";
-const HIDE_SPACES_DEFAULT = false;
+const HIDE_SPACES_DEFAULT = true;
 
 export const stringifyPattern = (
     pattern,

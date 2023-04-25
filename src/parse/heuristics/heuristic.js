@@ -6,6 +6,32 @@ import {
 } from "../parsingUtils.js";
 import { runFunctionOrValue } from "../../util/index.js";
 
+const patternListHasSubtypeReferences = (patternList) => {
+    return patternList.some(patternHasSubtypeReferences);
+};
+
+const patternHasSubtypeReferences = (pattern) => {
+    return pattern.some(tokenHasSubtypeReferences);
+};
+
+const tokenHasSubtypeReferences = (token) => {
+    if (token.thisSubtype !== undefined) return true;
+    if (token.metaType) {
+        switch (token.metaType) {
+            case "or":
+                return patternListHasSubtypeReferences(token.patterns);
+            case "multi":
+                return patternHasSubtypeReferences(token.pattern);
+            case "anychar":
+                return false;
+            case "subcontext":
+                return patternHasSubtypeReferences(token.pattern);
+        }
+    }
+    // All other cases (thistype, generictype, raw types, terminal tokens)
+    return false;
+};
+
 export const newHeuristic = (contextWrapper) => (context) => {
     // Needed to be able to give the newHeuristic access to the context so that it can depend on other heuristics if it wants to
     const {
@@ -43,7 +69,13 @@ export const newHeuristic = (contextWrapper) => (context) => {
                     cache = { ...typeValues };
                 }
 
-                const typeKey = makeTypeKey(typeToken);
+                if (!context.rules[typeToken.type]) console.log(typeToken);
+
+                const typeKey = patternListHasSubtypeReferences(
+                    context.rules[typeToken.type].map(({ pattern }) => pattern)
+                )
+                    ? makeTypeKey(typeToken)
+                    : typeToken.type;
 
                 if (cache[typeKey] !== undefined) {
                     if (scopeTopLevel) topLevel = true;

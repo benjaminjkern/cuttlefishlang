@@ -1,6 +1,6 @@
 import { consoleWarn } from "../util/environment.js";
 import { inspect } from "../util/index.js";
-import { stringifyPattern } from "./parsingUtils.js";
+import { stringifyPattern, stringifyToken } from "./parsingUtils.js";
 import { type } from "./ruleUtils.js";
 
 const replaceGenericTypesInToken = (
@@ -52,7 +52,8 @@ const replaceGenericTypesInToken = (
     }
     if (patternToken.thisType) return typeToken;
     if (patternToken.thisSubtype !== undefined)
-        return typeToken.subtypes[typeToken.index] || patternToken; // TODO: getDefaultSubtype(typeToken.type); (Maybe not actually??)
+        return typeToken.subtypes[patternToken.thisSubtype] || patternToken; // TODO: getDefaultSubtype(typeToken.type); (Maybe not actually??)
+
     if (patternToken.subtypes)
         return {
             ...patternToken,
@@ -194,14 +195,14 @@ export const getAllRules = (typeToken, context) => {
             )
         );
 
-    console.log(makeTypeKey(typeToken));
-    console.log(
-        returnRules
-            .flatMap((rule) =>
-                replaceGenericTypesInRule(rule, typeToken, context)
-            )
-            .map((rule) => stringifyPattern(rule.pattern, false))
-    );
+    // console.log(stringifyToken(typeToken));
+    // console.log(
+    //     returnRules
+    //         .flatMap((rule) =>
+    //             replaceGenericTypesInRule(rule, typeToken, context)
+    //         )
+    //         .map((rule) => stringifyPattern(rule.pattern, false))
+    // );
 
     return returnRules.flatMap((rule) =>
         replaceGenericTypesInRule(rule, typeToken, context)

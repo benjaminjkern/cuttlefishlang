@@ -268,7 +268,7 @@ const getPossibleMatches = debugFunction(
         for (let i = 0; i <= expression.length; i++) {
             if (firstPatternToken.type) {
                 const typeHeuristics = checkTypeHeuristics(
-                    firstPatternToken.type,
+                    firstPatternToken,
                     expression.slice(0, i),
                     context
                 );

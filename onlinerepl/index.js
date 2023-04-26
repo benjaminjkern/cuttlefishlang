@@ -1,6 +1,8 @@
 import { startRepl } from "../src/repl.js";
 import { environment } from "../src/util/environment.js";
 
+import "./index.css";
+
 const terminal = document.getElementById("terminal");
 const cursorElement = document.getElementById("cursor");
 
@@ -8,30 +10,37 @@ environment.consoleWrite = (string) => (terminal.value += string);
 environment.consoleError = (string) => (terminal.value += string + "\n");
 environment.colors = false;
 
-const updateCaret = (currentTerminal) => {
+function updateCaret(currentTerminal) {
     const selectionStart = Math.max(terminal.selectionStart, currentTerminal);
 
-    const totalCharactersWidth = Math.floor((window.innerWidth - 4) / 8);
-    // const totalCharactersHeight = Math.floor((window.innerHeight - 4) / 15.5);
+    const fontWidth = 8;
+    const fontHeight = 17; // This is honestly so annoying, it changes depending on device width due to rounding errors
 
+    const totalCharactersWidth = Math.floor(
+        (window.innerWidth - 4) / fontWidth
+    );
+    // const totalCharactersHeight = Math.floor((window.innerHeight - 4) / 15.5);
     const totalXPosition = 3 + selectionStart - currentTerminal;
-    let x = ((totalXPosition - 1) % totalCharactersWidth) + 1;
-    if (x < 0) x += totalCharactersWidth - 1;
+    let x = totalXPosition % totalCharactersWidth;
+    if (x < 0) x += totalCharactersWidth;
 
     const totalYPosition =
         terminal.value
             .slice(0, selectionStart)
             .split("\n")
             .reduce(
-                (p, c) => p + Math.ceil(c.length / totalCharactersWidth),
+                (p, c) => p + Math.floor(c.length / totalCharactersWidth + 1),
                 0
             ) - 1;
 
-    cursorElement.style.left = `${2 + x * 8}px`;
+    cursorElement.style.width = fontWidth + "px";
+    cursorElement.style.height = fontHeight + "px";
+
+    cursorElement.style.left = `${2 + x * fontWidth}px`;
     cursorElement.style.top = `${
-        2 + totalYPosition * 15.5 - terminal.scrollTop
+        2 + totalYPosition * fontHeight - terminal.scrollTop
     }px`;
-};
+}
 
 startRepl(async () => {
     terminal.value += "$> ";

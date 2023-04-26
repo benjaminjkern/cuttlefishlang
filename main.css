@@ -1,0 +1,58 @@
+@font-face {
+    font-family: "firacode";
+    src: url(74c6684a17182dc6f5b4.otf);
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #111;
+    color: rgb(227, 179, 91);
+}
+
+#terminal {
+    font-family: firacode;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    border: none;
+    border-radius: 0;
+    background-color: transparent;
+    color: rgb(227, 179, 91);
+    word-wrap: break-word;
+    word-break: break-all;
+    caret-color: transparent;
+}
+
+#terminal:focus {
+    outline-width: 0;
+    background-color: #ffffff22;
+}
+
+#cursor {
+    width: 8px;
+    height: 16px;
+    background: rgba(227, 179, 91, 0.3);
+    position: absolute;
+}
+
+#github {
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+    height: 50px;
+    width: 50px;
+    z-index: 1;
+    cursor: pointer;
+    transition: 0.1s;
+}
+#github:hover {
+    filter: drop-shadow(0 0 5px white);
+}
+
+#github svg {
+    color: white;
+    height: 100%;
+    width: 100%;
+}
+

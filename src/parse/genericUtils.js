@@ -52,7 +52,11 @@ const replaceGenericTypesInToken = (
     }
     if (patternToken.thisType) return typeToken;
     if (patternToken.thisSubtype !== undefined)
-        return typeToken.subtypes[patternToken.thisSubtype] || patternToken; // TODO: getDefaultSubtype(typeToken.type); (Maybe not actually??)
+        return (
+            typeToken.subtypes[patternToken.thisSubtype] ||
+            type("Object") ||
+            patternToken
+        ); // TODO: getDefaultSubtype(typeToken.type); (Maybe not actually??)
 
     if (patternToken.subtypes)
         return {
@@ -154,6 +158,10 @@ const replaceGenericTypesInRule = (
                 if (!context.generics.genericChildren[matchType])
                     consoleWarn(
                         `Warning: ${matchType} was listed as a possible match type for generic ${genericType} in type ${typeToken.type}, but it is not listed as a generic type`
+                    );
+                else
+                    consoleWarn(
+                        `Warning: ${genericType} is only listed once in rule for type ${typeToken.type}, this probably doesn't need to be a generic`
                     );
                 genericsToReplace[genericType] = [matchType];
             }

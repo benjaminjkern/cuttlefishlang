@@ -70,7 +70,6 @@ export const newHeuristic = (contextWrapper) => (context) => {
                 }
 
                 if (!context.rules[typeToken.type]) console.log(typeToken);
-
                 const typeKey = patternListHasSubtypeReferences(
                     context.rules[typeToken.type].map(({ pattern }) => pattern)
                 )
@@ -81,6 +80,7 @@ export const newHeuristic = (contextWrapper) => (context) => {
                     if (scopeTopLevel) topLevel = true;
                     return cache[typeKey];
                 }
+
                 if (unresolved[typeKey])
                     return runFunctionOrValue(unresolvedValue);
                 unresolved[typeKey] = true;

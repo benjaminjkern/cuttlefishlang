@@ -49,7 +49,7 @@ export const parseExpressionAsType = debugFunction(
         };
     },
     "parseExpressionAsType",
-    [(typeName) => stringifyToken({ type: typeName }), stringifyToken],
+    [stringifyToken, stringifyToken],
     stringifyToken
 );
 
@@ -294,7 +294,8 @@ const getPossibleMatches = debugFunction(
     },
     "getPossibleMatches",
     [stringifyPattern, stringifyToken],
-    (r) => r.length
+    (r) => r.length,
+    false
 );
 
 /**

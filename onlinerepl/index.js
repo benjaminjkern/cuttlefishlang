@@ -3,6 +3,12 @@ import { environment } from "../src/util/environment.js";
 
 import "./index.css";
 
+import { library, dom } from "@fortawesome/fontawesome-svg-core";
+import { faGithub } from "@fortawesome/free-brands-svg-icons/faGithub";
+
+library.add(faGithub);
+dom.watch();
+
 const terminal = document.getElementById("terminal");
 const cursorElement = document.getElementById("cursor");
 

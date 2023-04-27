@@ -22,6 +22,7 @@ body {
     word-wrap: break-word;
     word-break: break-all;
     caret-color: transparent;
+    resize: none;
 }
 
 #terminal:focus {
@@ -37,23 +38,28 @@ body {
     z-index: -1;
 }
 
-#github {
+.github {
     position: fixed;
     right: 10px;
     bottom: 10px;
     height: 50px;
     width: 50px;
     cursor: pointer;
-    z-index: -2;
-    transition: 0.1s;
-}
-#github:hover {
-    filter: drop-shadow(0 0 5px white);
+    transition: 0.15s;
 }
 
-#github svg {
+.github svg {
     color: white;
     height: 100%;
     width: 100%;
+}
+
+#github-visual {
+    z-index: -2;
+}
+
+#github-hidden {
+    z-index: 1;
+    opacity: 0;
 }
 

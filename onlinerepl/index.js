@@ -16,11 +16,28 @@ environment.consoleWrite = (string) => (terminal.value += string);
 environment.consoleError = (string) => (terminal.value += string + "\n");
 environment.colors = false;
 
+const getPixels = () => {
+    // This is honestly so annoying, it changes depending on device width due to INCONSISTENT rounding errors (Although most of the time its right)
+
+    // These are just every resolution google chrome allows
+    const pixels = Math.round(17.5 * window.devicePixelRatio);
+    if (window.devicePixelRatio > 0.25 && window.devicePixelRatio < 0.5)
+        return pixels - 1;
+    if (window.devicePixelRatio > 0.9 && window.devicePixelRatio < 1.05)
+        return pixels - 1;
+    if (window.devicePixelRatio > 1.05 && window.devicePixelRatio < 1.175)
+        return pixels + 1;
+    if (window.devicePixelRatio > 1.175 && window.devicePixelRatio < 1.5)
+        return pixels - 1;
+    if (window.devicePixelRatio > 4) return pixels - 1;
+    return pixels;
+};
+
 function updateCaret(currentTerminal) {
     const selectionStart = Math.max(terminal.selectionStart, currentTerminal);
 
     const fontWidth = 8;
-    const fontHeight = 17; // This is honestly so annoying, it changes depending on device width due to rounding errors
+    const fontHeight = getPixels() / window.devicePixelRatio;
 
     const totalCharactersWidth = Math.floor(
         (window.innerWidth - 4) / fontWidth

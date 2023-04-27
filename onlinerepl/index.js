@@ -16,6 +16,12 @@ environment.consoleWrite = (string) => (terminal.value += string);
 environment.consoleError = (string) => (terminal.value += string + "\n");
 environment.colors = false;
 
+const githubHidden = document.getElementById("github-hidden");
+const githubVisual = document.getElementById("github-visual");
+githubHidden.onmouseover = () =>
+    (githubVisual.style.filter = "drop-shadow(0 0 5px white)");
+githubHidden.onmouseout = () => (githubVisual.style.filter = "none");
+
 const getPixels = () => {
     // This is honestly so annoying, it changes depending on device width due to INCONSISTENT rounding errors (Although most of the time its right)
 
@@ -33,7 +39,7 @@ const getPixels = () => {
     return pixels;
 };
 
-function updateCaret(currentTerminal) {
+const updateCaret = (currentTerminal) => {
     const selectionStart = Math.max(terminal.selectionStart, currentTerminal);
 
     const fontWidth = 8;
@@ -63,7 +69,7 @@ function updateCaret(currentTerminal) {
     cursorElement.style.top = `${
         2 + totalYPosition * fontHeight - terminal.scrollTop
     }px`;
-}
+};
 
 startRepl(async () => {
     terminal.value += "$> ";

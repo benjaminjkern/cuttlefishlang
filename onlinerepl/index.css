@@ -23,6 +23,7 @@ body {
     word-break: break-all;
     caret-color: transparent;
     resize: none;
+    cursor: default;
 }
 
 #terminal:focus {

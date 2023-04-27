@@ -53,14 +53,15 @@ const updateCaret = (currentTerminal) => {
     let x = totalXPosition % totalCharactersWidth;
     if (x < 0) x += totalCharactersWidth;
 
+    const lines = terminal.value.slice(0, selectionStart).split("\n");
+
     const totalYPosition =
-        terminal.value
-            .slice(0, selectionStart)
-            .split("\n")
-            .reduce(
-                (p, c) => p + Math.floor(c.length / totalCharactersWidth + 1),
-                0
-            ) - 1;
+        lines.reduce(
+            (p, c) =>
+                p + Math.max(Math.ceil(c.length / totalCharactersWidth), 1),
+            0
+        ) -
+        (lines[lines.length - 1].length % totalCharactersWidth !== 0);
 
     cursorElement.style.width = fontWidth + "px";
     cursorElement.style.height = fontHeight + "px";
@@ -69,6 +70,29 @@ const updateCaret = (currentTerminal) => {
     cursorElement.style.top = `${
         2 + totalYPosition * fontHeight - terminal.scrollTop
     }px`;
+
+    if (terminal.selectionStart < currentTerminal) {
+        if (terminal.selectionStart === terminal.selectionEnd) {
+            terminal.selectionStart = currentTerminal;
+        } else {
+            if (!mousedown) {
+                terminal.setSelectionRange(
+                    currentTerminal,
+                    terminal.selectionEnd
+                );
+            } else {
+                mousedown = [currentTerminal, terminal.selectionEnd];
+            }
+        }
+    }
+};
+
+let mousedown = false;
+
+window.onmousedown = () => (mousedown = true);
+window.onmouseup = () => {
+    if (typeof mousedown === "object") terminal.setSelectionRange(...mousedown);
+    mousedown = false;
 };
 
 startRepl(async () => {
@@ -82,12 +106,19 @@ startRepl(async () => {
                 event.preventDefault();
                 return resolve(terminal.value.slice(currentTerminal, -1));
             } else if (event.key === "Backspace") {
-                if (terminal.selectionStart === currentTerminal)
+                if (
+                    terminal.selectionStart === currentTerminal &&
+                    terminal.selectionStart === terminal.selectionEnd
+                )
                     event.preventDefault();
                 else if (terminal.selectionStart < currentTerminal) {
-                    terminal.selectionStart = currentTerminal;
+                    event.preventDefault();
                 } else if (terminal.selectionStart === terminal.selectionEnd) {
                     terminal.selectionStart--;
+                }
+            } else if (event.key === "Delete") {
+                if (terminal.selectionStart < currentTerminal) {
+                    event.preventDefault();
                 }
             } else if (event.key === "ArrowLeft") {
                 if (terminal.selectionStart === currentTerminal)

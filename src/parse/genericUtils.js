@@ -52,11 +52,7 @@ const replaceGenericTypesInToken = (
     }
     if (patternToken.thisType) return typeToken;
     if (patternToken.thisSubtype !== undefined)
-        return (
-            typeToken.subtypes[patternToken.thisSubtype] ||
-            type("Object") ||
-            patternToken
-        ); // TODO: getDefaultSubtype(typeToken.type); (Maybe not actually??)
+        return typeToken.subtypes[patternToken.thisSubtype] || patternToken; // TODO: getDefaultSubtype(typeToken.type); (Maybe not actually??)
 
     if (patternToken.subtypes)
         return {
@@ -184,7 +180,7 @@ const replaceGenericTypesInRule = (
 /**
  * Generates generic rules on the fly based on the previously established genericParents
  */
-export const getAllRules = (typeToken, context) => {
+export const getAllRules = (typeToken, context, returnReplacedRules) => {
     const typeName = typeToken.type;
 
     const returnRules = [];
@@ -203,18 +199,12 @@ export const getAllRules = (typeToken, context) => {
             )
         );
 
-    // console.log(stringifyToken(typeToken));
-    // console.log(
-    //     returnRules
-    //         .flatMap((rule) =>
-    //             replaceGenericTypesInRule(rule, typeToken, context)
-    //         )
-    //         .map((rule) => stringifyPattern(rule.pattern, false))
-    // );
+    if (returnReplacedRules)
+        return returnRules.flatMap((rule) =>
+            replaceGenericTypesInRule(rule, typeToken, context)
+        );
 
-    return returnRules.flatMap((rule) =>
-        replaceGenericTypesInRule(rule, typeToken, context)
-    );
+    return returnRules;
 };
 
 const allMapCombinations = (mapPossibilities) => {

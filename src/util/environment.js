@@ -8,7 +8,7 @@ export const environment = {
     exitOnError: true,
     log: true,
     colors: false,
-    debug: true,
+    debug: false,
     inspect: console.log,
     consoleWrite:
         typeof process !== "undefined"

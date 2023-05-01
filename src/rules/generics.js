@@ -47,4 +47,13 @@ export default {
         generateGenericSubtypeRules(genericChildren)
     ),
     genericParents: generateGenericParents(genericChildren),
+    subtypeLengths: {
+        Dictionary: 1,
+        dictlit: 1,
+        Function: 2,
+        Iterable: 1,
+        List: 1,
+        listlit: 1,
+        commaSeparatedObjects: 1,
+    },
 };

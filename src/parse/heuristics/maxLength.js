@@ -16,12 +16,18 @@ export const maxLengthHeuristic = newHeuristic((context) => ({
                 consoleWarn(
                     "You have a multi token with a max length of 0, this should probably never happen."
                 );
-            return 0;
+            return [0];
         }
-        return getValue() * metatypeToken.max;
+        const [fastValue, slowValue] = getValue();
+        return [
+            fastValue * metatypeToken.max,
+            slowValue
+                ? (inputTypes) => slowValue(inputTypes) * metatypeToken.max
+                : undefined,
+        ];
     },
     test: (expression, maxLength) => expression.length <= maxLength,
-    killPatternList: (max) => max >= Number.MAX_SAFE_INTEGER,
-    killPattern: (currentLength) => currentLength >= Number.MAX_SAFE_INTEGER,
+    killPatternList: ([fastValue]) => fastValue >= Number.MAX_SAFE_INTEGER,
+    killPattern: ([fastValue]) => fastValue >= Number.MAX_SAFE_INTEGER,
     allowAllEmptyExpressions: false,
 }));

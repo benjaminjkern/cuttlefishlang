@@ -25,6 +25,8 @@ export const stringifyToken = (token, hideSpaces = HIDE_SPACES_DEFAULT) => {
     if (token.thisType) return colorString(`{this}`, "red");
     if (token.thisSubtype !== undefined)
         return colorString(`{this[${token.thisSubtype}]}`, "red");
+    if (token.inputType !== undefined)
+        return colorString(`{inputType[${token.inputType}]}`, "red");
 
     if (token.metaType) {
         switch (token.metaType) {

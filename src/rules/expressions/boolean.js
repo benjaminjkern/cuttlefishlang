@@ -53,6 +53,12 @@ export default {
             evaluate: ({ tokens: [a, _, b], context }) =>
                 context.evaluateExpression(a) === context.evaluateExpression(b),
         },
+        // {
+        //     // Pointer comparison
+        //     pattern: [type("Object"), "===", type("Object")],
+        //     evaluate: ({ tokens: [a, _, b] }) =>
+        //         evaluateExpression(a) === evaluateExpression(b),
+        // },
         {
             pattern: [type("Object"), "in", type("Iterable")],
             evaluate: ({ tokens: [obj, _, iter], context }) => {
@@ -71,13 +77,6 @@ export default {
                 return false;
             },
         },
-
-        // {
-        //     // Pointer comparison
-        //     pattern: [type("Object"), "===", type("Object")],
-        //     evaluate: ({ tokens: [a, _, b] }) =>
-        //         evaluateExpression(a) === evaluateExpression(b),
-        // },
         { pattern: [type("boollit")] },
     ],
     boollit: [

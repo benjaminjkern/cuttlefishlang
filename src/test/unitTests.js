@@ -8,9 +8,9 @@ environment.debug = true;
 
 const context = newInterpretContext();
 
-inspect(context.heuristics.minLength.values.fromType(type("Function")));
+console.log(context.heuristics.minLength.values.fromTypeToken(type("List")));
 
-inspect(context.heuristics.minLength.typeValues);
+// inspect(context.heuristics.minLength.typeValues);
 
 // parseExpressionAsType(
 //     type("Object"),

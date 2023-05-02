@@ -85,3 +85,8 @@ export const debugFunction =
 
 export const runFunctionOrValue = (f, ...args) =>
     typeof f === "function" ? f(...args) : f;
+
+export const cacheValue = (cache, key, value) => {
+    cache[key] = value;
+    return value;
+};

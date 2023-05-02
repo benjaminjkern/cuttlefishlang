@@ -4,7 +4,11 @@ import {
     stringifyPattern,
     stringifyToken,
 } from "../parsingUtils.js";
-import { debugFunction, runFunctionOrValue } from "../../util/index.js";
+import {
+    cacheValue,
+    debugFunction,
+    runFunctionOrValue,
+} from "../../util/index.js";
 import { genericType, thisSubtype, type } from "../ruleUtils.js";
 
 const lazyCombiner =
@@ -59,87 +63,54 @@ export const newHeuristic = (contextWrapper) => (context) => {
     const combineTokenValues = lazyCombiner(combineTokenValuesBase);
 
     const typeValues = {};
-    let unresolved, cache; // NOTE: Need cache since its only calculating the FULL value when at top level, many sub cases it is only checking if it is "worth" checking
-    let topLevel = true;
 
     const heuristicObject = {
         heuristicName,
         values: {
-            fromTypeToken: (typeToken) => {
-                const [fastValue, slowValue] = heuristicObject.values.fromType(
-                    typeToken.type
+            fromType: (typeName, typeKeySeen) => {
+                if (typeValues[typeName]) return typeValues[typeName];
+
+                // Cache only completed values
+                typeValues[typeName] = heuristicObject.values.fromPatternList(
+                    getAllRules(typeName, context).map(
+                        ({ pattern }) => pattern
+                    ),
+                    typeKeySeen
                 );
-                return slowValue
-                    ? combineTokenValuesBase(
-                          fastValue,
-                          slowValue(typeToken.subtypes)
-                      )
-                    : fastValue;
+
+                finalCheck(typeValues[typeName], typeName);
+
+                return typeValues[typeName];
             },
-            fromType: debugFunction(
-                (typeName) => {
-                    // (Maybe can be done in a different way in the future, but this is to prevent passing the unresolved and cache down every single call)
-                    const scopeTopLevel = topLevel;
+            fromTypeToken: (typeToken, typeKeySeen = {}) => {
+                const typeKey = makeTypeKey(typeToken);
 
-                    if (scopeTopLevel) {
-                        topLevel = false;
-                        unresolved = {};
-                        cache = { ...typeValues };
-                    }
+                // Make a copy so parent doesnt include changes from here on out
+                const unresolvedTypeKey = { ...typeKeySeen };
 
-                    if (cache[typeName] !== undefined) {
-                        if (scopeTopLevel) topLevel = true;
-                        return cache[typeName];
-                    }
+                // Catch infinite loops
+                if (unresolvedTypeKey[typeKey])
+                    return [runFunctionOrValue(unresolvedValue)];
+                unresolvedTypeKey[typeKey] = true;
 
-                    const typeToken = type(
-                        typeName,
-                        ...Array(context.generics.subtypeLengths[typeName] || 0)
-                            .fill()
-                            .map((_, i) => ({ inputType: i }))
-                    );
+                const [fastValue, slowValue] = heuristicObject.values.fromType(
+                    typeToken.type,
+                    unresolvedTypeKey
+                );
 
-                    // const typeKey = makeTypeKey(typeToken);
+                if (!slowValue) return [fastValue];
 
-                    if (unresolved[typeName])
-                        return context.generics.subtypeLengths[typeName]
-                            ? [
-                                  0,
-                                  (inputTypes) => {
-                                      const [fastValue, slowValue] =
-                                          heuristicObject.values.fromType(
-                                              typeName
-                                          );
-                                      return slowValue
-                                          ? combineTokenValuesBase(
-                                                fastValue,
-                                                slowValue(inputTypes)
-                                            )
-                                          : fastValue;
-                                  },
-                              ]
-                            : [runFunctionOrValue(unresolvedValue)];
-                    unresolved[typeName] = true;
+                // Do the evaluation with any KNOWN subtypes
+                const [fastEvaluated, slowEvaluated] = slowValue(
+                    typeToken.subtypes
+                );
 
-                    cache[typeName] = heuristicObject.values.fromPatternList(
-                        getAllRules(typeToken, context).map(
-                            ({ pattern }) => pattern
-                        )
-                    );
-
-                    if (scopeTopLevel) {
-                        typeValues[typeName] = cache[typeName];
-                        // Check and warn of any issues (Only really used by minLength)
-                        finalCheck(typeValues[typeName], typeName);
-                        topLevel = true;
-                    }
-
-                    return cache[typeName];
-                },
-                "fromType",
-                [true]
-            ),
-            fromToken: (token) => {
+                return [
+                    combineTokenValuesBase(fastValue, fastEvaluated),
+                    slowEvaluated,
+                ];
+            },
+            fromToken: (token, typeKeySeen) => {
                 if (isTerminal(token)) return [getTerminalTokenValue(token)];
 
                 // Generic types
@@ -151,35 +122,32 @@ export const newHeuristic = (contextWrapper) => (context) => {
                 if (token.inputType !== undefined)
                     return [
                         runFunctionOrValue(initialPatternValue),
-                        (typeInputs) => {
-                            const [fastValue, slowValue] =
-                                heuristicObject.values.fromType(
-                                    typeInputs[token.inputType]
-                                );
-                            return slowValue
-                                ? combineTokenValuesBase(
-                                      fastValue,
-                                      slowValue(typeInputs)
-                                  )
-                                : undefined;
-                        },
+                        (typeInputs, typeKeySeenInside) =>
+                            heuristicObject.values.fromToken(
+                                // If it's another input type then just return another empty function
+                                typeInputs[token.inputType],
+                                typeKeySeenInside // Not sure about this
+                            ),
                     ];
                 if (token.genericType)
                     return [
                         runFunctionOrValue(initialPatternValue),
                         // ({ genericTypeMap }) =>
-                        //     heuristicObject.values.fromType(
+                        //     heuristicObject.values.fromTypeToken(
                         //         genericTypeMap[token.genericType]
                         //     ),
                     ]; // Needs to then iterate and combine pattern heuristics over all possible generics
 
-                // standard type
+                // Standard type
                 if (!token.metaType) {
                     const [fastValue, slowValue] =
-                        heuristicObject.values.fromType(token.type);
+                        heuristicObject.values.fromTypeToken(
+                            token,
+                            typeKeySeen
+                        );
 
                     return [
-                        fastValue, // I think this might be wrong
+                        fastValue,
                         slowValue ? () => slowValue(token.subtypes) : undefined,
                     ];
                 }
@@ -188,11 +156,15 @@ export const newHeuristic = (contextWrapper) => (context) => {
                 switch (token.metaType) {
                     case "or":
                         return heuristicObject.values.fromPatternList(
-                            token.patterns
+                            token.patterns,
+                            typeKeySeen
                         );
                     case "multi":
                         const getValue = () =>
-                            heuristicObject.values.fromPattern(token.pattern);
+                            heuristicObject.values.fromPattern(
+                                token.pattern,
+                                typeKeySeen
+                            );
                         // Max and min had extra rules here that I didnt wanna get rid of,
                         //   passing this in as a function is only a slight optimization.
                         // (Doesn't need to run if the min/max is == 0)
@@ -204,53 +176,52 @@ export const newHeuristic = (contextWrapper) => (context) => {
                     case "anychar":
                         return [getTokenDictValue(token)];
                     case "subcontext":
-                        return heuristicObject.values.fromSubcontext(token);
+                        return heuristicObject.values.fromSubcontext(
+                            token,
+                            typeKeySeen
+                        );
                 }
             },
-            fromPattern: debugFunction(
-                (pattern) => {
-                    let currentValue = [
-                        runFunctionOrValue(initialPatternValue),
-                    ];
-                    for (let i = 0; i < pattern.length; i++) {
-                        // End tokendict needs to go in opposite direction
-                        const token =
-                            pattern[
-                                patternReverseOrder ? pattern.length - 1 - i : i
-                            ];
-                        currentValue = combineTokenValues(
-                            currentValue,
-                            heuristicObject.values.fromToken(token)
-                        );
+            fromPattern: (pattern, typeKeySeen) => {
+                let currentValue = [runFunctionOrValue(initialPatternValue)];
+                for (let i = 0; i < pattern.length; i++) {
+                    // End tokendict needs to go in opposite direction
+                    const token =
+                        pattern[
+                            patternReverseOrder ? pattern.length - 1 - i : i
+                        ];
+                    currentValue = combineTokenValues(
+                        currentValue,
+                        heuristicObject.values.fromToken(token, typeKeySeen)
+                    );
 
-                        if (killPattern(currentValue, token)) break;
-                    }
-                    return currentValue;
-                },
-                "fromPattern",
-                [stringifyPattern]
-            ),
-            fromPatternList: (patternList) => {
+                    if (killPattern(currentValue, token)) break;
+                }
+                return currentValue;
+            },
+            fromPatternList: (patternList, typeKeySeen) => {
                 let value = [runFunctionOrValue(initialTokenValue)];
                 for (const pattern of patternList) {
                     value = combinePatternValues(
                         value,
-                        heuristicObject.values.fromPattern(pattern)
+                        heuristicObject.values.fromPattern(pattern, typeKeySeen)
                     );
                     if (killPatternList(value)) break;
                 }
                 return value;
             },
-            fromSubcontext: (subcontextToken) => {
+            fromSubcontext: (subcontextToken, typeKeySeen) => {
                 if (context.parentContexts[subcontextToken.subcontextId])
                     return heuristicObject.values.fromPattern(
-                        subcontextToken.pattern
+                        subcontextToken.pattern,
+                        typeKeySeen
                     );
 
                 return subcontextToken
                     .getSubcontext()
                     .heuristics[heuristicName].values.fromPattern(
                         subcontextToken.pattern
+                        // , typeKeySeen (Dont use same seen dict in subcontext, let it generate its own)
                     );
             },
         },
@@ -263,6 +234,7 @@ export const newHeuristic = (contextWrapper) => (context) => {
                 const [fastValue, slowValue] = heuristicObject.values.fromType(
                     typeToken.type
                 );
+
                 if (test(expression, fastValue)) return true;
 
                 const value = slowValue

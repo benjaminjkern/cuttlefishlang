@@ -24,7 +24,7 @@ export const minLengthHeuristic = newHeuristic({
     killPatternList: ([fastValue, slowValue]) =>
         fastValue === 0 && slowValue === undefined,
     killPattern: ([fastValue]) => fastValue >= Number.MAX_SAFE_INTEGER,
-    finalCheck: (minLength, type) => {
+    finalCheck: ([minLength], type) => {
         if (minLength >= Number.MAX_SAFE_INTEGER)
             consoleWarn(
                 `Warning: Type "${type}" has a minimum length of ${minLength} (Probably an unclosed rule loop)`

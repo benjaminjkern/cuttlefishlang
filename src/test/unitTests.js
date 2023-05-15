@@ -8,11 +8,7 @@ environment.debug = true;
 
 const context = newInterpretContext();
 
-console.log(
-    context.heuristics.allowedCharacters.values.fromTypeToken(
-        type("List", { inputType: 0 })
-    )
-);
+console.log(context.heuristics.minLength.values.fromTypeToken(type("String")));
 
 // inspect(context.heuristics.minLength.typeValues);
 

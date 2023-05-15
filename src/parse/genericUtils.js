@@ -177,7 +177,7 @@ export const getAllRules = (typeToken, context) => {
     const typeName = typeToken.type;
 
     const returnRules = [];
-    // Add extra generic children rule to prevent parsing loops
+    // Add extra generic children rule to prevent parsing loops (i.e. Object -> Number | List | etc...)
     if (context.generics.genericSubtypeRules[typeName])
         returnRules.push(context.generics.genericSubtypeRules[typeName][0]); // [0]: Take out of list, it was in a list because I needed it to be to get the cleanRuleset to work
 

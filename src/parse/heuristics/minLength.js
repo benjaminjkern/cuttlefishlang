@@ -15,8 +15,9 @@ export const minLengthHeuristic = newHeuristic({
         return getValue() * metatypeToken.min;
     },
     test: (expression, minLength) => expression.length >= minLength,
-    killPatternList: (value) => value === 0,
-    killPattern: (value) => value >= Number.MAX_SAFE_INTEGER,
+    killPatternList: (value) => value <= 0,
+    killPattern: (value, token, breakValue = Number.MAX_SAFE_INTEGER) =>
+        value >= breakValue,
     finalCheck: (minLength, type) => {
         if (minLength >= Number.MAX_SAFE_INTEGER)
             consoleWarn(

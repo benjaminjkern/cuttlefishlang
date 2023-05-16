@@ -105,6 +105,7 @@ export const newHeuristic = (contextWrapper) => (context) => {
                         getAllRules(adjustedTypeToken, context).map(
                             ({ pattern }) => pattern
                         ),
+                        undefined,
                         { ...(typeKeySeen || {}), [typeKey]: true }
                     );
 
@@ -124,14 +125,18 @@ export const newHeuristic = (contextWrapper) => (context) => {
                 for (const pattern of patternList) {
                     value = combinePatternValues(
                         value,
-                        heuristicObject.values.fromPattern(pattern, typeKeySeen)
+                        heuristicObject.values.fromPattern(
+                            pattern,
+                            value,
+                            typeKeySeen
+                        )
                     );
                     if (killPatternList(value)) break;
                 }
                 return value;
             },
             fromPattern: debugFunction(
-                (pattern, typeKeySeen) => {
+                (pattern, breakValue, typeKeySeen) => {
                     let currentValue = runFunctionOrValue(initialPatternValue);
                     for (let i = 0; i < pattern.length; i++) {
                         // End tokendict needs to go in opposite direction
@@ -144,7 +149,7 @@ export const newHeuristic = (contextWrapper) => (context) => {
                             heuristicObject.values.fromToken(token, typeKeySeen)
                         );
 
-                        if (killPattern(currentValue, token)) break;
+                        if (killPattern(currentValue, token, breakValue)) break;
                     }
                     return currentValue;
                 },
@@ -195,6 +200,7 @@ export const newHeuristic = (contextWrapper) => (context) => {
                         const getValue = () =>
                             heuristicObject.values.fromPattern(
                                 token.pattern,
+                                undefined,
                                 typeKeySeen
                             );
                         // Max and min had extra rules here that I didnt wanna get rid of,
@@ -218,6 +224,7 @@ export const newHeuristic = (contextWrapper) => (context) => {
                 if (context.parentContexts[subcontextToken.subcontextId])
                     return heuristicObject.values.fromPattern(
                         subcontextToken.pattern,
+                        undefined,
                         typeKeySeen
                     );
 

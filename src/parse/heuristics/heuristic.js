@@ -239,7 +239,7 @@ export const newHeuristic = (contextWrapper) => (context) => {
                             `${heuristicName}.fromPatternCallback ${stringifyPattern(
                                 pattern
                             )}`,
-                            [true],
+                            [stringifyResult(heuristicName)],
                             stringifyResult(heuristicName)
                         );
                     }

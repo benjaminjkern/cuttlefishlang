@@ -18,16 +18,10 @@ export const maxLengthHeuristic = newHeuristic((context) => ({
                 );
             return [0];
         }
-        const [fastValue, slowValue] = getValue();
-        return [
-            fastValue * metatypeToken.max,
-            slowValue
-                ? (inputTypes) => slowValue(inputTypes) * metatypeToken.max
-                : undefined,
-        ];
+        return getValue() * metatypeToken.max;
     },
     test: (expression, maxLength) => expression.length <= maxLength,
-    killPatternList: ([fastValue]) => fastValue >= Number.MAX_SAFE_INTEGER,
-    killPattern: ([fastValue]) => fastValue >= Number.MAX_SAFE_INTEGER,
+    killPatternList: (value) => value >= Number.MAX_SAFE_INTEGER,
+    killPattern: (value) => value >= Number.MAX_SAFE_INTEGER,
     allowAllEmptyExpressions: false,
 }));

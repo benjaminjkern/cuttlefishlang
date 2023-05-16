@@ -16,8 +16,8 @@ export const allowedCharactersHeuristic = newHeuristic({
         }
         return true;
     },
-    killPatternList: ([dict]) =>
+    killPatternList: (dict) =>
         dict.blacklist && !Object.keys(dict.blacklist).length, // If already accepting all possible characters stop looking
-    killPattern: ([dict]) =>
+    killPattern: (dict) =>
         dict.blacklist && !Object.keys(dict.blacklist).length, // If already accepting all possible characters stop looking
 });

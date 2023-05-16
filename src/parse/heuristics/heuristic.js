@@ -8,6 +8,7 @@ import {
 import {
     cacheValue,
     debugFunction,
+    evaluteToCompletion,
     runFunctionOrValue,
 } from "../../util/index.js";
 import { genericType, thisSubtype, type } from "../ruleUtils.js";
@@ -51,7 +52,8 @@ const lazyCombiner = (combiner) => (currentValue, newValue) => {
 
 const stringifyResult = (heuristicName) => (result) => {
     if (heuristicName[0] === "m") return result;
-    return `[ ${stringifyTokenDict(result[0])}, ${result[1] && "()"}]`;
+    if (typeof result === "function") return "( Callback Function )";
+    return stringifyTokenDict(result);
 };
 
 export const newHeuristic = (contextWrapper) => (context) => {
@@ -95,7 +97,12 @@ export const newHeuristic = (contextWrapper) => (context) => {
                     };
                     const typeKey = makeTypeKey(adjustedTypeToken);
 
-                    if (typeKeyValues[typeKey]) return typeKeyValues[typeKey];
+                    if (typeKeyValues[typeKey]) {
+                        typeKeyValues[typeKey] = runFunctionOrValue(
+                            typeKeyValues[typeKey]
+                        );
+                        return typeKeyValues[typeKey];
+                    }
                     if (typeKeySeen?.[typeKey])
                         return runFunctionOrValue(unresolvedValue);
 
@@ -119,11 +126,14 @@ export const newHeuristic = (contextWrapper) => (context) => {
 
                             return value;
                         },
-                        "fromTypeTokenCallback " + stringifyToken(typeToken),
-                        []
+                        `${heuristicName}.fromTypeTokenCallback ${stringifyToken(
+                            typeToken
+                        )}`,
+                        [],
+                        stringifyResult(heuristicName)
                     );
                 },
-                "fromTypeToken",
+                `${heuristicName}.fromTypeToken`,
                 [stringifyToken],
                 stringifyResult(heuristicName)
             ),
@@ -162,8 +172,9 @@ export const newHeuristic = (contextWrapper) => (context) => {
                             }
                             return value;
                         },
-                        `fromPatternListCallback ${value}`,
-                        []
+                        `${heuristicName}.fromPatternListCallback`,
+                        [],
+                        stringifyResult(heuristicName)
                     );
                 }
                 return value;
@@ -220,15 +231,16 @@ export const newHeuristic = (contextWrapper) => (context) => {
                                 }
                                 return currentValue;
                             },
-                            `fromPatternCallback ${stringifyPattern(
+                            `${heuristicName}.fromPatternCallback ${stringifyPattern(
                                 pattern
-                            )} ${currentValue}`,
-                            []
+                            )}`,
+                            [],
+                            stringifyResult(heuristicName)
                         );
                     }
                     return currentValue;
                 },
-                "fromPattern",
+                `${heuristicName}.fromPattern`,
                 [stringifyPattern],
                 stringifyResult(heuristicName)
             ),
@@ -273,10 +285,13 @@ export const newHeuristic = (contextWrapper) => (context) => {
                         );
                     case "multi":
                         const getValue = () =>
-                            heuristicObject.values.fromPattern(
-                                token.pattern,
-                                undefined,
-                                typeKeySeen
+                            evaluteToCompletion(
+                                // TODO: This might not be good to be a evalute-to-completion here
+                                heuristicObject.values.fromPattern(
+                                    token.pattern,
+                                    undefined,
+                                    typeKeySeen
+                                )
                             );
                         // Max and min had extra rules here that I didnt wanna get rid of,
                         //   passing this in as a function is only a slight optimization.
@@ -317,7 +332,9 @@ export const newHeuristic = (contextWrapper) => (context) => {
                 if (allowAllEmptyExpressions && expression.length === 0)
                     return true;
 
-                const value = heuristicObject.values.fromTypeToken(typeToken);
+                const value = evaluteToCompletion(
+                    heuristicObject.values.fromTypeToken(typeToken)
+                );
 
                 return (
                     test(expression, value) || {
@@ -332,7 +349,9 @@ export const newHeuristic = (contextWrapper) => (context) => {
                 if (allowAllEmptyExpressions && expression.length === 0)
                     return true;
 
-                const value = heuristicObject.values.fromPattern(pattern);
+                const value = evaluteToCompletion(
+                    heuristicObject.values.fromPattern(pattern)
+                );
 
                 return (
                     test(expression, value) || {

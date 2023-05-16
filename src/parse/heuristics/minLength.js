@@ -12,9 +12,7 @@ export const minLengthHeuristic = newHeuristic({
     getTokenDictValue: () => 1,
     getMultiMetatypeValue: (metatypeToken, getValue) => {
         if (metatypeToken.min === 0) return 0;
-        let value = getValue();
-        while (typeof value === "function") value = value();
-        return value * metatypeToken.min;
+        return getValue() * metatypeToken.min;
     },
     test: (expression, minLength) => expression.length >= minLength,
     killPatternList: (value) => value <= 0,

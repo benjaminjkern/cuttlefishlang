@@ -50,7 +50,7 @@ These are some basic notes as to how everything is set up and how it all works:
 
 - Evaluate module `src/evaluate`
     - Evalute a parsed tree:
-        - Right now the way this works is it parses every statement in order, including inside instantiators, then just runs through everything and evalutes. If something affects the context or control flow, it deals with it but its all preparsed and ran through.
+        - Right now the way this works is it parses every statement in order, including inside instantiators, then just runs through everything and evaluates. If something affects the context or control flow, it deals with it but its all preparsed and ran through.
         - Variables are declared as a RULE within a given type (Kind of unsure about this but also I sort of like it)
             - i.e. `x = 4` literally puts a new rule: `{ pattern: ['x'], evaluate: () => 4 }` inside the `Number` ruleset, at which point it would need to re-run all the heuristics before it can move on to the next statement to parse
                 - Iffy about this mostly because it could be very slow to have to rerun the heuristics every time you set a variable

@@ -91,7 +91,7 @@ export const cacheValue = (cache, key, value) => {
     return value;
 };
 
-export const evaluteToCompletion = (f) => {
+export const evaluateToCompletion = (f) => {
     let value = f;
     while (typeof value === "function") value = value();
     return value;

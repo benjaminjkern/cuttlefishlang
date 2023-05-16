@@ -1,4 +1,4 @@
-import { evaluteToCompletion } from "../../util/index.js";
+import { evaluateToCompletion } from "../../util/index.js";
 import { newHeuristic } from "./heuristic.js";
 import { addTokenDicts, isValidToken, newTokenDict } from "./tokenDict.js";
 
@@ -23,7 +23,7 @@ export const allowedStartCharactersHeuristic = newHeuristic((context) => ({
     killPattern: (dict, token) => {
         if (dict.blacklist && !Object.keys(dict.blacklist).length) return true;
         return (
-            evaluteToCompletion(
+            evaluateToCompletion(
                 context.heuristics.minLength.values.fromToken(token)
             ) > 0
         );

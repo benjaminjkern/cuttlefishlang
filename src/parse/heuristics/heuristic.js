@@ -8,10 +8,10 @@ import {
 import {
     cacheValue,
     debugFunction,
-    evaluteToCompletion,
+    evaluateToCompletion,
     runFunctionOrValue,
 } from "../../util/index.js";
-import { genericType, thisSubtype, type } from "../ruleUtils.js";
+import { OR, genericType, thisSubtype, type } from "../ruleUtils.js";
 
 // const lazyCombiner =
 //     (combiner) =>
@@ -97,35 +97,36 @@ export const newHeuristic = (contextWrapper) => (context) => {
                     };
                     const typeKey = makeTypeKey(adjustedTypeToken);
 
-                    if (typeKeyValues[typeKey]) {
-                        typeKeyValues[typeKey] = runFunctionOrValue(
-                            typeKeyValues[typeKey]
-                        );
-                        return typeKeyValues[typeKey];
-                    }
+                    if (typeKeyValues[typeKey]) return typeKeyValues[typeKey];
                     if (typeKeySeen?.[typeKey])
                         return runFunctionOrValue(unresolvedValue);
+
+                    // Wrap this function so that every time it gets called it resets the cache with the new value
+                    const resolveValue = (getValue) => {
+                        if (typeKeySeen) return getValue;
+
+                        return () => {
+                            const value = getValue();
+
+                            typeKeyValues[typeKey] = resolveValue(value);
+                            if (typeof value !== "function")
+                                finalCheck(value, typeKey);
+
+                            return typeKeyValues[typeKey];
+                        };
+                    };
 
                     // Allow patterns to finish getting the rest of the value in order to test for breakValue happening first.
                     // This is required for breaking recursive subtypes ($ -> A<$>)
                     return debugFunction(
-                        () => {
-                            const value =
-                                heuristicObject.values.fromPatternList(
-                                    getAllRules(adjustedTypeToken, context).map(
-                                        ({ pattern }) => pattern
-                                    ),
-                                    undefined,
-                                    { ...(typeKeySeen || {}), [typeKey]: true }
-                                );
-
-                            if (!typeKeySeen) {
-                                typeKeyValues[typeKey] = value;
-                                finalCheck(value, typeKey);
-                            }
-
-                            return value;
-                        },
+                        resolveValue(() =>
+                            heuristicObject.values.fromPatternList(
+                                getAllRules(adjustedTypeToken, context).map(
+                                    ({ pattern }) => pattern
+                                ),
+                                { ...(typeKeySeen || {}), [typeKey]: true }
+                            )
+                        ),
                         `${heuristicName}.fromTypeTokenCallback ${stringifyToken(
                             typeToken
                         )}`,
@@ -172,7 +173,9 @@ export const newHeuristic = (contextWrapper) => (context) => {
                             }
                             return value;
                         },
-                        `${heuristicName}.fromPatternListCallback`,
+                        `${heuristicName}.fromPatternListCallback ${stringifyToken(
+                            OR(...patternList)
+                        )}`,
                         [],
                         stringifyResult(heuristicName)
                     );
@@ -285,8 +288,8 @@ export const newHeuristic = (contextWrapper) => (context) => {
                         );
                     case "multi":
                         const getValue = () =>
-                            evaluteToCompletion(
-                                // TODO: This might not be good to be a evalute-to-completion here
+                            evaluateToCompletion(
+                                // TODO: This might not be good to be a evaluate-to-completion here
                                 heuristicObject.values.fromPattern(
                                     token.pattern,
                                     undefined,
@@ -332,7 +335,7 @@ export const newHeuristic = (contextWrapper) => (context) => {
                 if (allowAllEmptyExpressions && expression.length === 0)
                     return true;
 
-                const value = evaluteToCompletion(
+                const value = evaluateToCompletion(
                     heuristicObject.values.fromTypeToken(typeToken)
                 );
 
@@ -349,7 +352,7 @@ export const newHeuristic = (contextWrapper) => (context) => {
                 if (allowAllEmptyExpressions && expression.length === 0)
                     return true;
 
-                const value = evaluteToCompletion(
+                const value = evaluateToCompletion(
                     heuristicObject.values.fromPattern(pattern)
                 );
 

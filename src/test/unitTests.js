@@ -8,7 +8,13 @@ environment.debug = true;
 
 const context = newInterpretContext();
 
-console.log(context.heuristics.minLength.values.fromTypeToken(type("String")));
+let value = context.heuristics.minLength.values.fromTypeToken(type("String"));
+
+while (typeof value === "function") {
+    value = value();
+}
+
+console.log(value);
 
 // inspect(context.heuristics.minLength.typeValues);
 

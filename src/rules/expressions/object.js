@@ -2,7 +2,7 @@ import { type, OR, thisType, genericType } from "../../parse/ruleUtils.js";
 
 export const objectGenerics = [
     // Needs to be at the top so it grabs as much as possible
-    "Function",
+    // "Function",
     // Temporarily put these here so that it can catch it, needs to be before number
     "Integer",
     "Number",
@@ -50,19 +50,19 @@ export default {
                     .evaluateExpression(iterable)
                     .getIndex(context.evaluateExpression(index)),
         },
-        {
-            pattern: [
-                type("Function", genericType("A"), thisType()),
-                genericType("A"),
-            ], // The A's must match
-            genericTypes: {
-                A: "Object",
-            },
-            evaluate: ({ tokens: [func, argument], context }) => {
-                return context
-                    .evaluateExpression(func)
-                    .call(context.evaluateExpression(argument));
-            },
-        },
+        // {
+        //     pattern: [
+        //         type("Function", genericType("A"), thisType()),
+        //         genericType("A"),
+        //     ], // The A's must match
+        //     genericTypes: {
+        //         A: "Object",
+        //     },
+        //     evaluate: ({ tokens: [func, argument], context }) => {
+        //         return context
+        //             .evaluateExpression(func)
+        //             .call(context.evaluateExpression(argument));
+        //     },
+        // },
     ],
 };

@@ -72,7 +72,7 @@ export const debugFunction =
         console.log(
             `${tabWidth}}`,
             "->",
-            result.error
+            result?.error
                 ? result.error
                 : resultEnd
                 ? typeof resultEnd === "function"

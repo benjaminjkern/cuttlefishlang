@@ -26,6 +26,6 @@ export default cleanRuleSet({
     ...number,
     ...object,
     ...string,
-    ...functions,
+    // ...functions,
     ...tuple,
 });

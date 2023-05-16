@@ -61,8 +61,8 @@ export const newHeuristic = (contextWrapper) => (context) => {
         initialTokenValue,
         initialPatternValue,
         unresolvedValue,
-        combinePatternValues: combinePatternValuesBase,
-        combineTokenValues: combineTokenValuesBase,
+        combinePatternValues,
+        combineTokenValues,
         getTerminalTokenValue,
         getTokenDictValue,
         getMultiMetatypeValue = undefined,
@@ -73,10 +73,6 @@ export const newHeuristic = (contextWrapper) => (context) => {
         finalCheck = () => {},
         allowAllEmptyExpressions = true,
     } = runFunctionOrValue(contextWrapper, context);
-
-    // Turning these into lazy combiners allows for values to be returned only on resolution
-    const combinePatternValues = lazyCombiner(combinePatternValuesBase);
-    const combineTokenValues = lazyCombiner(combineTokenValuesBase);
 
     const typeKeyValues = {};
 
@@ -124,8 +120,7 @@ export const newHeuristic = (contextWrapper) => (context) => {
                             return value;
                         },
                         "fromTypeTokenCallback " + stringifyToken(typeToken),
-                        [],
-                        false
+                        []
                     );
                 },
                 "fromTypeToken",
@@ -152,8 +147,6 @@ export const newHeuristic = (contextWrapper) => (context) => {
                 if (delayedValues.length) {
                     return debugFunction(
                         () => {
-                            let insideValue = value;
-
                             while (delayedValues.length) {
                                 const delayedValue = delayedValues.shift(); // TODO: Use a better data structure that is faster
 
@@ -161,17 +154,16 @@ export const newHeuristic = (contextWrapper) => (context) => {
                                 if (typeof newValue === "function")
                                     delayedValues.push(newValue);
                                 else
-                                    insideValue = combineTokenValues(
-                                        insideValue,
+                                    value = combinePatternValues(
+                                        value,
                                         newValue
                                     );
-                                if (killPatternList(insideValue))
-                                    return insideValue;
+                                if (killPatternList(value)) break;
                             }
+                            return value;
                         },
-                        "fromPatternListCallback",
-                        [],
-                        false
+                        `fromPatternListCallback ${value}`,
+                        []
                     );
                 }
                 return value;
@@ -205,8 +197,6 @@ export const newHeuristic = (contextWrapper) => (context) => {
                     if (delayedValues.length) {
                         return debugFunction(
                             () => {
-                                let insideCurrentValue = currentValue;
-
                                 while (delayedValues.length) {
                                     const [token, delayedValue] =
                                         delayedValues.shift(); // TODO: Use a better data structure that is faster
@@ -215,23 +205,25 @@ export const newHeuristic = (contextWrapper) => (context) => {
                                     if (typeof newValue === "function")
                                         delayedValues.push([token, newValue]);
                                     else
-                                        insideCurrentValue = combineTokenValues(
-                                            insideCurrentValue,
+                                        currentValue = combineTokenValues(
+                                            currentValue,
                                             newValue
                                         );
                                     if (
                                         killPattern(
-                                            insideCurrentValue,
+                                            currentValue,
                                             token,
                                             breakValue
                                         )
                                     )
-                                        return insideCurrentValue;
+                                        break;
                                 }
+                                return currentValue;
                             },
-                            "fromPatternCallback " + stringifyPattern(pattern),
-                            [],
-                            false
+                            `fromPatternCallback ${stringifyPattern(
+                                pattern
+                            )} ${currentValue}`,
+                            []
                         );
                     }
                     return currentValue;
@@ -325,11 +317,7 @@ export const newHeuristic = (contextWrapper) => (context) => {
                 if (allowAllEmptyExpressions && expression.length === 0)
                     return true;
 
-                let value = heuristicObject.values.fromTypeToken(typeToken);
-
-                while (typeof value === "function") {
-                    value = value();
-                }
+                const value = heuristicObject.values.fromTypeToken(typeToken);
 
                 return (
                     test(expression, value) || {

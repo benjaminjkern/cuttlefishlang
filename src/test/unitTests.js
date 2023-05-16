@@ -2,21 +2,19 @@ import { newInterpretContext } from "../evaluate/interpret.js";
 import { parseExpressionAsType } from "../parse/parseExpression.js";
 import { type } from "../parse/ruleUtils.js";
 import { environment } from "../util/environment.js";
-import { inspect } from "../util/index.js";
+import { evaluateToCompletion, inspect } from "../util/index.js";
 
 environment.debug = true;
 
 const context = newInterpretContext();
 
-let value = context.heuristics.allowedStartCharacters.values.fromTypeToken(
-    type("String")
+console.log(
+    evaluateToCompletion(
+        context.heuristics.allowedCharacters.values.fromTypeToken(
+            type("Iterable")
+        )
+    )
 );
-
-while (typeof value === "function") {
-    value = value();
-}
-
-console.log(value);
 
 // inspect(context.heuristics.minLength.typeValues);
 

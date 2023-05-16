@@ -101,9 +101,11 @@ export const newHeuristic = (contextWrapper) => (context) => {
                     if (typeKeySeen?.[typeKey])
                         return runFunctionOrValue(unresolvedValue);
 
+                    // This might not do a whole lot
                     // Wrap this function so that every time it gets called it resets the cache with the new value
                     const resolveValue = (getValue) => {
-                        if (typeKeySeen) return getValue;
+                        if (typeKeySeen || typeof getValue === "function")
+                            return getValue;
 
                         return () => {
                             const value = getValue();
@@ -161,7 +163,7 @@ export const newHeuristic = (contextWrapper) => (context) => {
                             while (delayedValues.length) {
                                 const delayedValue = delayedValues.shift(); // TODO: Use a better data structure that is faster
 
-                                const newValue = delayedValue();
+                                const newValue = delayedValue(value);
                                 if (typeof newValue === "function")
                                     delayedValues.push(newValue);
                                 else
@@ -210,7 +212,7 @@ export const newHeuristic = (contextWrapper) => (context) => {
 
                     if (delayedValues.length) {
                         return debugFunction(
-                            () => {
+                            (newBreakValue) => {
                                 while (delayedValues.length) {
                                     const [token, delayedValue] =
                                         delayedValues.shift(); // TODO: Use a better data structure that is faster
@@ -227,7 +229,7 @@ export const newHeuristic = (contextWrapper) => (context) => {
                                         killPattern(
                                             currentValue,
                                             token,
-                                            breakValue
+                                            newBreakValue
                                         )
                                     )
                                         break;
@@ -237,7 +239,7 @@ export const newHeuristic = (contextWrapper) => (context) => {
                             `${heuristicName}.fromPatternCallback ${stringifyPattern(
                                 pattern
                             )}`,
-                            [],
+                            [true],
                             stringifyResult(heuristicName)
                         );
                     }
@@ -287,12 +289,12 @@ export const newHeuristic = (contextWrapper) => (context) => {
                             typeKeySeen
                         );
                     case "multi":
-                        const getValue = () =>
+                        const getValue = (breakValue) =>
                             evaluateToCompletion(
                                 // TODO: This might not be good to be a evaluate-to-completion here
                                 heuristicObject.values.fromPattern(
                                     token.pattern,
-                                    undefined,
+                                    breakValue,
                                     typeKeySeen
                                 )
                             );

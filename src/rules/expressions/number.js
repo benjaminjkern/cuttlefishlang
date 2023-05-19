@@ -22,13 +22,6 @@ export default {
             },
         },
         {
-            pattern: [genericType("A"), "poop", genericType("A")],
-            genericTypes: {
-                A: "Object",
-            },
-            evaluate: () => Math.random(),
-        },
-        {
             pattern: [type("Number"), "-", type("Number")],
             associativityReverseSearchOrder: true,
             evaluate: ({ tokens: [a, _, b], context }) =>

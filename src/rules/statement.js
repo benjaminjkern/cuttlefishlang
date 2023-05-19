@@ -81,7 +81,7 @@ export default {
         {
             pattern: [
                 OR(
-                    type("Function"),
+                    // type("Function"),
                     type("Iterable", type("printable")),
                     type("stringlike")
                 ),

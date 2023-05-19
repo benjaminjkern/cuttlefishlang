@@ -82,10 +82,8 @@ export const newHeuristic = (contextWrapper) => (context) => {
     const heuristicObject = {
         heuristicName,
         values: {
-            fromType: (typeName, typeKeySeen) => {},
             fromTypeToken: debugFunction(
                 (typeToken, typeKeySeen) => {
-                    // Add default subtypes (TODO: Allow different subtypes other than Object)
                     const adjustedTypeToken = {
                         ...typeToken,
                         subtypes: Array(
@@ -95,9 +93,11 @@ export const newHeuristic = (contextWrapper) => (context) => {
                             .map(
                                 (_, i) =>
                                     typeToken.subtypes[i] || type("Object")
+                                // Add default subtypes (TODO: Allow different subtypes other than Object)
                             ),
                     };
-                    const typeKey = makeTypeKey(adjustedTypeToken);
+                    // const typeKey = makeTypeKey(adjustedTypeToken);
+                    const typeKey = typeToken.type;
 
                     if (typeKeyValues[typeKey]) return typeKeyValues[typeKey];
                     if (typeKeySeen?.[typeKey])

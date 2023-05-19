@@ -94,25 +94,25 @@ export default {
             },
         },
 
-        {
-            pattern: [type("varName"), "=", "fn", ":"],
-            evaluate: ({ tokens: [id], context, childIterator }) => {
-                context.setVariable(id.sourceString, type("Function"), {
-                    asString: "(Function)",
-                    call: (input) => {
-                        const insideContext = newInterpretContext();
-                        insideContext.setVariable(
-                            "$",
-                            type(getTypeFromValue(input)),
-                            input
-                        );
-                        insideContext.inFunction = true;
-                        childIterator.restart();
-                        childIterator.iterateToEnd();
-                    },
-                });
-            },
-        },
+        // {
+        //     pattern: [type("varName"), "=", "fn", ":"],
+        //     evaluate: ({ tokens: [id], context, childIterator }) => {
+        //         context.setVariable(id.sourceString, type("Function"), {
+        //             asString: "(Function)",
+        //             call: (input) => {
+        //                 const insideContext = newInterpretContext();
+        //                 insideContext.setVariable(
+        //                     "$",
+        //                     type(getTypeFromValue(input)),
+        //                     input
+        //                 );
+        //                 insideContext.inFunction = true;
+        //                 childIterator.restart();
+        //                 childIterator.iterateToEnd();
+        //             },
+        //         });
+        //     },
+        // },
     ],
 };
 

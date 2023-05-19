@@ -186,10 +186,9 @@ const parseExpressionAsPattern = debugFunction(
 
 const checkTypeHeuristics = (typeToken, expression, context) => {
     for (const heuristic in context.heuristics) {
-        const heuristicCheck = context.heuristics[heuristic].tests.fromType(
-            typeToken,
-            expression
-        );
+        const heuristicCheck = context.heuristics[
+            heuristic
+        ].tests.fromTypeToken(typeToken, expression);
         if (heuristicCheck.error) return heuristicCheck;
     }
 

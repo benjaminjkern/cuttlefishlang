@@ -8,19 +8,23 @@ environment.debug = true;
 
 const context = newInterpretContext();
 
-console.log(
-    evaluateToCompletion(
-        context.heuristics.minLength.values.fromTypeToken(type("String"))
-    )
-);
-
 // console.log(
 //     evaluateToCompletion(
-//         context.heuristics.allowedStartCharacters.values.fromTypeToken(
-//             type("Iterable")
-//         )
+//         context.heuristics.minLength.values.fromPattern([
+//             type("Iterable"),
+//             "++",
+//             type("Iterable"),
+//         ])
 //     )
 // );
+
+console.log(
+    evaluateToCompletion(
+        context.heuristics.allowedStartCharacters.values.fromTypeToken(
+            type("Iterable")
+        )
+    )
+);
 
 // inspect(context.heuristics.minLength.typeValues);
 

@@ -20,8 +20,9 @@ export const allowedStartCharactersHeuristic = newHeuristic((context) => ({
     },
     killPatternList: (dict) =>
         dict.blacklist && !Object.keys(dict.blacklist).length, // If already accepting all possible characters stop looking
-    killPattern: (dict, token) => {
-        if (dict.blacklist && !Object.keys(dict.blacklist).length) return true;
+    killPattern: (dict) =>
+        dict.blacklist && !Object.keys(dict.blacklist).length,
+    stopIteratingPattern: (token) => {
         return (
             evaluateToCompletion(
                 context.heuristics.minLength.values.fromToken(token)

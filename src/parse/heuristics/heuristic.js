@@ -71,6 +71,7 @@ export const newHeuristic = (contextWrapper) => (context) => {
         test,
         killPatternList = () => false,
         killPattern = () => false,
+        stopIteratingPattern = () => false,
         patternReverseOrder = false,
         finalCheck = () => {},
         allowAllEmptyExpressions = true,
@@ -207,9 +208,10 @@ export const newHeuristic = (contextWrapper) => (context) => {
                                 newValue
                             );
 
-                        if (killPattern(currentValue, token, breakValue))
-                            // TODO: This is required for start and end tokens so that it actually evaluates tokendicts that are being delayed, but on min and max it makes it so it can do one extra calculation that it doesnt need to do
-                            break;
+                        if (killPattern(currentValue, breakValue))
+                            return currentValue;
+
+                        if (stopIteratingPattern(token)) break; // Should only need to do this here
                     }
 
                     if (delayedValues.length) {
@@ -228,11 +230,7 @@ export const newHeuristic = (contextWrapper) => (context) => {
                                             newValue
                                         );
                                     if (
-                                        killPattern(
-                                            currentValue,
-                                            token,
-                                            newBreakValue
-                                        )
+                                        killPattern(currentValue, newBreakValue)
                                     )
                                         break;
                                 }

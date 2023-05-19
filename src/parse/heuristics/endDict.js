@@ -15,8 +15,9 @@ export const allowedEndCharactersHeuristic = newHeuristic((context) => ({
         isValidToken(dict, expression[expression.length - 1]),
     killPatternList: (dict) =>
         dict.blacklist && !Object.keys(dict.blacklist).length, // If already accepting all possible characters stop looking
-    killPattern: (dict, token) => {
-        if (dict.blacklist && !Object.keys(dict.blacklist).length) return true;
+    killPattern: (dict) =>
+        dict.blacklist && !Object.keys(dict.blacklist).length,
+    stopIteratingPattern: (token) => {
         return (
             evaluateToCompletion(
                 context.heuristics.minLength.values.fromToken(token)

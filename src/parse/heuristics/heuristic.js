@@ -81,6 +81,7 @@ export const newHeuristic = (contextWrapper) => (context) => {
     const heuristicObject = {
         heuristicName,
         values: {
+            fromType: (typeName, typeKeySeen) => {},
             fromTypeToken: debugFunction(
                 (typeToken, typeKeySeen) => {
                     // Add default subtypes (TODO: Allow different subtypes other than Object)
@@ -207,7 +208,8 @@ export const newHeuristic = (contextWrapper) => (context) => {
                             );
 
                         if (killPattern(currentValue, token, breakValue))
-                            return currentValue;
+                            // TODO: This is required for start and end tokens so that it actually evaluates tokendicts that are being delayed, but on min and max it makes it so it can do one extra calculation that it doesnt need to do
+                            break;
                     }
 
                     if (delayedValues.length) {

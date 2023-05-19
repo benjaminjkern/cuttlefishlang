@@ -10,7 +10,7 @@ const context = newInterpretContext();
 
 console.log(
     evaluateToCompletion(
-        context.heuristics.allowedCharacters.values.fromTypeToken(
+        context.heuristics.allowedStartCharacters.values.fromTypeToken(
             type("Iterable")
         )
     )

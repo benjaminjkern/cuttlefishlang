@@ -9,6 +9,7 @@ export const environment = {
     log: true,
     colors: false,
     debug: true,
+    debugHeuristics: true,
     inspect: console.log,
     consoleWrite:
         typeof process !== "undefined"

@@ -12,6 +12,7 @@ import {
     runFunctionOrValue,
 } from "../../util/index.js";
 import { OR, genericType, thisSubtype, type } from "../ruleUtils.js";
+import { environment } from "../../util/environment.js";
 
 // const lazyCombiner =
 //     (combiner) =>
@@ -135,12 +136,14 @@ export const newHeuristic = (contextWrapper) => (context) => {
                             typeToken
                         )}`,
                         [],
-                        stringifyResult(heuristicName)
+                        stringifyResult(heuristicName),
+                        environment.debugHeuristics
                     );
                 },
                 `${heuristicName}.fromTypeToken`,
                 [stringifyToken],
-                stringifyResult(heuristicName)
+                stringifyResult(heuristicName),
+                environment.debugHeuristics
             ),
             fromPatternList: (patternList, typeKeySeen) => {
                 let value = runFunctionOrValue(initialTokenValue);
@@ -181,7 +184,8 @@ export const newHeuristic = (contextWrapper) => (context) => {
                             OR(...patternList)
                         )}`,
                         [],
-                        stringifyResult(heuristicName)
+                        stringifyResult(heuristicName),
+                        environment.debugHeuristics
                     );
                 }
                 return value;
@@ -240,14 +244,16 @@ export const newHeuristic = (contextWrapper) => (context) => {
                                 pattern
                             )}`,
                             [stringifyResult(heuristicName)],
-                            stringifyResult(heuristicName)
+                            stringifyResult(heuristicName),
+                            environment.debugHeuristics
                         );
                     }
                     return currentValue;
                 },
                 `${heuristicName}.fromPattern`,
                 [stringifyPattern],
-                stringifyResult(heuristicName)
+                stringifyResult(heuristicName),
+                environment.debugHeuristics
             ),
             fromToken: (token, typeKeySeen) => {
                 if (isTerminal(token)) return getTerminalTokenValue(token);

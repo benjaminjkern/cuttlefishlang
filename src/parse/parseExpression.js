@@ -1,4 +1,4 @@
-import { debugFunction } from "../util/index.js";
+import { debugFunction, inspect } from "../util/index.js";
 import { getAllRules, makeTypeKey } from "./genericUtils.js";
 import {
     isTerminal,
@@ -6,6 +6,12 @@ import {
     stringifyToken,
 } from "./parsingUtils.js";
 import { isValidToken } from "./heuristics/tokenDict.js";
+
+const stringifyParseResult = (result) => {
+    if (result.error) return `Error: ${result.error}`;
+    return "Parsed";
+    // return stringifyToken(result);
+};
 
 /**********************
  * Parse functions
@@ -50,7 +56,7 @@ export const parseExpressionAsType = debugFunction(
     },
     "parseExpressionAsType",
     [stringifyToken, stringifyToken],
-    stringifyToken
+    stringifyParseResult
 );
 
 const parseExpressionAsMetaType = debugFunction(
@@ -115,7 +121,7 @@ const parseExpressionAsMetaType = debugFunction(
     },
     "parseExpressionAsMetatype",
     [stringifyToken, stringifyToken],
-    "Parsed"
+    stringifyParseResult
 );
 
 const parseExpressionAsPattern = debugFunction(
@@ -181,7 +187,7 @@ const parseExpressionAsPattern = debugFunction(
     },
     "parseExpressionAsPattern",
     [stringifyPattern, stringifyToken],
-    stringifyPattern
+    stringifyParseResult
 );
 
 const checkTypeHeuristics = (typeToken, expression, context) => {
@@ -237,6 +243,12 @@ const getPossibleMatches = debugFunction(
     (pattern, expression, context) => {
         // If the pattern doesnt have any tokens left, either the expression should also be empty or there should be no matches
         if (pattern.length === 0) return expression.length === 0 ? [[]] : [];
+
+        if (expression === "a")
+            console.log(
+                "UGH",
+                context.heuristics.minLength.typeKeyValues.printable
+            );
 
         if (
             context.heuristics.minLength.tests.fromPattern(pattern, expression)
@@ -294,7 +306,7 @@ const getPossibleMatches = debugFunction(
     "getPossibleMatches",
     [stringifyPattern, stringifyToken],
     (r) => r.length,
-    false
+    true
 );
 
 /**

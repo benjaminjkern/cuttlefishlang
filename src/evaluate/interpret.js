@@ -42,11 +42,20 @@ export const newInterpretContext = (extraRules = {}, parentContexts = {}) => {
                     pattern: [varName],
                     evaluate: () => context.vars[varName].value,
                 });
+                console.log(
+                    "UGH1",
+                    context.heuristics.minLength.typeKeyValues.printable
+                );
                 context.heuristics = generateHeuristics(
                     context.rules,
                     context.generics,
                     context.parentContexts
                     // No subcontexts, this should be done from scratch
+                );
+
+                console.log(
+                    "UGH2",
+                    context.heuristics.minLength.typeKeyValues.printable
                 );
             }
             context.vars[varName] = { value, typeKey };

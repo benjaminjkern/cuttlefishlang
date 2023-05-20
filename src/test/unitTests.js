@@ -20,9 +20,7 @@ const context = newInterpretContext();
 
 console.log(
     evaluateToCompletion(
-        context.heuristics.allowedStartCharacters.values.fromTypeToken(
-            type("String")
-        )
+        context.heuristics.allowedCharacters.values.fromTypeToken(type("List"))
     )
 );
 

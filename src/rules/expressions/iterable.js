@@ -19,10 +19,13 @@ export default {
     Iterable: [
         {
             pattern: [type("DiscreteRange")],
-            //     // TODO: Make this able to say when its just integers
+            // TODO: Make this able to say when its just integers
             allowedSubtypes: ["Number"],
-            evaluate: ({ tokens: [range], context }) =>
-                discreteRangeIterator(context.evaluateExpression(range)),
+            evaluate: ({ tokens: [range], context }) => {
+                const v = context.evaluateExpression(range);
+                console.log("penis8", v);
+                return discreteRangeIterator(v);
+            },
         },
         {
             pattern: [type("List", thisSubtype(0))],

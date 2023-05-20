@@ -49,7 +49,7 @@ export const newInterpretContext = (extraRules = {}, parentContexts = {}) => {
                     // No subcontexts, this should be done from scratch
                 );
             }
-            context.vars[varName] = { value, typeKey };
+            context.vars[varName] = { value, type: typeToken.type, typeKey };
         },
     };
     context.evaluateExpression = evaluateExpression(context);

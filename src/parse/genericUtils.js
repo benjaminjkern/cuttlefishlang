@@ -46,7 +46,8 @@ const replaceGenericTypesInToken = (patternToken, typeToken) => {
             consoleWarn(
                 "Warning: Accessing raw type (Should have added subtypes)"
             );
-        return typeToken.subtypes[patternToken.thisSubtype] || patternToken;
+        return typeToken.subtypes[patternToken.thisSubtype] || type("Object");
+        // return typeToken.subtypes[patternToken.thisSubtype] || patternToken;
     }
     if (patternToken.subtypes)
         return {

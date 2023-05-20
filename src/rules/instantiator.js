@@ -83,7 +83,7 @@ export default {
                         const value = iterator.next();
                         context.setVariable(
                             "$",
-                            getTypeFromValue(value),
+                            type(getTypeFromValue(value)),
                             value
                         );
                         return true;

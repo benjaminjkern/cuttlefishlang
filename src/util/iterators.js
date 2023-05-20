@@ -8,6 +8,7 @@ export const discreteRangeIterator = ({
     includeStart = true,
 }) => {
     let value = start - step * includeStart;
+    console.log("penis2", start, step);
     return {
         hasNext: () => {
             if (end === null) return true;
@@ -32,6 +33,7 @@ export const discreteRangeIterator = ({
                 includeStart,
             }),
         getIndex: (index) => {
+            console.log("GET INDEX", index);
             const returnValue = start + step * !includeStart + step * index;
             if (end !== null && (returnValue - end) * step >= 0) {
                 if (returnValue === end && includeEnd) return returnValue;
@@ -98,6 +100,7 @@ export const concatenateIterators = (iteratorA, iteratorB) => {
         },
         clone: () => concatenateIterators(iteratorA.clone(), iteratorB.clone()),
         getIndex: (index) => {
+            console.log("OUTER GET INDEX", index);
             if (iteratorA.length === null || index < iteratorA.length)
                 return iteratorA.getIndex(index);
             return iteratorB.getIndex(index - iteratorA.length);

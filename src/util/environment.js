@@ -8,8 +8,8 @@ export const environment = {
     exitOnError: true,
     log: true,
     colors: false,
-    debug: true,
-    debugHeuristics: false,
+    debug: false,
+    debugHeuristics: true,
     inspect: console.log,
     consoleWrite:
         typeof process !== "undefined"

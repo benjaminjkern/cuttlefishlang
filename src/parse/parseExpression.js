@@ -244,12 +244,6 @@ const getPossibleMatches = debugFunction(
         // If the pattern doesnt have any tokens left, either the expression should also be empty or there should be no matches
         if (pattern.length === 0) return expression.length === 0 ? [[]] : [];
 
-        if (expression === "a")
-            console.log(
-                "UGH",
-                context.heuristics.minLength.typeKeyValues.printable
-            );
-
         if (
             context.heuristics.minLength.tests.fromPattern(pattern, expression)
                 .error

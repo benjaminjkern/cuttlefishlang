@@ -103,16 +103,19 @@ export const newHeuristic = (contextWrapper) => (context) => {
                     if (typeSeen?.[typeToken.type])
                         return runFunctionOrValue(unresolvedValue);
 
-                    typeKeyValues[typeKey] =
-                        heuristicObject.values.fromPatternList(
-                            getAllRules(adjustedTypeToken, context).map(
-                                ({ pattern }) => pattern
-                            ),
-                            { ...(typeSeen || {}), [typeToken.type]: true }
-                        );
-                    finalCheck(typeKeyValues[typeKey], typeKey);
+                    const value = heuristicObject.values.fromPatternList(
+                        getAllRules(adjustedTypeToken, context).map(
+                            ({ pattern }) => pattern
+                        ),
+                        { ...(typeSeen || {}), [typeToken.type]: true }
+                    );
 
-                    return typeKeyValues[typeKey];
+                    if (!typeSeen) {
+                        typeKeyValues[typeKey] = value;
+                        finalCheck(value, typeKey);
+                    }
+
+                    return value;
                 },
                 `${heuristicName}.fromTypeToken`,
                 [stringifyToken],
@@ -203,14 +206,11 @@ export const newHeuristic = (contextWrapper) => (context) => {
                             typeSeen
                         );
                     case "multi":
-                        const getValue = (breakValue) =>
-                            evaluateToCompletion(
-                                // TODO: This might not be good to be a evaluate-to-completion here
-                                heuristicObject.values.fromPattern(
-                                    token.pattern,
-                                    breakValue,
-                                    typeSeen
-                                )
+                        const getValue = () =>
+                            heuristicObject.values.fromPattern(
+                                token.pattern,
+                                undefined,
+                                typeSeen
                             );
                         // Max and min had extra rules here that I didnt wanna get rid of,
                         //   passing this in as a function is only a slight optimization.

@@ -300,7 +300,7 @@ const getPossibleMatches = debugFunction(
     "getPossibleMatches",
     [stringifyPattern, stringifyToken],
     (r) => r.length,
-    true
+    false
 );
 
 /**

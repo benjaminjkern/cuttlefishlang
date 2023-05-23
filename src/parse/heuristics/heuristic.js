@@ -251,9 +251,11 @@ export const newHeuristic = (contextWrapper) => (context) => {
                 if (allowAllEmptyExpressions && expression.length === 0)
                     return true;
 
-                const value = evaluateToCompletion(
-                    heuristicObject.values.fromTypeToken(typeToken)
-                );
+                const value = heuristicObject.values.fromTypeToken(typeToken);
+
+                // if (test(expression, value)) console.log(`"${expression}" passed the heuristic test "${heuristicName}" for type: ${stringifyToken(
+                //     typeToken
+                // )}!`)
 
                 return (
                     test(expression, value) || {
@@ -268,9 +270,11 @@ export const newHeuristic = (contextWrapper) => (context) => {
                 if (allowAllEmptyExpressions && expression.length === 0)
                     return true;
 
-                const value = evaluateToCompletion(
-                    heuristicObject.values.fromPattern(pattern)
-                );
+                const value = heuristicObject.values.fromPattern(pattern);
+
+                // if (test(expression, value)) console.log(`"${expression}" passed the heuristic test "${heuristicName}" for meta-type: ${stringifyPattern(
+                //     pattern
+                // )}!"`)
 
                 return (
                     test(expression, value) || {

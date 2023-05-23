@@ -1,14 +1,15 @@
 import { consoleWarn } from "./environment.js";
 
-export const discreteRangeIterator = ({
-    start,
-    step,
-    end = null,
-    includeEnd = false,
-    includeStart = true,
-}) => {
+export const discreteRangeIterator = (input) => {
+    const {
+        start,
+        step,
+        end = null,
+        includeEnd = false,
+        includeStart = true,
+    } = input;
     let value = start - step * includeStart;
-    console.log("penis2", start, step);
+    console.log("Creating iterator from discrete range", input);
     return {
         hasNext: () => {
             if (end === null) return true;

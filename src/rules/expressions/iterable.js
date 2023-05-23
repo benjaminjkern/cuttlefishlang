@@ -23,7 +23,7 @@ export default {
             allowedSubtypes: ["Number"],
             evaluate: ({ tokens: [range], context }) => {
                 const v = context.evaluateExpression(range);
-                console.log("penis8", v);
+                console.log("Evaluating discrete range", v);
                 return discreteRangeIterator(v);
             },
         },

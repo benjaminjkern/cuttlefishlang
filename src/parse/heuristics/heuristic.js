@@ -52,21 +52,17 @@ export const newHeuristic = (contextWrapper) => (context) => {
         values: {
             fromTypeToken: debugFunction(
                 (typeToken, typeSeen) => {
-                    const adjustedTypeToken = fillDefaultSubtypes(
-                        typeToken,
-                        context
-                    );
-                    const typeKey = makeTypeKey(adjustedTypeToken);
+                    const typeKey = makeTypeKey(typeToken);
 
                     if (typeKeyValues[typeKey]) return typeKeyValues[typeKey];
-                    if (typeSeen?.[adjustedTypeToken.type])
+                    if (typeSeen?.[typeToken.type])
                         return runFunctionOrValue(unresolvedValue);
 
                     const value = heuristicObject.values.fromPatternList(
-                        getAllRules(adjustedTypeToken, context).map(
+                        getAllRules(typeToken, context).map(
                             ({ pattern }) => pattern
                         ),
-                        { ...(typeSeen || {}), [adjustedTypeToken.type]: true }
+                        { ...(typeSeen || {}), [typeToken.type]: true }
                     );
 
                     if (!typeSeen) {

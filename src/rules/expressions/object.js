@@ -14,7 +14,7 @@ export const objectGenerics = [
     // Temporarily put these here so that it can catch it, needs to be before iterable
     "List",
     "Iterable",
-    "Dictionary",
+    // "Dictionary",
 ];
 
 export default {
@@ -24,25 +24,25 @@ export default {
             evaluate: ({ tokens: [_, token], context }) =>
                 context.evaluateExpression(token),
         },
-        {
-            pattern: [type("Dictionary", thisType()), ".", type("varName")],
-            evaluate: ({ tokens: [dict, _, variable], context }) =>
-                context.evaluateExpression(dict)[
-                    context.evaluateExpression(variable)
-                ],
-        },
-        {
-            pattern: [
-                type("Dictionary", thisType()),
-                "[",
-                OR(type("String"), type("Number")),
-                "]",
-            ],
-            evaluate: ({ tokens: [dict, _, exp], context }) =>
-                context.evaluateExpression(dict)[
-                    context.evaluateExpression(exp)
-                ],
-        },
+        // {
+        //     pattern: [type("Dictionary", thisType()), ".", type("varName")],
+        //     evaluate: ({ tokens: [dict, _, variable], context }) =>
+        //         context.evaluateExpression(dict)[
+        //             context.evaluateExpression(variable)
+        //         ],
+        // },
+        // {
+        //     pattern: [
+        //         type("Dictionary", thisType()),
+        //         "[",
+        //         OR(type("String"), type("Number")),
+        //         "]",
+        //     ],
+        //     evaluate: ({ tokens: [dict, _, exp], context }) =>
+        //         context.evaluateExpression(dict)[
+        //             context.evaluateExpression(exp)
+        //         ],
+        // },
         {
             pattern: [type("Iterable", thisType()), "[", type("Integer"), "]"],
             evaluate: ({ tokens: [iterable, _, index], context }) =>

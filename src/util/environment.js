@@ -10,7 +10,7 @@ export const environment = {
     colors: false,
     debug: true,
     debugHeuristics: false,
-    debugHeuristicTests: false,
+    debugHeuristicTests: true,
     inspect: console.log,
     consoleWrite:
         typeof process !== "undefined"

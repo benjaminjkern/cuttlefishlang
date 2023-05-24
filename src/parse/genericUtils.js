@@ -76,10 +76,26 @@ const replaceGenericTypesInRule = ({ pattern, ...rule }, typeToken) => {
 export const getAllRules = (typeToken, context) => {
     const typeName = typeToken.type;
 
-    // NEED TO HAVE THIS FILL OUT WITH SUBTYPES
-    const adjustedTypeToken = fillDefaultSubtypes(typeToken, context);
-
     const returnRules = [];
+    if (context.generics.subtypeLengths[typeToken.type]) {
+        for (const subtypeName of context.generics.genericChildren["Object"]) {
+            // Default subtypes
+            returnRules.push({
+                pattern: [
+                    {
+                        ...typeToken,
+                        subtypes: Array(
+                            context.generics.subtypeLengths[typeToken.type] || 0
+                        )
+                            .fill()
+                            .map(() => type(subtypeName)),
+                    }, // TODO: GO through all combinations for multiple subtypes
+                ],
+            });
+        }
+        return returnRules;
+    }
+
     // Add extra generic children rule to prevent parsing loops (i.e. Object -> Number | List | etc...)
     if (context.generics.genericSubtypeRules[typeName])
         returnRules.push(context.generics.genericSubtypeRules[typeName][0]); // [0]: Take out of list, it was in a list because I needed it to be to get the cleanRuleset to work
@@ -96,17 +112,14 @@ export const getAllRules = (typeToken, context) => {
         );
 
     return returnRules
-        .flatMap((rule) =>
-            replaceGenericTypesInRule(rule, adjustedTypeToken, context)
-        )
+        .flatMap((rule) => replaceGenericTypesInRule(rule, typeToken, context))
         .filter(
             ({ allowedSubtypes }) =>
                 !allowedSubtypes ||
                 allowedSubtypes.length === 0 ||
                 allowedSubtypes.every((allowedSubtype, i) =>
                     allowedSubtype.some(
-                        (subtype) =>
-                            subtype === adjustedTypeToken.subtypes[i].type
+                        (subtype) => subtype === typeToken.subtypes[i].type
                     )
                 )
         );

@@ -1,4 +1,8 @@
-import { getAllRules, makeTypeKey } from "../genericUtils.js";
+import {
+    fillDefaultSubtypes,
+    getAllRules,
+    makeTypeKey,
+} from "../genericUtils.js";
 import {
     isTerminal,
     stringifyPattern,
@@ -31,6 +35,12 @@ import { environment } from "../../util/environment.js";
 //                 : undefined,
 //         ];
 //     };
+
+const stringifyTestResult = (result) => {
+    if (result.error) return `Error: ${result.error}`;
+    return result;
+    // return stringifyToken(result);
+};
 
 const lazyCombiner = (combiner) => (currentValue, newValue) => {
     if (typeof currentValue !== "function" && typeof newValue !== "function")
@@ -85,18 +95,10 @@ export const newHeuristic = (contextWrapper) => (context) => {
         values: {
             fromTypeToken: debugFunction(
                 (typeToken, typeSeen) => {
-                    const adjustedTypeToken = {
-                        ...typeToken,
-                        subtypes: Array(
-                            context.generics.subtypeLengths[typeToken.type] || 0
-                        )
-                            .fill()
-                            .map(
-                                (_, i) =>
-                                    typeToken.subtypes[i] || type("Object")
-                                // Add default subtypes (TODO: Allow different subtypes other than Object)
-                            ),
-                    };
+                    const adjustedTypeToken = fillDefaultSubtypes(
+                        typeToken,
+                        context
+                    );
                     const typeKey = makeTypeKey(adjustedTypeToken);
 
                     if (typeKeyValues[typeKey]) return typeKeyValues[typeKey];
@@ -246,45 +248,58 @@ export const newHeuristic = (contextWrapper) => (context) => {
             },
         },
         tests: {
-            fromTypeToken: (typeToken, expression) => {
-                // Wasnt in original heuristic check but might as well be?
-                if (allowAllEmptyExpressions && expression.length === 0)
-                    return true;
+            fromTypeToken: debugFunction(
+                (typeToken, expression) => {
+                    // Wasnt in original heuristic check but might as well be?
+                    if (allowAllEmptyExpressions && expression.length === 0)
+                        return true;
 
-                const value = heuristicObject.values.fromTypeToken(typeToken);
+                    const value =
+                        heuristicObject.values.fromTypeToken(typeToken);
 
-                // if (test(expression, value)) console.log(`"${expression}" passed the heuristic test "${heuristicName}" for type: ${stringifyToken(
-                //     typeToken
-                // )}!`)
+                    // if (test(expression, value)) console.log(`"${expression}" passed the heuristic test "${heuristicName}" for type: ${stringifyToken(
+                    //     typeToken
+                    // )}!`)
 
-                return (
-                    test(expression, value) || {
-                        error: `"${expression}" failed the heuristic test "${heuristicName}" for type: ${stringifyToken(
-                            typeToken
-                        )}!`,
-                        value,
-                    }
-                );
-            },
-            fromPattern: (pattern, expression) => {
-                if (allowAllEmptyExpressions && expression.length === 0)
-                    return true;
+                    return (
+                        test(expression, value) || {
+                            error: `"${expression}" failed the heuristic test "${heuristicName}" for type: ${stringifyToken(
+                                typeToken
+                            )}!`,
+                            value,
+                        }
+                    );
+                },
+                `${heuristicName}.tests.fromTypeToken`,
+                [stringifyToken, stringifyToken],
+                stringifyTestResult,
+                environment.debugHeuristicTests
+            ),
+            fromPattern: debugFunction(
+                (pattern, expression) => {
+                    if (allowAllEmptyExpressions && expression.length === 0)
+                        return true;
 
-                const value = heuristicObject.values.fromPattern(pattern);
+                    const value = heuristicObject.values.fromPattern(pattern);
 
-                // if (test(expression, value)) console.log(`"${expression}" passed the heuristic test "${heuristicName}" for meta-type: ${stringifyPattern(
-                //     pattern
-                // )}!"`)
+                    // if (test(expression, value)) console.log(`"${expression}" passed the heuristic test "${heuristicName}" for meta-type: ${stringifyPattern(
+                    //     pattern
+                    // )}!"`)
 
-                return (
-                    test(expression, value) || {
-                        error: `"${expression}" failed the heuristic test "${heuristicName}" for meta-type: ${stringifyPattern(
-                            pattern
-                        )}!"`,
-                        value,
-                    }
-                );
-            },
+                    return (
+                        test(expression, value) || {
+                            error: `"${expression}" failed the heuristic test "${heuristicName}" for meta-type: ${stringifyPattern(
+                                pattern
+                            )}!"`,
+                            value,
+                        }
+                    );
+                },
+                `${heuristicName}.tests.fromPattern`,
+                [stringifyPattern, stringifyToken],
+                stringifyTestResult,
+                environment.debugHeuristicTests
+            ),
         },
         typeKeyValues,
     };

@@ -131,7 +131,10 @@ const replaceGenericTypesInPattern = (pattern, typeToken) => {
 //     return count;
 // };
 
-const replaceGenericTypesInRule = ({ pattern, ...rule }, typeToken) => {
+const replaceGenericTypesInRule = (
+    { pattern, allowedSubtypes, ...rule },
+    typeToken
+) => {
     // if (genericTypes) {
     //     const genericsToReplace = {};
     //     for (const genericType in genericTypes) {
@@ -176,6 +179,7 @@ const replaceGenericTypesInRule = ({ pattern, ...rule }, typeToken) => {
  */
 export const getAllRules = (typeToken, context) => {
     const typeName = typeToken.type;
+    const adjustedTypeToken = fillDefaultSubtypes(typeToken, context);
 
     const returnRules = [];
     // Add extra generic children rule to prevent parsing loops (i.e. Object -> Number | List | etc...)
@@ -192,9 +196,22 @@ export const getAllRules = (typeToken, context) => {
                 (parentType) => context.rules[parentType]
             )
         );
-    return returnRules.flatMap((rule) =>
-        replaceGenericTypesInRule(rule, typeToken, context)
-    );
+
+    return returnRules
+        .filter(
+            ({ allowedSubtypes }) =>
+                !allowedSubtypes ||
+                allowedSubtypes.length === 0 ||
+                allowedSubtypes.some((allowedSubtype) =>
+                    allowedSubtype.every(
+                        (subtype, i) =>
+                            !subtype === adjustedTypeToken.subtypes[i].type
+                    )
+                )
+        )
+        .flatMap((rule) =>
+            replaceGenericTypesInRule(rule, adjustedTypeToken, context)
+        );
 };
 
 export const makeTypeKey = (typeToken) => {
@@ -211,4 +228,18 @@ export const makeTypeKey = (typeToken) => {
     return `${typeToken.type}<${typeToken.subtypes
         .map(makeTypeKey)
         .join(",")}>`;
+};
+
+export const fillDefaultSubtypes = (typeToken, context) => {
+    return {
+        ...typeToken,
+        subtypes: Array(context.generics.subtypeLengths[typeToken.type] || 0)
+            .fill()
+            .map(
+                (_, i) =>
+                    typeToken.subtypes[i] ||
+                    context.generics.defaultSubtypes?.[typeToken.type]?.[i] ||
+                    type("Object")
+            ),
+    };
 };

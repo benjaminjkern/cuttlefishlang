@@ -20,7 +20,7 @@ export default {
         {
             pattern: [type("DiscreteRange")],
             // TODO: Make this able to say when its just integers
-            allowedSubtypes: ["Number"],
+            allowedSubtypes: [["Number"]],
             evaluate: ({ tokens: [range], context }) => {
                 const v = context.evaluateExpression(range);
                 console.log("Evaluating discrete range", v);

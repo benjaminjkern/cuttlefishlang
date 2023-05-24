@@ -13,3 +13,5 @@ print x.length
 print []
 
 print [1]
+
+print x[2] # 3

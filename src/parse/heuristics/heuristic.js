@@ -52,17 +52,21 @@ export const newHeuristic = (contextWrapper) => (context) => {
         values: {
             fromTypeToken: debugFunction(
                 (typeToken, typeSeen) => {
-                    const typeKey = makeTypeKey(typeToken);
+                    const adjustedTypeToken = fillDefaultSubtypes(
+                        typeToken,
+                        context
+                    );
+                    const typeKey = makeTypeKey(adjustedTypeToken);
 
                     if (typeKeyValues[typeKey]) return typeKeyValues[typeKey];
-                    if (typeSeen?.[typeToken.type])
+                    if (typeSeen?.[adjustedTypeToken.type])
                         return runFunctionOrValue(unresolvedValue);
 
                     const value = heuristicObject.values.fromPatternList(
-                        getAllRules(typeToken, context).map(
+                        getAllRules(adjustedTypeToken, context).map(
                             ({ pattern }) => pattern
                         ),
-                        { ...(typeSeen || {}), [typeToken.type]: true }
+                        { ...(typeSeen || {}), [adjustedTypeToken.type]: true }
                     );
 
                     if (!typeSeen) {
@@ -203,10 +207,6 @@ export const newHeuristic = (contextWrapper) => (context) => {
                     const value =
                         heuristicObject.values.fromTypeToken(typeToken);
 
-                    // if (test(expression, value)) console.log(`"${expression}" passed the heuristic test "${heuristicName}" for type: ${stringifyToken(
-                    //     typeToken
-                    // )}!`)
-
                     return (
                         test(expression, value) || {
                             error: `"${expression}" failed the heuristic test "${heuristicName}" for type: ${stringifyToken(
@@ -227,10 +227,6 @@ export const newHeuristic = (contextWrapper) => (context) => {
                         return true;
 
                     const value = heuristicObject.values.fromPattern(pattern);
-
-                    // if (test(expression, value)) console.log(`"${expression}" passed the heuristic test "${heuristicName}" for meta-type: ${stringifyPattern(
-                    //     pattern
-                    // )}!"`)
 
                     return (
                         test(expression, value) || {

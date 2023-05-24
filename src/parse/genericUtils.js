@@ -77,7 +77,7 @@ export const getAllRules = (typeToken, context) => {
     const typeName = typeToken.type;
 
     // NEED TO HAVE THIS FILL OUT WITH SUBTYPES
-    // const adjustedTypeToken = fillDefaultSubtypes(typeToken, context);
+    const adjustedTypeToken = fillDefaultSubtypes(typeToken, context);
 
     const returnRules = [];
     // Add extra generic children rule to prevent parsing loops (i.e. Object -> Number | List | etc...)
@@ -96,19 +96,19 @@ export const getAllRules = (typeToken, context) => {
         );
 
     return returnRules
+        .flatMap((rule) =>
+            replaceGenericTypesInRule(rule, adjustedTypeToken, context)
+        )
         .filter(
             ({ allowedSubtypes }) =>
                 !allowedSubtypes ||
                 allowedSubtypes.length === 0 ||
-                allowedSubtypes.some((allowedSubtype) =>
-                    allowedSubtype.every(
-                        (subtype, i) =>
-                            !subtype === adjustedTypeToken.subtypes[i].type
+                allowedSubtypes.every((allowedSubtype, i) =>
+                    allowedSubtype.some(
+                        (subtype) =>
+                            subtype === adjustedTypeToken.subtypes[i].type
                     )
                 )
-        )
-        .flatMap((rule) =>
-            replaceGenericTypesInRule(rule, adjustedTypeToken, context)
         );
 };
 

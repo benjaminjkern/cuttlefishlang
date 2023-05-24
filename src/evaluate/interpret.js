@@ -37,7 +37,6 @@ export const newInterpretContext = (extraRules = {}, parentContexts = {}) => {
             }
 
             if (context.vars[varName] === undefined) {
-                console.log(typeToken);
                 context.rules[typeToken.type].push({
                     allowedSubtypes: typeToken.subtypes,
                     pattern: [varName],

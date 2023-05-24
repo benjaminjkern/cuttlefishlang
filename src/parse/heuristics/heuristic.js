@@ -9,57 +9,14 @@ import {
     stringifyToken,
     stringifyTokenDict,
 } from "../parsingUtils.js";
-import {
-    cacheValue,
-    debugFunction,
-    evaluateToCompletion,
-    runFunctionOrValue,
-} from "../../util/index.js";
-import { OR, genericType, thisSubtype, type } from "../ruleUtils.js";
+import { debugFunction, runFunctionOrValue } from "../../util/index.js";
 import { environment } from "../../util/environment.js";
-
-// const lazyCombiner =
-//     (combiner) =>
-//     ([currentValueFast, currentValueSlow], [newValueFast, newValueSlow]) => {
-//         return [
-//             combiner(currentValueFast, newValueFast),
-//             currentValueSlow || newValueSlow
-//                 ? (...args) => {
-//                       if (!currentValueSlow) return newValueSlow(...args);
-//                       if (!newValueSlow) return currentValueSlow(...args);
-//                       return combiner(
-//                           currentValueSlow(...args),
-//                           newValueSlow(...args)
-//                       );
-//                   }
-//                 : undefined,
-//         ];
-//     };
 
 const stringifyTestResult = (result) => {
     if (result.error) return `Error: ${result.error}`;
     return result;
     // return stringifyToken(result);
 };
-
-const lazyCombiner = (combiner) => (currentValue, newValue) => {
-    if (typeof currentValue !== "function" && typeof newValue !== "function")
-        return combiner(currentValue, newValue);
-    return (...args) =>
-        combiner(
-            runFunctionOrValue(currentValue, ...args),
-            runFunctionOrValue(newValue, ...args)
-        );
-};
-
-// export const transformHeuristicValue = ([fastValue, slowValue], transform) => {
-//     return [
-//         transform(fastValue),
-//         slowValue
-//             ? (inputTypes) => transform(slowValue(inputTypes))
-//             : undefined,
-//     ];
-// };
 
 const stringifyResult = (heuristicName) => (result) => {
     if (heuristicName[0] === "m") return result;
@@ -95,18 +52,14 @@ export const newHeuristic = (contextWrapper) => (context) => {
         values: {
             fromTypeToken: debugFunction(
                 (typeToken, typeSeen) => {
-                    const adjustedTypeToken = fillDefaultSubtypes(
-                        typeToken,
-                        context
-                    );
-                    const typeKey = makeTypeKey(adjustedTypeToken);
+                    const typeKey = makeTypeKey(typeToken);
 
                     if (typeKeyValues[typeKey]) return typeKeyValues[typeKey];
                     if (typeSeen?.[typeToken.type])
                         return runFunctionOrValue(unresolvedValue);
 
                     const value = heuristicObject.values.fromPatternList(
-                        getAllRules(adjustedTypeToken, context).map(
+                        getAllRules(typeToken, context).map(
                             ({ pattern }) => pattern
                         ),
                         { ...(typeSeen || {}), [typeToken.type]: true }
@@ -171,19 +124,12 @@ export const newHeuristic = (contextWrapper) => (context) => {
             fromToken: (token, typeSeen) => {
                 if (isTerminal(token)) return getTerminalTokenValue(token);
 
-                // Generic types
                 if (token.thisType)
                     throw "Should have been handled in the getAllRules()";
                 if (token.thisSubtype !== undefined)
                     throw "Should have been handled in the getAllRules()";
 
-                if (token.inputType !== undefined) throw "Need to fix this";
-                // return (typeInputs, typeSeenInside) =>
-                //     heuristicObject.values.fromToken(
-                //         // If it's another input type then just return another empty function
-                //         typeInputs[token.inputType],
-                //         typeSeenInside // Not sure about this
-                //     );
+                // Generic types
                 if (token.genericType)
                     return runFunctionOrValue(initialPatternValue);
                 // ({ genericTypeMap }) =>

@@ -10,7 +10,6 @@ import { isValidToken } from "./heuristics/tokenDict.js";
 const stringifyParseResult = (result) => {
     if (result.error) return `Error: ${result.error}`;
     return "Parsed";
-    // return stringifyToken(result);
 };
 
 /**********************

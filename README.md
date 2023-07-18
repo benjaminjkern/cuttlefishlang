@@ -2,7 +2,7 @@
 
 ![cuttlefish](etc/cuttlefish.png "Cuttlefish!")
 
-Cuttlefish is a dynamically typed functional programming language designed to be the epitome of modern programming practices
+Cuttlefish is a statically typed, functional programming language designed to be the epitome of modern programming practices
 
 Cuttlefish as a language structurally draws from many aspects of Haskell, Elixir, and JavaScript, as well as stylistically from Python, with indentation based closure.
 
@@ -29,7 +29,7 @@ repeat:
     if x <= 0:
         break
 
-print "Just kidding"
+print "Just kidding that didn't actually print forever"
 ```
 
 # Functions
@@ -61,7 +61,7 @@ This could have also been accomplished with the following:
 print (plusSix * plusSix)(7) # still 19
 ```
 
-## Pattern matching
+# Pattern matching
 
 Pattern matching is fully implemented in all Routines. The compiler tests for patterns in the order defined at compile time, so that the abstract syntax tree does not have to do any pattern matching.
 
@@ -74,32 +74,22 @@ factorial = fn:
 ```
 
 The `|` is a guard, and it reads as "such that". In words, the function says:
-"Factorial is a function, if the input is a `0` it returns `1`, otherwise if the input is an integer `x` such that `x` is greater than `0`, then it returns `x` times the factorial of `x - 1`. If the input does not match any above patterns, the function will throw an error. If the input is anything else, the function will throw an error."
+"`factorial` is a function, if the input is a `0` it returns `1`, otherwise if the input, call it `x`, is an `Int` (integer) such that `x` is greater than `0`, then it returns `x` times the factorial of `x - 1`. If the input does not match any above patterns, the function will throw an error."
 
-Here are map and filter implemented in Cuttlefish:
-
-
-> IFFY ON THIS BIT HERE
-
-Pattern matching can be incredibly expressive for exactly which cases you want to run and how your processes should respond. The patterns are tested against the argument in definition order:
-
+Here are more examples of pattern matching:
 ```py
-doTaxes = prc:
-    Person p | p.debt > 1000 or p.name == 'Karen' ->
-        print 'Aint nothin I can do about that'
-    Person p ->
-        p.debt = 0
+# Ackermann function
+ackermann = fn:
+    (0, Int n) -> n + 1
+    (Int m, 0) -> ackermann(m - 1, 1)
+    (Int m, Int n) -> ackermann(m - 1, ackermann(m, n - 1))
 
-    Monster m | m.color == 'green' -> m.eyeballs = 1
-    Monster m | m.hasFur -> m.scream()
-
-    Dog d ->
-        print 'Dogs dont have to do taxes!'
-        d.love += 1
-
-    # This will never match, since every dog matches above
-    Dog d | d.love > 100 ->
-        d.love -= 1
+# Control structures such as `for` also have pattern matching built in
+for [1..100]: i ->
+    | i %= 15 -> print 'FizzBuzz'
+    | i %= 3 -> print 'Fizz'
+    | i %= 5 -> print 'Buzz'
+    | -> print i
 ```
 
 # Discrete Ranges
@@ -137,7 +127,7 @@ The following operators are built in to the language:
 | --------------- | --------------------------------------------------------------------------------------------- | ------------------ |
 | `+`/`-`         | Addition and Subtraction                                                                      | Numbers            |
 | `*`             | Composition, Multiplication                                                                   | Numbers, Functions |
-| `^`             | Compound Composition, Exponentiation                                                          |                    |
+| `^`             | Compound Composition, Exponentiation                                                          | Numbers, Function                   |
 | `/`             | Division                                                                                      |                    |
 | `++`            | Concatenation                                                                                 |                    |
 | `**`            | Compound Concatenation                                                                        |                    |
@@ -163,8 +153,40 @@ This is because `*` is the composition operator. This is the same as running:
 print plusSix(plusSix(plusSix(plusSix(7)))) # still 31
 ```
 
-I know what you're thinking, "But how do you multiply then?"
-It's simple. Also with `*`. And it lends itself very nicely to being able to "compose" two numbers together:
+# Types
+Types in Cuttlefish are __OPTIONAL but INFERRED AT COMPILE TIME IF NOT SPECIFIED__.
+This is done with a novel parser that tries to squeeze as much type information out of your code as possible.
+
+
+# BITS I AM IFFY ABOUT
+
+
+Pattern matching can be incredibly expressive for exactly which cases you want to run and how your processes should respond. The patterns are tested against the argument in definition order:
+
+```py
+doTaxes = prc:
+    Person p | p.debt > 1000 or p.name == 'Karen' ->
+        print 'Aint nothin I can do about that'
+    Person p ->
+        p.debt = 0
+
+    Monster m | m.color == 'green' -> m.eyeballs = 1
+    Monster m | m.hasFur -> m.scream()
+
+    Dog d ->
+        print 'Dogs dont have to do taxes!'
+        d.love += 1
+
+    # This will never match, since every dog matches above
+    Dog d | d.love > 100 ->
+        d.love -= 1
+```
+print (f ^ 4)(2) == (f * f * f * f)(2) # Which would also be equal to f(f(f(f(2))))
+print 5 ^ 2.5 # 55.90169943749474
+# It still works for regular floating point exponentiation!
+```
+
+ And it lends itself very nicely to being able to "compose" two numbers together:
 
 ```py
 print 5(5)   == 25
@@ -181,7 +203,4 @@ print 55     != 25 # 55 is just 55, so duh its False
 
 ```py
 print 5 ^ 4 == 5 * 5 * 5 * 5
-print (f ^ 4)(2) == (f * f * f * f)(2) # Which would also be equal to f(f(f(f(2))))
-print 5 ^ 2.5 # 55.90169943749474
-# It still works for regular floating point exponentiation!
 ```

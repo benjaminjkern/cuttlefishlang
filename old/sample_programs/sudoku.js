@@ -227,19 +227,19 @@ const solve = (board) => {
     };
     try {
         while (true) {
-            // printBoard(
-            //     solveObj.boardOptions.map((row) =>
-            //         row.map((options) => {
-            //             let seen = false;
-            //             for (let n = 1; n <= 9; n++)
-            //                 if (options[n]) {
-            //                     if (seen) return undefined;
-            //                     seen = n;
-            //                 }
-            //             return seen;
-            //         })
-            //     )
-            // );
+            printBoard(
+                solveObj.boardOptions.map((row) =>
+                    row.map((options) => {
+                        let seen = false;
+                        for (let n = 1; n <= 9; n++)
+                            if (options[n]) {
+                                if (seen) return undefined;
+                                seen = n;
+                            }
+                        return seen;
+                    })
+                )
+            );
             while (solveObj.settledCells.length) {
                 const [x, y] = solveObj.settledCells.pop();
                 const value = (() => {
@@ -288,6 +288,8 @@ const solve = (board) => {
                 removeBoardOption(gx, gy, gn);
                 continue;
             }
+
+            let lowestNumberAvailable;
             // Save position and make random guess
             startGuess: for (let x = 0; x < boxSize * boxSize; x++) {
                 for (let y = 0; y < boxSize * boxSize; y++) {
@@ -297,27 +299,38 @@ const solve = (board) => {
                             available.push(m);
                         }
                     }
-                    if (available.length >= 2) {
-                        const r = Math.floor(Math.random() * available.length);
-
-                        stack.push({
-                            boardOptions: solveObj.boardOptions.map((row) =>
-                                row.map((options) => ({ ...options }))
-                            ),
-                            totalSettled: solveObj.totalSettled,
-                            settledCells: [...solveObj.settledCells],
-                            guess: [x, y, available[r]],
-                        });
-                        // console.log("Guess", [x, y, available[r]]);
-                        solveObj.totalSettled += 1;
-
-                        solveObj.boardOptions[y][x] = { [available[r]]: true };
-
-                        solveObj.settledCells.push([x, y]);
+                    if (available.length === 1) continue;
+                    if (available.length === 2) {
+                        lowestNumberAvailable = [x, y, available];
                         break startGuess;
+                    }
+                    if (
+                        !lowestNumberAvailable ||
+                        available.length < lowestNumberAvailable[2].length
+                    ) {
+                        lowestNumberAvailable = [x, y, available];
                     }
                 }
             }
+
+            const [x, y, available] = lowestNumberAvailable;
+
+            const r = Math.floor(Math.random() * available.length);
+
+            stack.push({
+                boardOptions: solveObj.boardOptions.map((row) =>
+                    row.map((options) => ({ ...options }))
+                ),
+                totalSettled: solveObj.totalSettled,
+                settledCells: [...solveObj.settledCells],
+                guess: [x, y, available[r]],
+            });
+            // console.log("Guess", [x, y, available[r]]);
+            solveObj.totalSettled += 1;
+
+            solveObj.boardOptions[y][x] = { [available[r]]: true };
+
+            solveObj.settledCells.push([x, y]);
         }
     } catch (err) {
         if (err === "Impossible!") return [];
@@ -421,7 +434,7 @@ process.stdin.on("keypress", function (ch, key) {
     }
     printBoard(BOARD);
     if (key && key.name === "return") {
-        process.stdin.pause();
+        // process.stdin.pause();
         logs = [];
         printBoard(makePuzzle(BOARD));
     }

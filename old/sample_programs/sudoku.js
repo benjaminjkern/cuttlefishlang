@@ -121,7 +121,7 @@ for (let i = 0; i < boxSize * boxSize; i++) {
         // if (i < boxSize * boxSize - 2 && j < boxSize * boxSize - 1)
         //     addToConstraintSet(i, j, i + 2, j + 1);
 
-        // // Kings sudoku
+        // Kings sudoku
         // if (i >= 1 && j >= 1) addToConstraintSet(i, j, i - 1, j - 1);
         // if (j >= 1) addToConstraintSet(i, j, i, j - 1);
         // if (i < boxSize * boxSize - 1 && j >= 1)
@@ -223,79 +223,89 @@ const solve = (board) => {
             settledCells.push([x, y]);
         }
     };
-    while (true) {
-        while (settledCells.length) {
-            const [x, y] = settledCells.pop();
-            const value = (() => {
-                for (let n = 1; n <= 9; n++)
-                    if (solveObj.boardOptions[y][x][n]) return n;
-                throw "Shouldnt have gotten here!";
-            })();
-            console.log("Settling", [x, y, value]);
-            for (const [[x1, y1], [x2, y2]] of CONSTRAINTS) {
-                let nx, ny;
-                if (x1 === x && y1 === y) {
-                    nx = x2;
-                    ny = y2;
+    try {
+        while (true) {
+            while (settledCells.length) {
+                const [x, y] = settledCells.pop();
+                const value = (() => {
+                    for (let n = 1; n <= 9; n++)
+                        if (solveObj.boardOptions[y][x][n]) return n;
+                    throw "Shouldnt have gotten here!";
+                })();
+                console.log("Settling", [x, y, value]);
+                for (const [[x1, y1], [x2, y2]] of CONSTRAINTS) {
+                    let nx, ny;
+                    if (x1 === x && y1 === y) {
+                        nx = x2;
+                        ny = y2;
+                    }
+                    if (x2 === x && y2 === y) {
+                        nx = x1;
+                        ny = y1;
+                    }
+                    if (nx !== undefined) removeBoardOption(nx, ny, value);
                 }
-                if (x2 === x && y2 === y) {
-                    nx = x1;
-                    ny = y1;
-                }
-                if (nx !== undefined) removeBoardOption(nx, ny, value);
             }
-        }
-        console.log(solveObj.totalSettled, "total settled");
-        if (solveObj.totalSettled === boxSize * boxSize * boxSize * boxSize) {
-            // All good, lets go
-            solutions.push(
-                solveObj.boardOptions.map((row) =>
-                    row.map((options) => {
-                        for (let n = 1; n <= 9; n++) if (options[n]) return n;
-                        throw "Shouldn't have gotten here!";
-                    })
-                )
-            );
-            if (solutions.length >= 2 || stack.length === 0) return solutions;
-            const {
-                boardOptions,
-                totalSettled,
-                guess: [gx, gy, gn],
-            } = stack.pop();
-            solveObj.boardOptions = boardOptions;
-            solveObj.totalSettled = totalSettled;
-            removeBoardOption(gx, gy, gn);
-            continue;
-        }
-        // Save position and make random guess
-        startGuess: for (let x = 0; x < boxSize * boxSize; x++) {
-            for (let y = 0; y < boxSize * boxSize; y++) {
-                const available = [];
-                for (let m = 1; m <= boxSize * boxSize; m++) {
-                    if (solveObj.boardOptions[y][x][m]) {
-                        available.push(m);
+            console.log(solveObj.totalSettled, "total settled");
+            if (
+                solveObj.totalSettled ===
+                boxSize * boxSize * boxSize * boxSize
+            ) {
+                // All good, lets go
+                solutions.push(
+                    solveObj.boardOptions.map((row) =>
+                        row.map((options) => {
+                            for (let n = 1; n <= 9; n++)
+                                if (options[n]) return n;
+                            throw "Shouldn't have gotten here!";
+                        })
+                    )
+                );
+                if (solutions.length >= 2 || stack.length === 0)
+                    return solutions;
+                const {
+                    boardOptions,
+                    totalSettled,
+                    guess: [gx, gy, gn],
+                } = stack.pop();
+                solveObj.boardOptions = boardOptions;
+                solveObj.totalSettled = totalSettled;
+                removeBoardOption(gx, gy, gn);
+                continue;
+            }
+            // Save position and make random guess
+            startGuess: for (let x = 0; x < boxSize * boxSize; x++) {
+                for (let y = 0; y < boxSize * boxSize; y++) {
+                    const available = [];
+                    for (let m = 1; m <= boxSize * boxSize; m++) {
+                        if (solveObj.boardOptions[y][x][m]) {
+                            available.push(m);
+                        }
+                    }
+                    if (available.length >= 2) {
+                        const r = Math.floor(Math.random() * available.length);
+
+                        stack.push({
+                            boardOptions: solveObj.boardOptions.map((row) =>
+                                row.map((options) => ({ ...options }))
+                            ),
+                            totalSettled: solveObj.totalSettled,
+                            guess: [x, y, available[r]],
+                        });
+                        console.log("Guess", [x, y, available[r]]);
+                        solveObj.totalSettled += 1;
+
+                        solveObj.boardOptions[y][x] = { [available[r]]: true };
+
+                        settledCells.push([x, y]);
+                        break startGuess;
                     }
                 }
-                if (available.length >= 2) {
-                    const r = Math.floor(Math.random() * available.length);
-
-                    stack.push({
-                        boardOptions: solveObj.boardOptions.map((row) =>
-                            row.map((options) => ({ ...options }))
-                        ),
-                        totalSettled: solveObj.totalSettled,
-                        guess: [x, y, available[r]],
-                    });
-                    console.log("Guess", [x, y, available[r]]);
-                    solveObj.totalSettled += 1;
-
-                    solveObj.boardOptions[y][x] = { [available[r]]: true };
-
-                    settledCells.push([x, y]);
-                    break startGuess;
-                }
             }
         }
+    } catch (err) {
+        if (err === "Impossible!") return [];
+        throw err;
     }
 };
 
@@ -397,8 +407,7 @@ process.stdin.on("keypress", function (ch, key) {
     if (key && key.name === "return") {
         process.stdin.pause();
         logs = [];
-        printBoard(solve(BOARD)[0]);
-        console.log("Done");
+        printBoard(makePuzzle(BOARD));
     }
     if (key && key.ctrl && key.name == "c") {
         process.stdin.pause();

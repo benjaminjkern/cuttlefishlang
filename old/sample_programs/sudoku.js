@@ -1,40 +1,11 @@
-const checkUnique = (list) => {
-    const seen = {};
-    for (const element of list) {
-        if (element === undefined) continue;
-        if (seen[element]) return false;
-        seen[element] = true;
-    }
-    return true;
-};
-
-const rowConstraint = (rowNum) => (board) => checkUnique(board[rowNum]);
-const colConstraint = (colNum) => (board) =>
-    checkUnique(board.map((row) => row[colNum]));
-const boxConstraint = (boxX, boxY) => (board) =>
-    checkUnique(
-        Array(boxSize)
-            .fill()
-            .flatMap((_, i) =>
-                Array(boxSize)
-                    .fill()
-                    .flatMap(
-                        (_, j) => board[boxY * boxSize + i][boxX * boxSize + j]
-                    )
-            )
-    );
-
-const sumConstraint = (coords, sum) => (board) => {
-    let runningSum = 0;
-    for (const [x, y] of coords) {
-        if (board[y][x] === undefined) return true;
-        runningSum += board[y][x];
-    }
-    return runningSum === sum;
-};
-
 const testConstraints = (board) =>
-    CONSTRAINTS.every((constraint) => constraint(board));
+    CONSTRAINTS.every(([[x1, y1], [x2, y2]]) => {
+        return (
+            board[y1][x1] === undefined ||
+            board[y2][x2] === undefined ||
+            board[y1][x1] !== board[y2][x2]
+        );
+    });
 
 const checkFullBoard = (board) =>
     board.flat().every((value) => value !== undefined);
@@ -83,16 +54,6 @@ const printBoard = (board = BOARD) => {
     process.stdin.resume();
 };
 
-const addToBoard = (board, newBoard) => {
-    for (const [y, row] of newBoard.entries()) {
-        for (const [x, value] of row.entries()) {
-            if (!value) continue;
-
-            board[y][x] = value;
-        }
-    }
-};
-
 const shuffle = (list) => {
     const newList = [...list];
     for (let i = 0; i < list.length; i++) {
@@ -120,15 +81,69 @@ const BOARD = Array(boxSize * boxSize)
             .map(() => undefined)
     );
 
-const CONSTRAINTS = Array(boxSize * boxSize)
-    .fill()
-    .flatMap((_, i) => [
-        rowConstraint(i),
-        colConstraint(i),
-        boxConstraint(i % boxSize, Math.floor(i / boxSize)),
-    ]);
+const CONSTRAINTS_SET = new Set();
+const addToConstraintSet = (x1, y1, x2, y2) => {
+    // Ensure duplicates aren't added
+    const keys = [`${x1},${y1},${x2},${y2}`, `${x2},${y2},${x1},${y1}`];
+    keys.sort();
+    CONSTRAINTS_SET.add(keys[0]);
+};
+for (let i = 0; i < boxSize * boxSize; i++) {
+    for (let j = 0; j < boxSize * boxSize; j++) {
+        // Regular sudoku
+        for (let k = j + 1; k < boxSize * boxSize; k++) {
+            addToConstraintSet(i, j, i, k);
+            addToConstraintSet(j, i, k, i);
 
-const solve = (board) => {
+            let startX = (i % boxSize) * boxSize;
+            let startY = Math.floor(i / boxSize) * boxSize;
+            addToConstraintSet(
+                startX + (j % boxSize),
+                startY + Math.floor(j / boxSize),
+                startX + (k % boxSize),
+                startY + Math.floor(k / boxSize)
+            );
+        }
+
+        // Knights sudoku
+        // if (i >= 1 && j >= 2) addToConstraintSet(i, j, i - 1, j - 2);
+        // if (i >= 2 && j >= 1) addToConstraintSet(i, j, i - 2, j - 1);
+        // if (i >= 1 && j < boxSize * boxSize - 2)
+        //     addToConstraintSet(i, j, i - 1, j + 2);
+        // if (i >= 2 && j < boxSize * boxSize - 1)
+        //     addToConstraintSet(i, j, i - 2, j + 1);
+        // if (i < boxSize * boxSize - 1 && j >= 2)
+        //     addToConstraintSet(i, j, i + 1, j - 2);
+        // if (i < boxSize * boxSize - 2 && j >= 1)
+        //     addToConstraintSet(i, j, i + 2, j - 1);
+        // if (i < boxSize * boxSize - 1 && j < boxSize * boxSize - 2)
+        //     addToConstraintSet(i, j, i + 1, j + 2);
+        // if (i < boxSize * boxSize - 2 && j < boxSize * boxSize - 1)
+        //     addToConstraintSet(i, j, i + 2, j + 1);
+
+        // // Kings sudoku
+        // if (i >= 1 && j >= 1) addToConstraintSet(i, j, i - 1, j - 1);
+        // if (j >= 1) addToConstraintSet(i, j, i, j - 1);
+        // if (i < boxSize * boxSize - 1 && j >= 1)
+        //     addToConstraintSet(i, j, i + 1, j - 1);
+        // if (i >= 1) addToConstraintSet(i, j, i - 1, j);
+        // if (i < boxSize * boxSize - 1) addToConstraintSet(i, j, i + 1, j);
+        // if (i >= 1 && j < boxSize * boxSize - 1)
+        //     addToConstraintSet(i, j, i - 1, j + 1);
+        // if (j < boxSize * boxSize - 1) addToConstraintSet(i, j, i, j + 1);
+        // if (i < boxSize * boxSize - 1 && j < boxSize * boxSize - 1)
+        //     addToConstraintSet(i, j, i + 1, j + 1);
+    }
+}
+const CONSTRAINTS = [...CONSTRAINTS_SET].map((constraint) => {
+    const [x1, y1, x2, y2] = constraint.split(",").map(Number);
+    return [
+        [x1, y1],
+        [x2, y2],
+    ];
+});
+
+const solve2 = (board) => {
     const solutions = [];
     const stack = [board];
     while (stack.length) {
@@ -151,6 +166,137 @@ const solve = (board) => {
     }
     // logs.unshift(`${solutions.length} solutions!`);
     return solutions;
+};
+
+const solve = (board) => {
+    const solveObj = {};
+    solveObj.boardOptions = Array(boxSize * boxSize)
+        .fill()
+        .map(() =>
+            Array(boxSize * boxSize)
+                .fill()
+                .map(() => ({}))
+        );
+    solveObj.totalSettled = 0;
+    const settledCells = [];
+    for (let x = 0; x < boxSize * boxSize; x++) {
+        for (let y = 0; y < boxSize * boxSize; y++) {
+            if (board[y][x] !== undefined) {
+                solveObj.totalSettled += 1;
+                solveObj.boardOptions[y][x][board[y][x]] = true;
+                settledCells.push([x, y]);
+            } else {
+                for (let n = 1; n <= boxSize * boxSize; n++)
+                    solveObj.boardOptions[y][x][n] = true;
+            }
+        }
+    }
+    const solutions = [];
+    const stack = [];
+
+    const removeBoardOption = (x, y, n) => {
+        if (!solveObj.boardOptions[y][x][n]) return;
+        solveObj.boardOptions[y][x][n] = false;
+        let count = 0;
+        for (let m = 1; m <= boxSize * boxSize; m++) {
+            if (solveObj.boardOptions[y][x][m]) {
+                if (count >= 1) return;
+                count++;
+            }
+        }
+        if (count === 0) {
+            console.log(x, y, "Is now empty! Rolling back");
+            if (!stack.length) throw "Impossible!";
+            const {
+                boardOptions,
+                totalSettled,
+                guess: [gx, gy, gn],
+            } = stack.pop();
+            solveObj.boardOptions = boardOptions;
+            solveObj.totalSettled = totalSettled;
+            removeBoardOption(gx, gy, gn);
+            return;
+        }
+        if (count === 1) {
+            solveObj.totalSettled += 1;
+            console.log(x, y, "Added as possible settled");
+            settledCells.push([x, y]);
+        }
+    };
+    while (true) {
+        while (settledCells.length) {
+            const [x, y] = settledCells.pop();
+            const value = (() => {
+                for (let n = 1; n <= 9; n++)
+                    if (solveObj.boardOptions[y][x][n]) return n;
+                throw "Shouldnt have gotten here!";
+            })();
+            console.log("Settling", [x, y, value]);
+            for (const [[x1, y1], [x2, y2]] of CONSTRAINTS) {
+                let nx, ny;
+                if (x1 === x && y1 === y) {
+                    nx = x2;
+                    ny = y2;
+                }
+                if (x2 === x && y2 === y) {
+                    nx = x1;
+                    ny = y1;
+                }
+                if (nx !== undefined) removeBoardOption(nx, ny, value);
+            }
+        }
+        console.log(solveObj.totalSettled, "total settled");
+        if (solveObj.totalSettled === boxSize * boxSize * boxSize * boxSize) {
+            // All good, lets go
+            solutions.push(
+                solveObj.boardOptions.map((row) =>
+                    row.map((options) => {
+                        for (let n = 1; n <= 9; n++) if (options[n]) return n;
+                        throw "Shouldn't have gotten here!";
+                    })
+                )
+            );
+            if (solutions.length >= 2 || stack.length === 0) return solutions;
+            const {
+                boardOptions,
+                totalSettled,
+                guess: [gx, gy, gn],
+            } = stack.pop();
+            solveObj.boardOptions = boardOptions;
+            solveObj.totalSettled = totalSettled;
+            removeBoardOption(gx, gy, gn);
+            continue;
+        }
+        // Save position and make random guess
+        startGuess: for (let x = 0; x < boxSize * boxSize; x++) {
+            for (let y = 0; y < boxSize * boxSize; y++) {
+                const available = [];
+                for (let m = 1; m <= boxSize * boxSize; m++) {
+                    if (solveObj.boardOptions[y][x][m]) {
+                        available.push(m);
+                    }
+                }
+                if (available.length >= 2) {
+                    const r = Math.floor(Math.random() * available.length);
+
+                    stack.push({
+                        boardOptions: solveObj.boardOptions.map((row) =>
+                            row.map((options) => ({ ...options }))
+                        ),
+                        totalSettled: solveObj.totalSettled,
+                        guess: [x, y, available[r]],
+                    });
+                    console.log("Guess", [x, y, available[r]]);
+                    solveObj.totalSettled += 1;
+
+                    solveObj.boardOptions[y][x] = { [available[r]]: true };
+
+                    settledCells.push([x, y]);
+                    break startGuess;
+                }
+            }
+        }
+    }
 };
 
 const makePuzzle = (board, numPossiblyRedundant = 0) => {
@@ -251,7 +397,8 @@ process.stdin.on("keypress", function (ch, key) {
     if (key && key.name === "return") {
         process.stdin.pause();
         logs = [];
-        printBoard(makePuzzle(BOARD));
+        printBoard(solve(BOARD)[0]);
+        console.log("Done");
     }
     if (key && key.ctrl && key.name == "c") {
         process.stdin.pause();

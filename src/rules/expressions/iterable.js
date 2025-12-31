@@ -20,7 +20,7 @@ export default {
         {
             pattern: [type("DiscreteRange")],
             // TODO: Make this able to say when its just integers
-            allowedSubtypes: [["Number", "printable", "stringlike", "Object"]],
+            allowedSubtypes: [["Number"]],
             evaluate: ({ tokens: [range], context }) => {
                 return discreteRangeIterator(context.evaluateExpression(range));
             },
@@ -32,6 +32,10 @@ export default {
         },
         {
             pattern: [
+                // TODO: Need to allow for or types
+                // TODO: Allow for this rule to work for List
+                // As in, Iterable -> List (Any list) ++ List (Any list)
+                // Iterable<A> -> List<A> ++ Iterable<A>
                 type("Iterable", thisSubtype(0)),
                 "++",
                 type("Iterable", thisSubtype(0)),

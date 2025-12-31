@@ -1,12 +1,13 @@
 {
     "env": {
         "node": true,
-        "es6": true
+        "es6": true,
+        "browser": true
     },
     "root": true,
     "parserOptions": {
         "sourceType": "module",
-        "ecmaVersion": "latest"
+        "ecmaVersion": 11
     },
     "extends": "eslint:recommended",
     "rules": {

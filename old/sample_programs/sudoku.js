@@ -178,13 +178,13 @@ const solve = (board) => {
                 .map(() => ({}))
         );
     solveObj.totalSettled = 0;
-    const settledCells = [];
+    solveObj.settledCells = [];
     for (let x = 0; x < boxSize * boxSize; x++) {
         for (let y = 0; y < boxSize * boxSize; y++) {
             if (board[y][x] !== undefined) {
                 solveObj.totalSettled += 1;
                 solveObj.boardOptions[y][x][board[y][x]] = true;
-                settledCells.push([x, y]);
+                solveObj.settledCells.push([x, y]);
             } else {
                 for (let n = 1; n <= boxSize * boxSize; n++)
                     solveObj.boardOptions[y][x][n] = true;
@@ -205,34 +205,49 @@ const solve = (board) => {
             }
         }
         if (count === 0) {
-            console.log(x, y, "Is now empty! Rolling back");
+            // console.log(x, y, "Is now empty! Rolling back");
             if (!stack.length) throw "Impossible!";
             const {
                 boardOptions,
                 totalSettled,
+                settledCells,
                 guess: [gx, gy, gn],
             } = stack.pop();
             solveObj.boardOptions = boardOptions;
             solveObj.totalSettled = totalSettled;
+            solveObj.settledCells = settledCells;
             removeBoardOption(gx, gy, gn);
             return;
         }
         if (count === 1) {
             solveObj.totalSettled += 1;
-            console.log(x, y, "Added as possible settled");
-            settledCells.push([x, y]);
+            // console.log(x, y, "Added as possible settled");
+            solveObj.settledCells.push([x, y]);
         }
     };
     try {
         while (true) {
-            while (settledCells.length) {
-                const [x, y] = settledCells.pop();
+            // printBoard(
+            //     solveObj.boardOptions.map((row) =>
+            //         row.map((options) => {
+            //             let seen = false;
+            //             for (let n = 1; n <= 9; n++)
+            //                 if (options[n]) {
+            //                     if (seen) return undefined;
+            //                     seen = n;
+            //                 }
+            //             return seen;
+            //         })
+            //     )
+            // );
+            while (solveObj.settledCells.length) {
+                const [x, y] = solveObj.settledCells.pop();
                 const value = (() => {
                     for (let n = 1; n <= 9; n++)
                         if (solveObj.boardOptions[y][x][n]) return n;
                     throw "Shouldnt have gotten here!";
                 })();
-                console.log("Settling", [x, y, value]);
+                // console.log("Settling", [x, y, value]);
                 for (const [[x1, y1], [x2, y2]] of CONSTRAINTS) {
                     let nx, ny;
                     if (x1 === x && y1 === y) {
@@ -246,7 +261,7 @@ const solve = (board) => {
                     if (nx !== undefined) removeBoardOption(nx, ny, value);
                 }
             }
-            console.log(solveObj.totalSettled, "total settled");
+            // console.log(solveObj.totalSettled, "total settled");
             if (
                 solveObj.totalSettled ===
                 boxSize * boxSize * boxSize * boxSize
@@ -290,14 +305,15 @@ const solve = (board) => {
                                 row.map((options) => ({ ...options }))
                             ),
                             totalSettled: solveObj.totalSettled,
+                            settledCells: [...solveObj.settledCells],
                             guess: [x, y, available[r]],
                         });
-                        console.log("Guess", [x, y, available[r]]);
+                        // console.log("Guess", [x, y, available[r]]);
                         solveObj.totalSettled += 1;
 
                         solveObj.boardOptions[y][x] = { [available[r]]: true };
 
-                        settledCells.push([x, y]);
+                        solveObj.settledCells.push([x, y]);
                         break startGuess;
                     }
                 }

@@ -106,33 +106,33 @@ for (let i = 0; i < boxSize * boxSize; i++) {
         }
 
         // Knights sudoku
-        // if (i >= 1 && j >= 2) addToConstraintSet(i, j, i - 1, j - 2);
-        // if (i >= 2 && j >= 1) addToConstraintSet(i, j, i - 2, j - 1);
-        // if (i >= 1 && j < boxSize * boxSize - 2)
-        //     addToConstraintSet(i, j, i - 1, j + 2);
-        // if (i >= 2 && j < boxSize * boxSize - 1)
-        //     addToConstraintSet(i, j, i - 2, j + 1);
-        // if (i < boxSize * boxSize - 1 && j >= 2)
-        //     addToConstraintSet(i, j, i + 1, j - 2);
-        // if (i < boxSize * boxSize - 2 && j >= 1)
-        //     addToConstraintSet(i, j, i + 2, j - 1);
-        // if (i < boxSize * boxSize - 1 && j < boxSize * boxSize - 2)
-        //     addToConstraintSet(i, j, i + 1, j + 2);
-        // if (i < boxSize * boxSize - 2 && j < boxSize * boxSize - 1)
-        //     addToConstraintSet(i, j, i + 2, j + 1);
+        if (i >= 1 && j >= 2) addToConstraintSet(i, j, i - 1, j - 2);
+        if (i >= 2 && j >= 1) addToConstraintSet(i, j, i - 2, j - 1);
+        if (i >= 1 && j < boxSize * boxSize - 2)
+            addToConstraintSet(i, j, i - 1, j + 2);
+        if (i >= 2 && j < boxSize * boxSize - 1)
+            addToConstraintSet(i, j, i - 2, j + 1);
+        if (i < boxSize * boxSize - 1 && j >= 2)
+            addToConstraintSet(i, j, i + 1, j - 2);
+        if (i < boxSize * boxSize - 2 && j >= 1)
+            addToConstraintSet(i, j, i + 2, j - 1);
+        if (i < boxSize * boxSize - 1 && j < boxSize * boxSize - 2)
+            addToConstraintSet(i, j, i + 1, j + 2);
+        if (i < boxSize * boxSize - 2 && j < boxSize * boxSize - 1)
+            addToConstraintSet(i, j, i + 2, j + 1);
 
         // Kings sudoku
-        // if (i >= 1 && j >= 1) addToConstraintSet(i, j, i - 1, j - 1);
-        // if (j >= 1) addToConstraintSet(i, j, i, j - 1);
-        // if (i < boxSize * boxSize - 1 && j >= 1)
-        //     addToConstraintSet(i, j, i + 1, j - 1);
-        // if (i >= 1) addToConstraintSet(i, j, i - 1, j);
-        // if (i < boxSize * boxSize - 1) addToConstraintSet(i, j, i + 1, j);
-        // if (i >= 1 && j < boxSize * boxSize - 1)
-        //     addToConstraintSet(i, j, i - 1, j + 1);
-        // if (j < boxSize * boxSize - 1) addToConstraintSet(i, j, i, j + 1);
-        // if (i < boxSize * boxSize - 1 && j < boxSize * boxSize - 1)
-        //     addToConstraintSet(i, j, i + 1, j + 1);
+        if (i >= 1 && j >= 1) addToConstraintSet(i, j, i - 1, j - 1);
+        if (j >= 1) addToConstraintSet(i, j, i, j - 1);
+        if (i < boxSize * boxSize - 1 && j >= 1)
+            addToConstraintSet(i, j, i + 1, j - 1);
+        if (i >= 1) addToConstraintSet(i, j, i - 1, j);
+        if (i < boxSize * boxSize - 1) addToConstraintSet(i, j, i + 1, j);
+        if (i >= 1 && j < boxSize * boxSize - 1)
+            addToConstraintSet(i, j, i - 1, j + 1);
+        if (j < boxSize * boxSize - 1) addToConstraintSet(i, j, i, j + 1);
+        if (i < boxSize * boxSize - 1 && j < boxSize * boxSize - 1)
+            addToConstraintSet(i, j, i + 1, j + 1);
     }
 }
 const CONSTRAINTS = [...CONSTRAINTS_SET].map((constraint) => {
@@ -333,7 +333,9 @@ const solve = (board) => {
             solveObj.settledCells.push([x, y]);
         }
     } catch (err) {
-        if (err === "Impossible!") return [];
+        if (err === "Impossible!") {
+            return solutions;
+        }
         throw err;
     }
 };
